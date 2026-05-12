@@ -1,0 +1,20 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div class="admin-header"><h1>Usuarios admin</h1><p>Crea administradores y cambia contrasenas.</p></div>
+<form class="admin-card mini-form" method="post">
+  <input class="form-control" name="name" placeholder="Nombre">
+  <input class="form-control" type="email" name="email" placeholder="Correo" required>
+  <input class="form-control" type="password" name="password" placeholder="Contrasena">
+  <label class="check"><input type="checkbox" name="is_active_admin" checked> Activo</label>
+  <button class="btn btn-primary">Crear usuario</button>
+</form>
+{% for item in items %}
+<form class="admin-card edit-row" method="post" action="{{ url_for('update_user', item_id=item.id) }}">
+  <input class="form-control" name="name" value="{{ item.name }}">
+  <input class="form-control" type="email" name="email" value="{{ item.email }}" required>
+  <input class="form-control" type="password" name="password" placeholder="Nueva contrasena opcional">
+  <label class="check"><input type="checkbox" name="is_active_admin" {% if item.is_active_admin %}checked{% endif %}> Activo</label>
+  <button class="btn btn-primary">Guardar</button>
+</form>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div class="admin-header"><h1>Servicios</h1><p>Crea, edita, activa o desactiva servicios.</p></div>
+<form class="admin-card mini-form" method="post" enctype="multipart/form-data">
+  <input class="form-control" name="name" placeholder="Nombre" required>
+  <input class="form-control" name="icon" placeholder="fa-solid fa-shield-halved">
+  <input class="form-control" name="price" placeholder="Precio opcional">
+  <input class="form-control" type="number" name="position" placeholder="Orden">
+  <textarea class="form-control" name="description" placeholder="Descripcion" required></textarea>
+  <input class="form-control" type="file" name="image" accept=".jpg,.jpeg,.png,.webp,.svg">
+  <label class="check"><input type="checkbox" name="is_active" checked> Activo</label>
+  <button class="btn btn-primary">Crear servicio</button>
+</form>
+{% for item in items %}
+<form class="admin-card edit-row" method="post" enctype="multipart/form-data" action="{{ url_for('update_service', item_id=item.id) }}">
+  <input class="form-control" name="name" value="{{ item.name }}" required>
+  <input class="form-control" name="icon" value="{{ item.icon }}">
+  <input class="form-control" name="price" value="{{ item.price or '' }}">
+  <input class="form-control" type="number" name="position" value="{{ item.position }}">
+  <textarea class="form-control" name="description" required>{{ item.description }}</textarea>
+  <input class="form-control" type="file" name="image" accept=".jpg,.jpeg,.png,.webp,.svg">
+  <label class="check"><input type="checkbox" name="is_active" {% if item.is_active %}checked{% endif %}> Activo</label>
+  <button class="btn btn-primary">Guardar</button>
+  <button class="btn btn-outline-danger" formaction="{{ url_for('delete_service', item_id=item.id) }}">Eliminar</button>
+</form>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div class="admin-header"><h1>CEO & Fundador</h1><p>Perfil profesional, experiencia, habilidades, CV y estadisticas animadas.</p></div>
+<form class="admin-card stacked-form" method="post" enctype="multipart/form-data">
+  <div class="grid-2">
+    <label>Nombre completo<input class="form-control" name="full_name" value="{{ item.full_name }}"></label>
+    <label>Cargo<input class="form-control" name="role" value="{{ item.role }}"></label>
+  </div>
+  <label>Linea premium<input class="form-control" name="tagline" value="{{ item.tagline }}"></label>
+  <label>Descripcion profesional<textarea class="form-control" name="bio">{{ item.bio }}</textarea></label>
+  <div class="grid-3">
+    <label>Experiencia<textarea class="form-control tall" name="experience">{{ item.experience }}</textarea></label>
+    <label>Certificaciones<textarea class="form-control tall" name="certifications">{{ item.certifications }}</textarea></label>
+    <label>Habilidades<textarea class="form-control tall" name="skills">{{ item.skills }}</textarea></label>
+  </div>
+  <div class="grid-2">
+    <label>LinkedIn<input class="form-control" name="linkedin" value="{{ item.linkedin or '' }}"></label>
+    <label>Mensaje WhatsApp<input class="form-control" name="whatsapp_message" value="{{ item.whatsapp_message }}"></label>
+  </div>
+  <div class="grid-4">
+    <label>Proyectos<input class="form-control" type="number" name="projects_count" value="{{ item.projects_count }}"></label>
+    <label>Clientes<input class="form-control" type="number" name="clients_count" value="{{ item.clients_count }}"></label>
+    <label>Sistemas<input class="form-control" type="number" name="systems_count" value="{{ item.systems_count }}"></label>
+    <label>Anios experiencia<input class="form-control" type="number" name="experience_years" value="{{ item.experience_years }}"></label>
+  </div>
+  <div class="grid-2">
+    <label>Foto CEO<input class="form-control image-input" type="file" name="photo" accept=".jpg,.jpeg,.png,.webp,.svg"><img class="preview" src="{% if item.photo %}{{ item.photo|asset }}{% endif %}"></label>
+    <label>CV PDF<input class="form-control" type="file" name="cv_pdf" accept=".pdf">{% if item.cv_pdf %}<a href="{{ item.cv_pdf|asset }}" target="_blank">Ver CV actual</a>{% endif %}</label>
+  </div>
+  <button class="btn btn-primary">Guardar perfil CEO</button>
+</form>
+{% endblock %}

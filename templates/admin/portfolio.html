@@ -1,0 +1,27 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div class="admin-header"><h1>Portafolio</h1><p>Proyectos, categorias, tecnologias e imagenes.</p></div>
+<form class="admin-card mini-form" method="post" enctype="multipart/form-data">
+  <input class="form-control" name="name" placeholder="Nombre" required>
+  <input class="form-control" name="category" placeholder="Categoria">
+  <input class="form-control" name="technologies" placeholder="Tecnologias usadas">
+  <input class="form-control" name="link" placeholder="Enlace">
+  <textarea class="form-control" name="description" placeholder="Descripcion" required></textarea>
+  <input class="form-control" type="file" name="image" accept=".jpg,.jpeg,.png,.webp,.svg">
+  <label class="check"><input type="checkbox" name="is_active" checked> Activo</label>
+  <button class="btn btn-primary">Crear proyecto</button>
+</form>
+{% for item in items %}
+<form class="admin-card edit-row" method="post" enctype="multipart/form-data" action="{{ url_for('update_portfolio', item_id=item.id) }}">
+  <input class="form-control" name="name" value="{{ item.name }}" required>
+  <input class="form-control" name="category" value="{{ item.category }}">
+  <input class="form-control" name="technologies" value="{{ item.technologies }}">
+  <input class="form-control" name="link" value="{{ item.link or '' }}">
+  <textarea class="form-control" name="description" required>{{ item.description }}</textarea>
+  <input class="form-control" type="file" name="image" accept=".jpg,.jpeg,.png,.webp,.svg">
+  <label class="check"><input type="checkbox" name="is_active" {% if item.is_active %}checked{% endif %}> Activo</label>
+  <button class="btn btn-primary">Guardar</button>
+  <button class="btn btn-outline-danger" formaction="{{ url_for('delete_portfolio', item_id=item.id) }}">Eliminar</button>
+</form>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div class="admin-header"><h1>Configuracion general</h1><p>Identidad, colores, contacto, redes, SEO y visibilidad.</p></div>
+<form class="admin-card stacked-form" method="post" enctype="multipart/form-data">
+  <h2>Identidad</h2>
+  <div class="grid-2">
+    {% for field,label in [('company_name','Nombre empresa'),('slogan','Slogan'),('main_email','Correo'),('phone','Telefono'),('whatsapp','WhatsApp internacional'),('address','Direccion'),('business_hours','Horario')] %}
+      <label>{{ label }}<input class="form-control" name="{{ field }}" value="{{ settings|attr(field) or '' }}"></label>
+    {% endfor %}
+  </div>
+  <label>Descripcion corta<textarea class="form-control" name="short_description">{{ settings.short_description }}</textarea></label>
+  <div class="grid-3">
+    <label>Logo<input class="form-control image-input" type="file" name="logo" accept=".jpg,.jpeg,.png,.webp,.svg"><img class="preview" src="{% if settings.logo %}{{ settings.logo|asset }}{% endif %}"></label>
+    <label>Favicon<input class="form-control image-input" type="file" name="favicon" accept=".jpg,.jpeg,.png,.webp,.svg"><img class="preview" src="{% if settings.favicon %}{{ settings.favicon|asset }}{% endif %}"></label>
+    <label>Open Graph<input class="form-control image-input" type="file" name="og_image" accept=".jpg,.jpeg,.png,.webp,.svg"><img class="preview" src="{% if settings.og_image %}{{ settings.og_image|asset }}{% endif %}"></label>
+  </div>
+  <h2>Colores del sitio</h2>
+  <div class="grid-5">
+    {% for field,label in [('primary_color','Primario'),('secondary_color','Secundario'),('background_color','Fondo'),('button_color','Botones'),('text_color','Texto')] %}
+      <label>{{ label }}<input class="form-control form-control-color" type="color" name="{{ field }}" value="{{ settings|attr(field) }}"></label>
+    {% endfor %}
+  </div>
+  <div class="checks-grid">
+    {% for field,label in [('dark_mode','Modo oscuro'),('tech_gradients','Gradientes tecnologicos')] %}
+      <label class="check"><input type="checkbox" name="{{ field }}" {% if settings|attr(field) %}checked{% endif %}> {{ label }}</label>
+    {% endfor %}
+  </div>
+  <h2>Redes sociales</h2>
+  <div class="grid-2">
+    {% for field,label in [('facebook','Facebook'),('instagram','Instagram'),('linkedin','LinkedIn'),('tiktok','TikTok'),('youtube','YouTube')] %}
+      <label>{{ label }}<input class="form-control" name="{{ field }}" value="{{ settings|attr(field) or '' }}"></label>
+    {% endfor %}
+  </div>
+  <h2>SEO</h2>
+  <label>Meta title<input class="form-control" name="meta_title" value="{{ settings.meta_title }}"></label>
+  <label>Meta description<textarea class="form-control" name="meta_description">{{ settings.meta_description }}</textarea></label>
+  <label>Keywords<textarea class="form-control" name="meta_keywords">{{ settings.meta_keywords }}</textarea></label>
+  <div class="grid-2">
+    <label>Google Analytics ID<input class="form-control" name="google_analytics_id" value="{{ settings.google_analytics_id or '' }}"></label>
+    <label>Google Search Console<input class="form-control" name="google_search_console" value="{{ settings.google_search_console or '' }}"></label>
+  </div>
+  <h2>Footer y secciones</h2>
+  <div class="grid-2">
+    <label>Texto footer<input class="form-control" name="footer_text" value="{{ settings.footer_text }}"></label>
+    <label>Copyright<input class="form-control" name="copyright_text" value="{{ settings.copyright_text }}"></label>
+  </div>
+  <div class="checks-grid">
+    {% for field,label in [('show_about','Nosotros'),('show_ceo','CEO'),('show_services','Servicios'),('show_plans','Planes'),('show_portfolio','Portafolio'),('show_testimonials','Testimonios'),('show_faq','FAQ'),('show_contact','Contacto')] %}
+      <label class="check"><input type="checkbox" name="{{ field }}" {% if settings|attr(field) %}checked{% endif %}> {{ label }}</label>
+    {% endfor %}
+  </div>
+  <button class="btn btn-primary">Guardar configuracion</button>
+</form>
+{% endblock %}
