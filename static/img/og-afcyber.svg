@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop stop-color="#050b18"/>
+      <stop offset=".55" stop-color="#081426"/>
+      <stop offset="1" stop-color="#102b62"/>
+    </linearGradient>
+    <linearGradient id="brand" x1="0" x2="1" y1="0" y2="1">
+      <stop stop-color="#1777ff"/>
+      <stop offset="1" stop-color="#00d4ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <g opacity=".18" stroke="#00d4ff">
+    <path d="M0 120h1200M0 240h1200M0 360h1200M0 480h1200"/>
+    <path d="M120 0v630M240 0v630M360 0v630M480 0v630M600 0v630M720 0v630M840 0v630M960 0v630M1080 0v630"/>
+  </g>
+  <rect x="90" y="110" width="110" height="110" rx="18" fill="url(#brand)"/>
+  <text x="145" y="181" text-anchor="middle" font-family="Arial, sans-serif" font-size="42" font-weight="900" fill="#fff">AF</text>
+  <text x="90" y="305" font-family="Arial, sans-serif" font-size="78" font-weight="900" fill="#fff">AFCyber SOLUTIONS</text>
+  <text x="94" y="370" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#b9d6f7">Soluciones tecnológicas modernas</text>
+  <text x="94" y="426" font-family="Arial, sans-serif" font-size="28" fill="#8ea7c5">Web • Sistemas • Soporte • Redes • Seguridad</text>
+  <circle cx="975" cy="300" r="108" fill="none" stroke="#00d4ff" stroke-width="3" opacity=".55"/>
+  <circle cx="975" cy="300" r="55" fill="url(#brand)" opacity=".85"/>
+</svg>
