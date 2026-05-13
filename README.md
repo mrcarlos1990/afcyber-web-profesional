@@ -128,3 +128,4 @@ Todo el contenido principal se administra desde `/admin`:
 - Los mensajes del formulario se ven en `Mensajes`.
 
 La web crea automaticamente la base de datos, configuracion inicial, contenido sugerido y usuario admin inicial al ejecutar `python app.py`.
+Actualización realizada el 12/05/2026.
