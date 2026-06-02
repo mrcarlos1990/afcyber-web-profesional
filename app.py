@@ -298,7 +298,7 @@ def register_routes(app):
                 message=request.form.get("message", "").strip(),
             )
             if not message.name or not (message.phone or message.email) or not message.message:
-                flash("Completa nombre, telefono o correo, y descripcion.", "danger")
+                flash("Completa nombre, teléfono o correo, y descripción.", "danger")
             else:
                 db.session.add(message)
                 db.session.commit()

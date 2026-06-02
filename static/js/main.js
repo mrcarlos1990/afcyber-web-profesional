@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initNetworkCanvas();
   initSocParallax();
   initAssetReadyState();
-  initServiceTilt();
+  initAdminShortcut();
 });
 
 function initAos() {
@@ -76,7 +76,16 @@ function initNavbar() {
 }
 
 function buildWhatsappUrl(message) {
-  return `https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(message || siteConfig.defaultWhatsappMessage)}`;
+  return `https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(normalizeText(message || siteConfig.defaultWhatsappMessage))}`;
+}
+
+function normalizeText(text) {
+  return String(text || "")
+    .replaceAll("informaci\u00c3\u00b3n", "informaci\u00f3n")
+    .replaceAll("tecnol\u00c3\u00b3gicos", "tecnol\u00f3gicos")
+    .replaceAll("cotizaci\u00c3\u00b3n", "cotizaci\u00f3n")
+    .replaceAll("c\u00c3\u00a1maras", "c\u00e1maras")
+    .replaceAll("barber\u00c3\u00adas", "barber\u00edas");
 }
 
 function initWhatsappLinks() {
@@ -88,6 +97,15 @@ function initWhatsappLinks() {
     link.setAttribute("href", buildWhatsappUrl(message));
     link.setAttribute("target", "_blank");
     link.setAttribute("rel", "noopener");
+  });
+}
+
+function initAdminShortcut() {
+  document.addEventListener("keydown", (event) => {
+    if (event.ctrlKey && event.altKey && event.key.toLowerCase() === "a") {
+      event.preventDefault();
+      window.location.href = "/admin/login";
+    }
   });
 }
 
@@ -187,26 +205,6 @@ function initAssetReadyState() {
   }
 
   logo.addEventListener("load", () => hero.classList.add("hero-assets-ready"), { once: true });
-}
-
-function initServiceTilt() {
-  const cards = document.querySelectorAll(".soc-service-card");
-  if (!cards.length || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-  cards.forEach((card) => {
-    card.addEventListener("mousemove", (event) => {
-      const rect = card.getBoundingClientRect();
-      const x = ((event.clientX - rect.left) / rect.width) - .5;
-      const y = ((event.clientY - rect.top) / rect.height) - .5;
-      card.style.setProperty("--tilt-x", `${(-y * 4).toFixed(2)}deg`);
-      card.style.setProperty("--tilt-y", `${(x * 4).toFixed(2)}deg`);
-    });
-
-    card.addEventListener("mouseleave", () => {
-      card.style.removeProperty("--tilt-x");
-      card.style.removeProperty("--tilt-y");
-    });
-  });
 }
 
 function initNetworkCanvas() {
