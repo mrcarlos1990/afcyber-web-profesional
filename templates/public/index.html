@@ -1,0 +1,338 @@
+{% extends "public/base.html" %}
+{% block content %}
+<div class="site-loader" id="siteLoader">
+  <div class="loader-mark">AF</div>
+</div>
+
+<nav class="navbar navbar-expand-xl fixed-top premium-nav" id="mainNav">
+  <div class="container-fluid nav-shell">
+    <a class="navbar-brand af-brand" href="#inicio" aria-label="AFCyber Solutions">
+      {% if visual_assets.logo %}
+      <img class="brand-logo-img" src="{{ url_for('static', filename=visual_assets.logo) }}" alt="Logo AFCyber Solutions">
+      {% else %}
+      <span class="brand-fallback">AF</span>
+      {% endif %}
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu" aria-label="Abrir menu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarMenu">
+      <ul class="navbar-nav nav-center mx-auto align-items-xl-center">
+        <li class="nav-item"><a class="nav-link active" href="#inicio">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link" href="#servicios">Servicios</a></li>
+        <li class="nav-item"><a class="nav-link" href="#soluciones">Soluciones</a></li>
+        <li class="nav-item"><a class="nav-link" href="#proyectos">Proyectos</a></li>
+        <li class="nav-item"><a class="nav-link" href="#nosotros">Sobre Nosotros</a></li>
+        <li class="nav-item"><a class="nav-link" href="#blog">Blog</a></li>
+        <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a class="btn nav-cta js-whatsapp" href="#" data-message="Hola AFCyber Solutions, quiero solicitar una cotizacion.">
+          <i class="fa-regular fa-file-lines"></i>
+          Solicitar cotizaci&oacute;n
+        </a>
+        <a class="nav-whatsapp js-whatsapp" href="#" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<header
+  id="inicio"
+  class="hero-section"
+  {% if visual_assets.hero_image %}style="--hero-bg: url('{{ url_for('static', filename=visual_assets.hero_image) }}');"{% endif %}
+>
+  <canvas id="networkCanvas" aria-hidden="true"></canvas>
+  <div class="hero-overlay-grid" aria-hidden="true"></div>
+  <div class="hero-particles" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <div class="hero-monitoring-layer" aria-hidden="true">
+    <div class="monitoring-stack left-stack" data-parallax="0.08">
+      <article class="threat-widget">
+        <small>Threat Detection</small>
+        <strong>Alert</strong>
+        <span>Threat level</span>
+        <b>High</b>
+      </article>
+      <article class="map-widget">
+        <div class="widget-heading"><span>Global Threat Map</span><i></i></div>
+        <div class="map-lines"><span></span><span></span><span></span><span></span></div>
+      </article>
+      <article class="traffic-widget">
+        <span>Network Traffic</span>
+        <div class="traffic-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </article>
+    </div>
+
+    <div class="monitoring-stack right-stack" data-parallax="-0.07">
+      <article class="camera-widget">
+        <i class="fa-solid fa-video"></i>
+        <span>IP Camera Online</span>
+      </article>
+      <article class="code-widget">
+        <div class="widget-heading"><span>Secure Code</span><i></i></div>
+        <pre>&lt;security status=&quot;active&quot;&gt;
+  firewall: enabled
+  network: monitored
+  access: encrypted
+&lt;/security&gt;</pre>
+      </article>
+      <article class="server-widget">
+        <span></span><span></span><span></span>
+      </article>
+    </div>
+  </div>
+
+  <div class="hero-content">
+    {% if visual_assets.hero_logo %}
+    <img class="hero-logo-img" src="{{ url_for('static', filename=visual_assets.hero_logo) }}" alt="AFCyber Solutions">
+    {% else %}
+    <div class="hero-logo-text"><span>AF</span>Cyber <small>Solutions</small></div>
+    {% endif %}
+
+    <h1 data-aos="fade-up">Soluciones tecnol&oacute;gicas</h1>
+    <p class="hero-statement" data-aos="fade-up" data-aos-delay="90">
+      Que <span>protegen</span> y hacen <span>crecer</span> tu negocio
+    </p>
+    <p class="hero-services" data-aos="fade-up" data-aos-delay="150">
+      Aires acondicionados <b>&bull;</b> Cat&aacute;logos web <b>&bull;</b> Sistemas POS <b>&bull;</b> C&aacute;maras <b>&bull;</b> Barber&iacute;as <b>&bull;</b> Computadoras
+    </p>
+    <div class="hero-actions" data-aos="fade-up" data-aos-delay="220">
+      <a class="btn btn-primary-premium js-whatsapp" href="#" data-message="Hola AFCyber Solutions, quiero solicitar una cotizacion para mi negocio.">
+        Solicitar cotizaci&oacute;n
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+      <a class="btn btn-outline-premium" href="#servicios">
+        Ver servicios
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    </div>
+    <div class="hero-service-strip" data-aos="fade-up" data-aos-delay="280">
+      {% for service in real_services[:4] %}
+      <a class="js-whatsapp" href="#" data-service="{{ service.name }}"><i class="{{ service.icon }}"></i><span>{{ service.short_name }}</span></a>
+      {% endfor %}
+    </div>
+    <a class="scroll-cue" href="#servicios" aria-label="Scroll para explorar">
+      <i class="fa-solid fa-chevron-down"></i>
+      <span>Scroll para explorar</span>
+    </a>
+  </div>
+</header>
+
+<main>
+  <section id="servicios" class="services-section">
+    <div class="container-fluid section-shell">
+      <div class="services-heading" data-aos="fade-up">
+        <span class="section-kicker">Servicios reales</span>
+        <h2>Soluciones t&eacute;cnicas y digitales para operar mejor.</h2>
+        <p>Estos son los servicios actuales de AFCyber Solutions. No mostramos servicios fuera de esta lista.</p>
+      </div>
+      <div class="service-card-grid">
+        {% for service in real_services %}
+        <article class="soc-service-card" id="{{ service.slug }}" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 45 }}">
+          <div class="service-image-wrap">
+            <img src="{{ url_for('static', filename=service.image) }}" alt="{{ service.name }}" loading="lazy">
+          </div>
+          <i class="{{ service.icon }}"></i>
+          <h2>{{ service.name }}</h2>
+          <p>{{ service.description }}</p>
+          <ul>
+            {% for feature in service.features[:4] %}
+            <li>{{ feature }}</li>
+            {% endfor %}
+          </ul>
+          <a class="js-whatsapp" href="#" data-service="{{ service.name }}">Solicitar informaci&oacute;n <span>&rarr;</span></a>
+        </article>
+        {% endfor %}
+      </div>
+
+      <div class="value-strip">
+        {% for service in real_services %}
+        <article><i class="{{ service.icon }}"></i><div><strong>{{ service.short_name }}</strong><span>{{ service.features[0] }}</span></div></article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section id="soluciones" class="section solutions-band">
+    <div class="container">
+      <div class="section-heading text-center" data-aos="fade-up">
+        <span class="section-kicker">Soluciones AFCyber</span>
+        <h2>Servicios organizados para negocios, hogares y operaciones t&eacute;cnicas.</h2>
+        <p>Cada soluci&oacute;n parte de los servicios reales disponibles: climatizaci&oacute;n, cat&aacute;logos, POS, c&aacute;maras, barber&iacute;as, citas y mantenimiento a computadoras.</p>
+      </div>
+      <div class="solution-grid">
+        {% for service in real_services %}
+        <article class="solution-card" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 45 }}">
+          <i class="{{ service.icon }}"></i>
+          <h3>{{ service.short_name }}</h3>
+          <ul>
+            {% for feature in service.features %}
+            <li>{{ feature }}</li>
+            {% endfor %}
+          </ul>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section id="nosotros" class="section about-section">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-5" data-aos="fade-right">
+          <div class="command-visual">
+            <div class="command-top"></div>
+            <div class="command-grid">
+              <span><i class="fa-solid fa-lock"></i></span>
+              <span><i class="fa-solid fa-server"></i></span>
+              <span><i class="fa-solid fa-camera"></i></span>
+              <span><i class="fa-solid fa-laptop-code"></i></span>
+            </div>
+            <strong>AFCyber SOC Ready</strong>
+          </div>
+        </div>
+        <div class="col-lg-7" data-aos="fade-left">
+          <span class="section-kicker">Sobre Nosotros</span>
+          <h2>AFCyber Solutions convierte necesidades tecnol&oacute;gicas en sistemas seguros, medibles y escalables.</h2>
+          <p class="section-copy">{{ about.history }}</p>
+          <div class="info-card-grid">
+            <article><i class="fa-solid fa-bullseye"></i><h3>Misi&oacute;n</h3><p>{{ about.mission }}</p></article>
+            <article><i class="fa-solid fa-eye"></i><h3>Visi&oacute;n</h3><p>{{ about.vision }}</p></article>
+            <article><i class="fa-solid fa-gem"></i><h3>Valores</h3><p>{{ about.values }}</p></article>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="proyectos" class="section section-dark">
+    <div class="container">
+      <div class="section-heading text-center" data-aos="fade-up">
+        <span class="section-kicker">Portafolio</span>
+        <h2>Visuales y propuestas basadas en los servicios reales de AFCyber Solutions.</h2>
+      </div>
+      <div class="portfolio-grid">
+        {% for service in real_services %}
+        <article class="portfolio-card" data-aos="zoom-in">
+          <img class="project-img" src="{{ url_for('static', filename=service.alt_image|default(service.image)) }}" alt="{{ service.name }}" loading="lazy">
+          <div>
+            <span>{{ service.short_name }}</span>
+            <h3>{{ service.name }}</h3>
+            <p>{{ service.description }}</p>
+            <small>{{ service.features|join(" • ") }}</small>
+            <a class="js-whatsapp" href="#" data-service="{{ service.name }}">Cotizar servicio</a>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section id="blog" class="section blog-section">
+    <div class="container">
+      <div class="section-heading text-center" data-aos="fade-up">
+        <span class="section-kicker">Blog</span>
+        <h2>Gu&iacute;as r&aacute;pidas sobre los servicios disponibles.</h2>
+      </div>
+      <div class="blog-grid">
+        <article data-aos="fade-up"><span>Aires acondicionados</span><h3>Cu&aacute;ndo hacer mantenimiento preventivo</h3><p>Limpieza profunda, diagn&oacute;stico y carga de gas refrigerante cuando el equipo lo requiere.</p></article>
+        <article data-aos="fade-up" data-aos-delay="80"><span>Sistemas POS</span><h3>Control de ventas e inventario</h3><p>Ventas r&aacute;pidas, reportes, clientes y compatibilidad con equipos de punto de venta.</p></article>
+        <article data-aos="fade-up" data-aos-delay="160"><span>Barber&iacute;as</span><h3>Citas, caja y clientes organizados</h3><p>Agenda, reservas 24/7, tickets, productos, reportes y acceso en la nube.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="contacto" class="section contact-section">
+    <div class="container">
+      <div class="row g-5">
+        <div class="col-lg-5" data-aos="fade-right">
+          <span class="section-kicker">Contacto</span>
+          <h2>Solicita una cotizaci&oacute;n para proteger y hacer crecer tu negocio.</h2>
+          <p class="section-copy">Atendemos proyectos de aires acondicionados, cat&aacute;logos web, sistemas POS, sistemas de c&aacute;maras, soluciones para barber&iacute;as y mantenimiento a computadoras.</p>
+          <div class="contact-list">
+            <a class="js-whatsapp" href="#"><i class="fa-brands fa-whatsapp"></i> {{ settings.phone }}</a>
+            {% for key, channel in contact_channels.items() %}
+            <a href="mailto:{{ channel.email }}?subject={{ channel.subject|urlencode }}"><i class="{{ channel.icon }}"></i> {{ channel.email }}</a>
+            {% endfor %}
+          </div>
+          <article class="engineer-card">
+            <span>Ingeniero responsable</span>
+            <h3>Ing. Amauri Feliz</h3>
+            <a href="mailto:a.felizv@afcybersolutions.com.do?subject=Contacto%20para%20Ing.%20Amauri%20Feliz"><i class="fa-solid fa-envelope"></i> Enviar correo</a>
+            <a class="js-whatsapp" href="#" data-message="Hola Ing. Amauri Feliz, quiero contactar directamente con usted desde la web de AFCyber Solutions."><i class="fa-brands fa-whatsapp"></i> WhatsApp directo</a>
+          </article>
+          <div class="social-links">
+            {% for social in socials %}
+            <a href="{{ social.url }}" aria-label="{{ social.name }}" target="_blank"><i class="{{ social.icon }}"></i></a>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="col-lg-7" data-aos="fade-left">
+          <form class="contact-form" method="post">
+            <input type="hidden" name="inquiry_type" value="cotizacion">
+            <input type="hidden" name="subject" value="Nueva Solicitud de Cotización">
+            <h3>Solicitar cotizaci&oacute;n</h3>
+            <div class="row g-3">
+              <div class="col-md-6"><label>Nombre<input class="form-control" name="name" required></label></div>
+              <div class="col-md-6"><label>Empresa<input class="form-control" name="company"></label></div>
+              <div class="col-md-6"><label>Tel&eacute;fono<input class="form-control" name="phone" required></label></div>
+              <div class="col-md-6"><label>Correo<input class="form-control" type="email" name="email"></label></div>
+              <div class="col-12"><label>Servicio<select class="form-control" name="requested_service" required><option value="">Selecciona un servicio</option>{% for service in real_services %}<option value="{{ service.name }}">{{ service.name }}</option>{% endfor %}</select></label></div>
+              <div class="col-12"><label>Descripci&oacute;n<textarea class="form-control" name="message" rows="5" required placeholder="Describe lo que necesitas, ubicacion, cantidad de equipos o alcance del proyecto."></textarea></label></div>
+              <div class="col-12"><button class="btn btn-primary-premium w-100" type="submit">Enviar solicitud</button></div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="channel-form-grid" data-aos="fade-up">
+        {% for key, channel in contact_channels.items() if key != 'cotizacion' and key != 'ingeniero' %}
+        <form class="mini-contact-form" method="post">
+          <input type="hidden" name="inquiry_type" value="{{ key }}">
+          <input type="hidden" name="subject" value="{{ channel.subject }}">
+          <input type="hidden" name="requested_service" value="{{ channel.label }}">
+          <i class="{{ channel.icon }}"></i>
+          <h3>{{ channel.label }}</h3>
+          <p>{{ channel.email }}</p>
+          <label>Nombre<input class="form-control" name="name" required></label>
+          <label>Tel&eacute;fono o correo<input class="form-control" name="phone" required></label>
+          <label>Descripci&oacute;n<textarea class="form-control" name="message" rows="3" required></textarea></label>
+          <button class="btn btn-outline-premium w-100" type="submit">Enviar</button>
+        </form>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="row g-4 align-items-start">
+      <div class="col-lg-4">
+        <a class="footer-brand af-brand" href="#inicio">
+          {% if visual_assets.logo %}
+          <img class="brand-logo-img" src="{{ url_for('static', filename=visual_assets.logo) }}" alt="AFCyber Solutions">
+          {% else %}
+          <span class="brand-fallback">AF</span>
+          {% endif %}
+        </a>
+        <p>{{ settings.short_description }}</p>
+      </div>
+      <div class="col-lg-2 col-6"><h3>Empresa</h3><a href="#inicio">Inicio</a><a href="#servicios">Servicios</a><a href="#nosotros">Sobre Nosotros</a><a href="#contacto">Contacto</a></div>
+      <div class="col-lg-3 col-6"><h3>Servicios</h3>{% for service in real_services[:4] %}<a href="#{{ service.slug }}">{{ service.short_name }}</a>{% endfor %}</div>
+      <div class="col-lg-3"><h3>Contacto</h3><a class="js-whatsapp" href="#">WhatsApp: {{ settings.phone }}</a><a href="mailto:info@afcybersolutions.com.do">info@afcybersolutions.com.do</a><span>Rep&uacute;blica Dominicana</span></div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span id="currentYear"></span> AFCyber Solutions. Todos los derechos reservados.</span>
+      <span>P&aacute;gina dise&ntilde;ada y desarrollada por el <strong>Ing. Amauri Feliz</strong></span>
+    </div>
+  </div>
+</footer>
+
+<a class="whatsapp-float js-whatsapp" href="#" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+<button class="back-to-top" id="backToTop" aria-label="Volver arriba"><i class="fa-solid fa-arrow-up"></i></button>
+{% endblock %}

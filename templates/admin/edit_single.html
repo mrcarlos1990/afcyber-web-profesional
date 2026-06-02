@@ -1,0 +1,27 @@
+{% extends "admin/base.html" %}
+{% block admin_content %}
+<section class="admin-card">
+  <div class="card-heading"><h1>{{ title }}</h1></div>
+  <form method="post" enctype="multipart/form-data" class="admin-form">
+    <div class="row g-3">
+      {% for name, label, type in fields %}
+      <div class="{% if type == 'textarea' %}col-12{% else %}col-md-6{% endif %}">
+        <label>{{ label }}
+          {% if type == 'textarea' %}
+            <textarea class="form-control" name="{{ name }}" rows="5">{{ item|attr(name) or '' }}</textarea>
+          {% elif type in ['image', 'pdf'] %}
+            {% if item|attr(name) %}<a class="current-file" href="{{ url_for('static', filename=item|attr(name)) }}" target="_blank">Archivo actual</a>{% endif %}
+            <input class="form-control" type="file" name="{{ name }}" accept="{% if type == 'pdf' %}.pdf{% else %}.jpg,.jpeg,.png,.webp,.svg{% endif %}">
+          {% elif type == 'checkbox' %}
+            <div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="{{ name }}" {% if item|attr(name) %}checked{% endif %}></div>
+          {% else %}
+            <input class="form-control" type="{{ type }}" name="{{ name }}" value="{{ item|attr(name) or '' }}">
+          {% endif %}
+        </label>
+      </div>
+      {% endfor %}
+    </div>
+    <button class="btn btn-admin mt-4" type="submit">Guardar cambios</button>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "admin/base.html" %}
+{% block admin_content %}
+<section class="admin-hero">
+  <span>Estado general del sitio</span>
+  <h1>Dashboard operativo</h1>
+  <p>Contenido editable, mensajes almacenados, servicios activos y accesos rapidos desde un solo panel.</p>
+</section>
+<div class="metric-grid">
+  <article><i class="fa-solid fa-envelope"></i><strong>{{ stats.messages }}</strong><span>Mensajes recibidos</span></article>
+  <article><i class="fa-solid fa-envelope-open"></i><strong>{{ stats.unread }}</strong><span>No leidos</span></article>
+  <article><i class="fa-solid fa-layer-group"></i><strong>{{ stats.services }}</strong><span>Servicios</span></article>
+  <article><i class="fa-solid fa-briefcase"></i><strong>{{ stats.projects }}</strong><span>Proyectos</span></article>
+  <article><i class="fa-solid fa-star"></i><strong>{{ stats.testimonials }}</strong><span>Testimonios</span></article>
+</div>
+<section class="admin-card">
+  <div class="card-heading"><h2>Solicitudes por canal</h2><a href="{{ url_for('admin_messages') }}">Ver bandeja</a></div>
+  <div class="channel-metrics">
+    {% for key, channel in contact_channels.items() %}
+    <a href="{{ url_for('admin_messages', type=key) }}"><i class="{{ channel.icon }}"></i><strong>{{ stats.by_type.get(key, 0) }}</strong><span>{{ channel.label }}</span></a>
+    {% endfor %}
+  </div>
+</section>
+<section class="admin-card">
+  <div class="card-heading"><h2>Accesos rapidos</h2></div>
+  <div class="quick-grid">
+    <a href="{{ url_for('admin_settings') }}">Configurar identidad, colores y SEO</a>
+    <a href="{{ url_for('admin_module', module='ceo') }}">Editar CEO & Founder</a>
+    <a href="{{ url_for('admin_module', module='skills') }}">Editar habilidades CEO</a>
+    <a href="{{ url_for('admin_module', module='certificates') }}">Editar certificaciones CEO</a>
+    <a href="{{ url_for('admin_module', module='services') }}">Crear servicio</a>
+    <a href="{{ url_for('admin_module', module='portfolio') }}">Subir proyecto</a>
+    <a href="{{ url_for('admin_messages') }}">Ver mensajes</a>
+    <a href="{{ url_for('admin_users') }}">Usuarios admin</a>
+  </div>
+</section>
+<section class="admin-card">
+  <div class="card-heading"><h2>Mensajes recientes</h2><a href="{{ url_for('admin_messages') }}">Ver todos</a></div>
+  <div class="table-responsive">
+    <table class="table admin-table">
+      <thead><tr><th>Cliente</th><th>Tipo</th><th>Servicio</th><th>Fecha</th><th></th></tr></thead>
+      <tbody>{% for item in recent_messages %}<tr><td>{{ item.name }}</td><td>{{ contact_channels.get(item.inquiry_type, {}).get('label', item.inquiry_type or 'Contacto') }}</td><td>{{ item.requested_service }}</td><td>{{ item.created_at.strftime('%d/%m/%Y') }}</td><td><a href="{{ url_for('admin_message_detail', message_id=item.id) }}">Abrir</a></td></tr>{% endfor %}</tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

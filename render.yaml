@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: afcybersolutions-web
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ADMIN_EMAIL
+        value: admin@afcybersolutions.com.do
+      - key: ADMIN_PASSWORD
+        value: Admin12345!
+      - key: FLASK_DEBUG
+        value: "0"

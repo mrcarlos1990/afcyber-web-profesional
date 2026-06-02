@@ -1,0 +1,14 @@
+{% extends "admin/base.html" %}
+{% block admin_content %}
+<section class="admin-card">
+  <div class="card-heading"><h1>Usuarios admin</h1></div>
+  <form method="post" class="admin-form mb-4">
+    <h2>Crear usuario</h2>
+    <div class="row g-3"><div class="col-md-4"><label>Nombre<input class="form-control" name="name"></label></div><div class="col-md-4"><label>Correo<input class="form-control" type="email" name="email" required></label></div><div class="col-md-4"><label>Contrasena<input class="form-control" type="password" name="password" required></label></div></div>
+    <button class="btn btn-admin mt-3" type="submit">Crear usuario</button>
+  </form>
+  <div class="table-responsive">
+    <table class="table admin-table"><thead><tr><th>Nombre</th><th>Correo</th><th>Cambiar contrasena</th></tr></thead><tbody>{% for user in users %}<tr><td>{{ user.name }}</td><td>{{ user.email }}</td><td><form method="post" action="{{ url_for('admin_user_password', user_id=user.id) }}" class="d-flex gap-2"><input class="form-control" type="password" name="password" placeholder="Nueva contrasena"><button class="btn btn-sm btn-admin" type="submit">Guardar</button></form></td></tr>{% endfor %}</tbody></table>
+  </div>
+</section>
+{% endblock %}
