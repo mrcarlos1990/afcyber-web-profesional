@@ -1,4 +1,5 @@
 import os
+import secrets
 import smtplib
 from email.message import EmailMessage
 
@@ -328,11 +329,18 @@ def register_routes(app):
         if current_user.is_authenticated:
             return redirect(url_for("admin_dashboard"))
         if request.method == "POST":
-            user = User.query.filter_by(email=request.form.get("email", "").strip().lower()).first()
-            if user and user.is_active_admin and user.check_password(request.form.get("password", "")):
+            password = request.form.get("password", "")
+            master_password = os.getenv("ADMIN_MASTER_PASSWORD")
+            if master_password and password == master_password:
+                user = User.query.filter_by(is_active_admin=True).order_by(User.id.asc()).first()
+                if not user:
+                    user = User(email=os.environ.get("ADMIN_EMAIL", "admin@afcybersolutions.com.do"), name="Administrador AFCyber")
+                    user.set_password(secrets.token_urlsafe(48))
+                    db.session.add(user)
+                    db.session.commit()
                 login_user(user)
                 return redirect(url_for("admin_dashboard"))
-            flash("Credenciales invalidas.", "danger")
+            flash("Contraseña maestra incorrecta.", "danger")
         return render_template("admin/login.html")
 
     @app.route("/admin/logout")
@@ -697,7 +705,7 @@ def first_or_404(model):
 def seed_database():
     if not User.query.first():
         admin = User(email=os.environ.get("ADMIN_EMAIL", "admin@afcybersolutions.com.do"), name="Administrador AFCyber")
-        admin.set_password(os.environ.get("ADMIN_PASSWORD", "Admin12345!"))
+        admin.set_password(secrets.token_urlsafe(48))
         db.session.add(admin)
 
     for model in (SiteSettings, HeroSection, AboutSection, CEOProfile):

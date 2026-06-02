@@ -50,82 +50,77 @@
     <span></span><span></span><span></span><span></span><span></span><span></span>
   </div>
 
-  <div class="hero-monitoring-layer" aria-hidden="true">
-    <div class="monitoring-stack left-stack" data-parallax="0.08">
-      <article class="threat-widget">
-        <small>Monitoreo activo</small>
-        <strong>24/7</strong>
-        <span>Respuesta</span>
-        <b>R&aacute;pida</b>
-      </article>
-      <article class="map-widget">
-        <div class="widget-heading"><span>Cobertura digital</span><i></i></div>
-        <div class="map-lines"><span></span><span></span><span></span><span></span></div>
-      </article>
-      <article class="traffic-widget">
-        <span>Operaci&oacute;n inteligente</span>
-        <div class="traffic-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-      </article>
-    </div>
-
-    <div class="monitoring-stack right-stack" data-parallax="-0.07">
-      <article class="camera-widget">
-        <i class="fa-solid fa-video"></i>
-        <span>Seguridad visual</span>
-      </article>
-      <article class="code-widget">
-        <div class="widget-heading"><span>Panel empresarial</span><i></i></div>
-        <div class="status-lines">
-          <span>Ventas y reportes</span>
-          <span>Clientes organizados</span>
-          <span>Soporte profesional</span>
+  <div class="hero-shell">
+    <div class="hero-glass" data-aos="fade-up">
+      <aside class="hero-mascot" data-parallax="0.05" aria-label="Mascota cyber AFCyber">
+        <div class="mascot-scan" aria-hidden="true"></div>
+        <div class="cyber-mascot" aria-hidden="true">
+          <div class="mascot-hood">
+            <div class="mascot-face">
+              <span></span><span></span>
+            </div>
+          </div>
+          <div class="mascot-body">
+            <div class="mascot-shield"><i class="fa-solid fa-lock"></i></div>
+          </div>
         </div>
-      </article>
-      <article class="server-widget">
-        <span></span><span></span><span></span>
-      </article>
-    </div>
-  </div>
+        <div class="mascot-caption"><i class="fa-solid fa-shield-halved"></i> Ethical Cyber Defense</div>
+      </aside>
 
-  <div class="hero-content">
-    {% if visual_assets.hero_logo %}
-    <img class="hero-logo-img" src="{{ url_for('static', filename=visual_assets.hero_logo) }}" alt="AFCyber Solutions">
-    {% else %}
-    <div class="hero-logo-text"><span>AF</span>Cyber <small>Solutions</small></div>
-    {% endif %}
+      <div class="hero-copy">
+        <div class="hero-kicker">TECNOLOG&Iacute;A &bull; SEGURIDAD &bull; CONFIANZA</div>
+        <h1>
+          SOLUCIONES <span>TECNOL&Oacute;GICAS</span><br>
+          PARA EMPRESAS Y<br>
+          EMPRENDEDORES
+        </h1>
+        <p class="hero-statement">
+          Ciberseguridad, sistemas empresariales, videovigilancia, soporte t&eacute;cnico, desarrollo web y soluciones digitales para impulsar tu negocio.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary-premium js-whatsapp" href="#" data-message="Hola AFCyber Solutions, quiero solicitar una cotizacion para mi negocio.">
+            <i class="fa-regular fa-paper-plane"></i>
+            Solicitar cotizaci&oacute;n
+          </a>
+          <a class="btn btn-outline-premium" href="#servicios">
+            <i class="fa-regular fa-eye"></i>
+            Ver servicios
+          </a>
+        </div>
+      </div>
 
-    <h1 data-aos="fade-up">Soluciones Tecnol&oacute;gicas para Empresas y Emprendedores</h1>
-    <p class="hero-statement" data-aos="fade-up" data-aos-delay="90">
-      Ciberseguridad, sistemas empresariales, videovigilancia, soporte t&eacute;cnico, desarrollo web y soluciones digitales para impulsar tu negocio.
-    </p>
-    <p class="hero-services" data-aos="fade-up" data-aos-delay="150">
-      Consultor&iacute;a <b>&bull;</b> Implementaci&oacute;n <b>&bull;</b> Soporte <b>&bull;</b> Automatizaci&oacute;n <b>&bull;</b> Seguridad
-    </p>
-    <div class="hero-actions" data-aos="fade-up" data-aos-delay="220">
-      <a class="btn btn-primary-premium js-whatsapp" href="#" data-message="Hola AFCyber Solutions, quiero solicitar una cotizacion para mi negocio.">
-        Solicitar cotizaci&oacute;n
-        <i class="fa-solid fa-arrow-right"></i>
-      </a>
-      <a class="btn btn-outline-premium" href="#servicios">
-        Ver servicios
-        <i class="fa-solid fa-arrow-right"></i>
-      </a>
+      <aside class="hero-tech-panel" data-parallax="-0.04">
+        <div class="cloud-security"><i class="fa-solid fa-cloud"></i><span><i class="fa-solid fa-lock"></i></span></div>
+        <div class="laptop-security">
+          <div class="laptop-screen"><i class="fa-solid fa-shield-halved"></i></div>
+          <div class="laptop-base"></div>
+        </div>
+        <div class="tech-device camera-device"><i class="fa-solid fa-video"></i><span>IP</span></div>
+        <div class="tech-device router-device"><i class="fa-solid fa-wifi"></i><span></span><span></span><span></span></div>
+        <article class="protection-card">
+          <h2>Protecci&oacute;n</h2>
+          <ul>
+            <li><i class="fa-regular fa-circle-check"></i> Redes seguras</li>
+            <li><i class="fa-regular fa-circle-check"></i> Datos protegidos</li>
+            <li><i class="fa-regular fa-circle-check"></i> Accesos controlados</li>
+            <li><i class="fa-regular fa-circle-check"></i> Monitoreo 24/7</li>
+          </ul>
+        </article>
+      </aside>
     </div>
-    <div class="hero-stats-grid" data-aos="fade-up" data-aos-delay="260">
-      <article><strong>+<span data-counter="50">50</span></strong><small>Proyectos</small></article>
-      <article><strong>+<span data-counter="100">100</span></strong><small>Clientes</small></article>
-      <article><strong><i class="fa-solid fa-headset"></i></strong><small>Soporte t&eacute;cnico</small></article>
-      <article><strong><i class="fa-solid fa-bolt"></i></strong><small>Respuesta r&aacute;pida</small></article>
+
+    <div class="hero-stats-grid" data-aos="fade-up" data-aos-delay="120">
+      <article><i class="fa-solid fa-briefcase"></i><strong>+<span data-counter="50">50</span></strong><small>Proyectos realizados</small></article>
+      <article><i class="fa-solid fa-users"></i><strong>+<span data-counter="100">100</span></strong><small>Clientes satisfechos</small></article>
+      <article><i class="fa-solid fa-headset"></i><strong>24/7</strong><small>Soporte t&eacute;cnico</small></article>
+      <article><i class="fa-solid fa-bolt"></i><strong>Respuesta r&aacute;pida</strong><small>Atenci&oacute;n inmediata</small></article>
     </div>
-    <div class="hero-service-strip" data-aos="fade-up" data-aos-delay="280">
+
+    <div class="hero-service-strip" data-aos="fade-up" data-aos-delay="180">
       {% for service in real_services[:4] %}
       <a class="js-whatsapp" href="#" data-service="{{ service.name }}"><i class="{{ service.icon }}"></i><span>{{ service.short_name }}</span></a>
       {% endfor %}
     </div>
-    <a class="scroll-cue" href="#servicios" aria-label="Scroll para explorar">
-      <i class="fa-solid fa-chevron-down"></i>
-      <span>Scroll para explorar</span>
-    </a>
   </div>
 </header>
 
@@ -144,8 +139,8 @@
         <article><i class="fa-solid fa-bolt"></i><span>Atenci&oacute;n r&aacute;pida</span></article>
         <article><i class="fa-solid fa-layer-group"></i><span>Soluciones personalizadas</span></article>
       </div>
-      <div class="service-card-grid">
-        {% for service in real_services %}
+      <div class="service-card-grid featured-services-grid">
+        {% for service in real_services[:4] %}
         <article class="soc-service-card" id="{{ service.slug }}" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 45 }}">
           <div class="service-image-wrap">
             <img src="{{ url_for('static', filename=service.image) }}" alt="{{ service.name }}" width="1024" height="1536" loading="lazy" decoding="async">
