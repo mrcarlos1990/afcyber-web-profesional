@@ -1,6 +1,6 @@
 const siteConfig = {
   whatsappNumber: window.AF_SITE?.whatsapp || "18299198058",
-  defaultWhatsappMessage: window.AF_SITE?.defaultMessage || "Hola AFCyber Solutions, quiero solicitar información sobre sus servicios tecnológicos."
+  defaultWhatsappMessage: window.AF_SITE?.defaultMessage || "Hola AFCyber Solutions, quiero solicitar informaci\u00f3n sobre sus servicios tecnol\u00f3gicos."
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initAos();
   initNavbar();
   initWhatsappLinks();
+  initContactForm();
   initCounters();
   initBackToTop();
   initNetworkCanvas();
@@ -24,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function initAos() {
   if (!window.AOS) return;
+
   AOS.init({
     duration: 820,
     easing: "ease-out-cubic",
@@ -66,6 +68,7 @@ function initNavbar() {
       .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
 
     if (!visible) return;
+
     links.forEach((link) => {
       link.classList.toggle("active", link.getAttribute("href") === `#${visible.target.id}`);
     });
@@ -78,7 +81,8 @@ function initNavbar() {
 }
 
 function buildWhatsappUrl(message) {
-  return `https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(normalizeText(message || siteConfig.defaultWhatsappMessage))}`;
+  const normalizedMessage = normalizeText(message || siteConfig.defaultWhatsappMessage);
+  return `https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(normalizedMessage)}`;
 }
 
 function normalizeText(text) {
@@ -87,19 +91,76 @@ function normalizeText(text) {
     .replaceAll("tecnol\u00c3\u00b3gicos", "tecnol\u00f3gicos")
     .replaceAll("cotizaci\u00c3\u00b3n", "cotizaci\u00f3n")
     .replaceAll("c\u00c3\u00a1maras", "c\u00e1maras")
-    .replaceAll("barber\u00c3\u00adas", "barber\u00edas");
+    .replaceAll("barber\u00c3\u00adas", "barber\u00edas")
+    .replaceAll("&oacute;", "\u00f3")
+    .replaceAll("&aacute;", "\u00e1")
+    .replaceAll("&eacute;", "\u00e9")
+    .replaceAll("&iacute;", "\u00ed")
+    .replaceAll("&uacute;", "\u00fa")
+    .replaceAll("&ntilde;", "\u00f1")
+    .replaceAll("&amp;", "&");
 }
 
 function initWhatsappLinks() {
   document.querySelectorAll(".js-whatsapp").forEach((link) => {
     const service = link.dataset.service;
     const message = link.dataset.message || (service
-      ? `Hola AFCyber Solutions, quiero información sobre el servicio: ${service}.`
+      ? `Hola AFCyber Solutions, quiero informaci\u00f3n sobre el servicio: ${service}.`
       : siteConfig.defaultWhatsappMessage);
+
     link.setAttribute("href", buildWhatsappUrl(message));
     link.setAttribute("target", "_blank");
     link.setAttribute("rel", "noopener");
   });
+}
+
+function initContactForm() {
+  const form = document.querySelector("#contacto .contact-form");
+  if (!form) return;
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    form.classList.add("was-validated");
+
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    const formData = new FormData(form);
+    const lead = {
+      nombre: formData.get("nombre") || getFieldValue(form, "#nombreContacto"),
+      empresa: formData.get("empresa") || getFieldValue(form, "#empresaContacto"),
+      servicio: getSelectedText(form.querySelector('[name="servicio"]')) || formData.get("servicio"),
+      mensaje: formData.get("mensaje") || getFieldValue(form, "#mensajeContacto")
+    };
+
+    const whatsappMessage = [
+      "Hola AFCyber Solutions, quiero solicitar una evaluaci\u00f3n t\u00e9cnica.",
+      "",
+      `Nombre: ${lead.nombre}`,
+      `Empresa: ${lead.empresa}`,
+      `Servicio Solicitado: ${lead.servicio}`,
+      `Mensaje: ${lead.mensaje}`
+    ].join("\n");
+
+    const whatsappUrl = buildWhatsappUrl(whatsappMessage);
+    const whatsappWindow = window.open(whatsappUrl, "_blank");
+    if (whatsappWindow) {
+      whatsappWindow.opener = null;
+    } else {
+      window.location.href = whatsappUrl;
+    }
+  });
+}
+
+function getFieldValue(form, selector) {
+  return form.querySelector(selector)?.value?.trim() || "";
+}
+
+function getSelectedText(select) {
+  if (!select || select.selectedIndex < 0) return "";
+  return select.options[select.selectedIndex]?.text?.trim() || "";
 }
 
 function initAdminShortcut() {
@@ -144,27 +205,60 @@ function initCounters() {
   const counters = document.querySelectorAll("[data-counter]");
   if (!counters.length) return;
 
+  const startCounter = (counter) => {
+    if (counter.dataset.counterAnimated === "true") return;
+    counter.dataset.counterAnimated = "true";
+    animateCounter(counter);
+  };
+
+  if (!("IntersectionObserver" in window)) {
+    counters.forEach(startCounter);
+    return;
+  }
+
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
-      animateCounter(entry.target);
+      startCounter(entry.target);
       observer.unobserve(entry.target);
     });
-  }, { threshold: 0.55 });
+  }, {
+    threshold: 0.55
+  });
 
-  counters.forEach((counter) => observer.observe(counter));
+  counters.forEach((counter) => {
+    counter.textContent = "0";
+    observer.observe(counter);
+    if (isElementInViewport(counter)) startCounter(counter);
+  });
+}
+
+function isElementInViewport(element) {
+  const rect = element.getBoundingClientRect();
+  return rect.top < window.innerHeight && rect.bottom > 0;
 }
 
 function animateCounter(element) {
   const target = Number(element.dataset.counter || "0");
-  const duration = 1350;
+  const duration = 2000;
   const start = performance.now();
+  const finish = () => {
+    element.textContent = String(target);
+  };
+  const fallbackTimer = window.setTimeout(finish, duration + 80);
 
   const tick = (now) => {
     const progress = Math.min((now - start) / duration, 1);
-    const eased = 1 - Math.pow(1 - progress, 3);
-    element.textContent = Math.round(target * eased);
-    if (progress < 1) requestAnimationFrame(tick);
+    const easedProgress = 1 - Math.pow(1 - progress, 3);
+    element.textContent = String(Math.round(target * easedProgress));
+
+    if (progress < 1) {
+      requestAnimationFrame(tick);
+      return;
+    }
+
+    window.clearTimeout(fallbackTimer);
+    finish();
   };
 
   requestAnimationFrame(tick);
@@ -239,17 +333,20 @@ function initAssetReadyState() {
 }
 
 function initNetworkCanvas() {
+  const hero = document.getElementById("inicio");
   const canvas = document.getElementById("networkCanvas");
-  if (!canvas) return;
+  if (!hero || !canvas) return;
 
   const ctx = canvas.getContext("2d");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let points = [];
   let width = 0;
   let height = 0;
   let animationFrame = null;
+  let isHeroVisible = true;
 
   const resize = () => {
-    const ratio = window.devicePixelRatio || 1;
+    const ratio = Math.min(window.devicePixelRatio || 1, 2);
     width = canvas.offsetWidth;
     height = canvas.offsetHeight;
     canvas.width = width * ratio;
@@ -258,30 +355,55 @@ function initNetworkCanvas() {
     points = createPoints(width, height);
   };
 
+  const stopAnimation = () => {
+    if (!animationFrame) return;
+    cancelAnimationFrame(animationFrame);
+    animationFrame = null;
+  };
+
   const animate = () => {
     ctx.clearRect(0, 0, width, height);
     drawNetwork(ctx, points);
-    points.forEach((point) => {
-      point.x += point.vx;
-      point.y += point.vy;
-      if (point.x < 0 || point.x > width) point.vx *= -1;
-      if (point.y < 0 || point.y > height) point.vy *= -1;
-    });
+    movePoints(points, width, height);
+    animationFrame = requestAnimationFrame(animate);
+  };
+
+  const startAnimation = () => {
+    if (animationFrame || reduceMotion) return;
     animationFrame = requestAnimationFrame(animate);
   };
 
   resize();
-  animate();
+  drawNetwork(ctx, points);
+  startAnimation();
+
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver((entries) => {
+      isHeroVisible = entries.some((entry) => entry.isIntersecting);
+      if (isHeroVisible) {
+        startAnimation();
+      } else {
+        stopAnimation();
+      }
+    }, {
+      threshold: 0.08
+    });
+
+    observer.observe(hero);
+  }
 
   window.addEventListener("resize", () => {
-    cancelAnimationFrame(animationFrame);
+    stopAnimation();
     resize();
-    animate();
+    drawNetwork(ctx, points);
+    if (isHeroVisible) startAnimation();
   }, { passive: true });
 }
 
 function createPoints(width, height) {
-  const amount = Math.min(95, Math.max(44, Math.floor(width / 15)));
+  const baseAmount = Math.min(90, Math.max(36, Math.floor(width / 16)));
+  const amount = width < 768 ? Math.round(baseAmount / 2) : baseAmount;
+
   return Array.from({ length: amount }, () => ({
     x: Math.random() * width,
     y: Math.random() * height,
@@ -289,6 +411,15 @@ function createPoints(width, height) {
     vy: (Math.random() - .5) * .24,
     r: Math.random() * 1.8 + .9
   }));
+}
+
+function movePoints(points, width, height) {
+  points.forEach((point) => {
+    point.x += point.vx;
+    point.y += point.vy;
+    if (point.x < 0 || point.x > width) point.vx *= -1;
+    if (point.y < 0 || point.y > height) point.vy *= -1;
+  });
 }
 
 function drawNetwork(ctx, points) {
