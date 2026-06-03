@@ -18,6 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
   initSocParallax();
   initAssetReadyState();
   initAdminShortcut();
+  initInteractiveTimeline();
+  initVirtualAssistant();
 });
 
 function initAos() {
@@ -106,6 +108,35 @@ function initAdminShortcut() {
       event.preventDefault();
       window.location.href = "/admin/login";
     }
+  });
+}
+
+function initInteractiveTimeline() {
+  const items = document.querySelectorAll(".interactive-timeline article");
+  if (!items.length) return;
+
+  items.forEach((item) => {
+    item.addEventListener("mouseenter", () => {
+      items.forEach((entry) => entry.classList.remove("active"));
+      item.classList.add("active");
+    });
+    item.addEventListener("focusin", () => {
+      items.forEach((entry) => entry.classList.remove("active"));
+      item.classList.add("active");
+    });
+  });
+}
+
+function initVirtualAssistant() {
+  const assistant = document.getElementById("virtualAssistant");
+  if (!assistant) return;
+
+  const toggle = assistant.querySelector(".assistant-toggle");
+  if (!toggle) return;
+
+  toggle.addEventListener("click", () => {
+    const isOpen = assistant.classList.toggle("open");
+    toggle.setAttribute("aria-expanded", String(isOpen));
   });
 }
 

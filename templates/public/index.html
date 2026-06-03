@@ -125,12 +125,31 @@
 </header>
 
 <main>
-  <section id="servicios" class="services-section">
+  <section id="servicios" class="services-section services-experience">
     <div class="container-fluid section-shell">
-      <div class="services-heading" data-aos="fade-up">
-        <span class="section-kicker">Servicios reales</span>
-        <h2>Soluciones t&eacute;cnicas y digitales para operar mejor.</h2>
-        <p>Estos son los servicios actuales de AFCyber Solutions. No mostramos servicios fuera de esta lista.</p>
+      <div class="services-hero-grid">
+        <div class="services-heading" data-aos="fade-right">
+          <span class="section-kicker">Servicios AFCyber</span>
+          <h2>Soluciones que convierten tecnolog&iacute;a en confianza.</h2>
+          <p>Seguridad, sistemas y experiencias web listas para vender.</p>
+          <div class="services-counter-row">
+            <article><strong>+<span data-counter="50">50</span></strong><span>Proyectos</span></article>
+            <article><strong>+<span data-counter="100">100</span></strong><span>Clientes</span></article>
+            <article><strong>24/7</strong><span>Soporte</span></article>
+          </div>
+        </div>
+        <div class="cyber-dashboard" data-aos="fade-left" aria-label="Dashboard de ciberseguridad AFCyber">
+          <div class="dashboard-top"><span>Security Command</span><strong>Activo</strong></div>
+          <div class="dashboard-grid">
+            <div class="dashboard-orbit"><i class="fa-solid fa-shield-halved"></i><span></span><span></span><span></span></div>
+            <div class="dashboard-lines"><span style="--w:86%"></span><span style="--w:64%"></span><span style="--w:92%"></span><span style="--w:52%"></span></div>
+            <div class="dashboard-alerts">
+              <article><i class="fa-solid fa-lock"></i> Accesos controlados</article>
+              <article><i class="fa-solid fa-video"></i> Monitoreo visual</article>
+              <article><i class="fa-solid fa-cloud"></i> Sistemas conectados</article>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="conversion-benefits" data-aos="fade-up">
         <article><i class="fa-solid fa-circle-check"></i><span>Soporte t&eacute;cnico</span></article>
@@ -149,45 +168,39 @@
             <i class="{{ service.icon }}"></i>
             <h2>{{ service.name }}</h2>
             <p class="service-description">{{ service.description }}</p>
-            <ul>
-              {% for feature in service.features[:4] %}
-              <li>{{ feature }}</li>
+            <div class="service-chip-row">
+              {% for feature in service.features[:2] %}
+              <span>{{ feature }}</span>
               {% endfor %}
-            </ul>
+            </div>
             <div class="service-price">{{ loop.cycle('Desde RD$3,500', 'Desde RD$8,000', 'Cotización personalizada') }}</div>
             <a class="js-whatsapp" href="#" data-service="{{ service.name }}">Solicitar informaci&oacute;n <span>&rarr;</span></a>
           </div>
         </article>
         {% endfor %}
       </div>
-
-      <div class="value-strip">
-        {% for service in real_services %}
-        <article><i class="{{ service.icon }}"></i><div><strong>{{ service.short_name }}</strong><span>{{ service.features[0] }}</span></div></article>
-        {% endfor %}
-      </div>
     </div>
   </section>
 
   <section id="soluciones" class="section solutions-band">
-    <div class="container">
-      <div class="section-heading text-center" data-aos="fade-up">
-        <span class="section-kicker">Soluciones AFCyber</span>
-        <h2>Servicios organizados para negocios, hogares y operaciones t&eacute;cnicas.</h2>
-        <p>Cada soluci&oacute;n parte de los servicios reales disponibles: climatizaci&oacute;n, cat&aacute;logos, POS, c&aacute;maras, barber&iacute;as, citas y mantenimiento a computadoras.</p>
+    <div class="container-fluid section-shell">
+      <div class="solution-experience">
+        <div class="section-heading" data-aos="fade-right">
+          <span class="section-kicker">Proceso premium</span>
+          <h2>De la idea a una operaci&oacute;n m&aacute;s segura.</h2>
+          <p>Un flujo claro, medible y r&aacute;pido.</p>
+        </div>
+        <div class="interactive-timeline" data-aos="fade-left">
+          <article class="active"><span>01</span><h3>Diagn&oacute;stico</h3><p>Entendemos tu negocio.</p></article>
+          <article><span>02</span><h3>Dise&ntilde;o</h3><p>Propuesta visual y t&eacute;cnica.</p></article>
+          <article><span>03</span><h3>Implementaci&oacute;n</h3><p>Instalaci&oacute;n limpia.</p></article>
+          <article><span>04</span><h3>Soporte</h3><p>Acompa&ntilde;amiento continuo.</p></article>
+        </div>
       </div>
-      <div class="solution-grid">
-        {% for service in real_services %}
-        <article class="solution-card" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 45 }}">
-          <i class="{{ service.icon }}"></i>
-          <h3>{{ service.short_name }}</h3>
-          <ul>
-            {% for feature in service.features %}
-            <li>{{ feature }}</li>
-            {% endfor %}
-          </ul>
-        </article>
-        {% endfor %}
+      <div class="experience-metrics" data-aos="fade-up">
+        <article><i class="fa-solid fa-gauge-high"></i><strong>Velocidad</strong><span>Entrega &aacute;gil</span></article>
+        <article><i class="fa-solid fa-user-shield"></i><strong>Confianza</strong><span>Seguridad real</span></article>
+        <article><i class="fa-solid fa-chart-line"></i><strong>Escala</strong><span>Crece contigo</span></article>
       </div>
     </div>
   </section>
@@ -234,19 +247,18 @@
   <section id="proyectos" class="section section-dark">
     <div class="container">
       <div class="section-heading text-center" data-aos="fade-up">
-        <span class="section-kicker">Portafolio</span>
-        <h2>Proyectos Destacados</h2>
-        <p>Soluciones visuales y comerciales basadas en los servicios reales de AFCyber Solutions.</p>
+        <span class="section-kicker">Showcase real</span>
+        <h2>Proyectos que venden antes de hablar.</h2>
+        <p>Visuales fuertes, mensajes claros y tecnolog&iacute;a lista para convertir.</p>
       </div>
-      <div class="portfolio-grid">
-        {% for service in real_services %}
+      <div class="portfolio-grid project-showcase-grid">
+        {% for service in real_services[:4] %}
         <article class="portfolio-card" data-aos="zoom-in">
           <img class="project-img" src="{{ url_for('static', filename=service.alt_image|default(service.image)) }}" alt="{{ service.name }}" width="1024" height="1536" loading="lazy" decoding="async">
           <div>
             <span>{{ service.short_name }}</span>
             <h3>{{ service.name }}</h3>
-            <p>{{ service.description }}</p>
-            <small>{{ service.features|join(" • ") }}</small>
+            <p>{{ service.features[0] }}</p>
             <a class="js-whatsapp" href="#" data-service="{{ service.name }}">Ver proyecto</a>
           </div>
         </article>
@@ -394,6 +406,18 @@
     </div>
   </div>
 </footer>
+
+<aside class="virtual-assistant" id="virtualAssistant" aria-label="Asistente virtual AFCyber">
+  <button class="assistant-toggle" type="button" aria-expanded="false" aria-controls="assistantPanel">
+    <i class="fa-solid fa-robot"></i>
+    <span>AI</span>
+  </button>
+  <div class="assistant-panel" id="assistantPanel">
+    <strong>Asistente AFCyber</strong>
+    <p>¿Quieres una web o sistema con este nivel visual?</p>
+    <a class="js-whatsapp" href="#" data-message="Hola AFCyber Solutions, quiero una propuesta premium para mi negocio.">Crear mi proyecto</a>
+  </div>
+</aside>
 
 <a class="whatsapp-float js-whatsapp" href="#" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
 <button class="back-to-top" id="backToTop" aria-label="Volver arriba"><i class="fa-solid fa-arrow-up"></i></button>
