@@ -38,8 +38,64 @@
   {% endif %}
 </head>
 <body>
+  <div class="site-loader" id="siteLoader"><div class="loader-mark">AF</div></div>
+
+  <nav class="navbar navbar-expand-xl fixed-top premium-nav" id="mainNav">
+    <div class="container-fluid nav-shell">
+      <a class="navbar-brand af-brand" href="{{ url_for('index') }}#inicio" aria-label="AFCyber Solutions">
+        {% if visual_assets.logo %}
+        <img class="brand-logo-img" src="{{ url_for('static', filename=visual_assets.logo) }}" alt="Logo AFCyber Solutions">
+        {% else %}
+        <span class="brand-fallback">AF</span>
+        {% endif %}
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu" aria-label="Abrir menú">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarMenu">
+        <ul class="navbar-nav nav-center mx-auto align-items-xl-center">
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#inicio">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#servicios">Servicios</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#soluciones">Soluciones</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#proyectos">Portafolio</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#nosotros">CEO</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#testimonios">Testimonios</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#blog">FAQ</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#contacto">Contacto</a></li>
+        </ul>
+        <div class="nav-actions">
+          <a class="btn nav-cta js-whatsapp" href="#" data-message="Hola AFCyber Solutions, quiero solicitar una cotización para mi proyecto.">
+            <i class="fa-regular fa-file-lines"></i> Solicitar Cotización
+          </a>
+          <a class="nav-whatsapp js-whatsapp" href="#" aria-label="WhatsApp">
+            <i class="fa-brands fa-whatsapp"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
   {% include "partials/_flash.html" %}
+  
   {% block content %}{% endblock %}
+
+  <aside class="virtual-assistant" id="virtualAssistant">
+    <button class="assistant-toggle" type="button" aria-expanded="false" aria-controls="assistantPanel">
+      <i class="fa-solid fa-robot"></i>
+      <span>AI</span>
+    </button>
+    <div class="assistant-panel" id="assistantPanel">
+      <strong>AFCyber Assistant</strong>
+      <p>¿Necesitas una solución tecnológica a medida?</p>
+      <a class="js-whatsapp" href="#" data-message="Hola, me gustaría recibir asesoría técnica para mi empresa.">Hablar con un experto</a>
+    </div>
+  </aside>
+
+  <a class="whatsapp-float js-whatsapp" href="#" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+  <button class="back-to-top" id="backToTop" aria-label="Volver arriba"><i class="fa-solid fa-arrow-up"></i></button>
+
   <script>
     window.AF_SITE = {
       whatsapp: "{{ settings.whatsapp }}",

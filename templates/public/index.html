@@ -1,54 +1,11 @@
 {% extends "public/base.html" %}
 {% block content %}
-<div class="site-loader" id="siteLoader">
-  <div class="loader-mark">AF</div>
-</div>
-
-<nav class="navbar navbar-expand-xl fixed-top premium-nav" id="mainNav">
-  <div class="container-fluid nav-shell">
-    <a class="navbar-brand af-brand" href="#inicio" aria-label="AFCyber Solutions">
-      {% if visual_assets.logo %}
-      <img class="brand-logo-img" src="{{ url_for('static', filename=visual_assets.logo) }}" alt="Logo AFCyber Solutions">
-      {% else %}
-      <span class="brand-fallback">AF</span>
-      {% endif %}
-    </a>
-
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu" aria-label="Abrir men&uacute;">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarMenu">
-      <ul class="navbar-nav nav-center mx-auto align-items-xl-center">
-        <li class="nav-item"><a class="nav-link active" href="#inicio">Inicio</a></li>
-        <li class="nav-item"><a class="nav-link" href="#servicios">Servicios</a></li>
-        <li class="nav-item"><a class="nav-link" href="#soluciones">Soluciones</a></li>
-        <li class="nav-item"><a class="nav-link" href="#proyectos">Portafolio</a></li>
-        <li class="nav-item"><a class="nav-link" href="#nosotros">Sobre Nosotros</a></li>
-        <li class="nav-item"><a class="nav-link" href="#blog">Blog</a></li>
-        <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
-      </ul>
-      <div class="nav-actions">
-        <a class="btn nav-cta js-whatsapp" href="#" data-message="Hola AFCyber Solutions, quiero solicitar una cotizacion.">
-          <i class="fa-regular fa-file-lines"></i>
-          Solicitar cotizaci&oacute;n
-        </a>
-        <a class="nav-whatsapp js-whatsapp" href="#" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
-      </div>
-    </div>
-  </div>
-</nav>
-
-<header
-  id="inicio"
-  class="hero-section"
-  {% if visual_assets.hero_image %}style="--hero-bg: url('{{ url_for('static', filename=visual_assets.hero_image) }}');"{% endif %}
->
+<!-- 1. HERO PRINCIPAL -->
+<header id="inicio" class="hero-section" {% if visual_assets.hero_image %}style="--hero-bg: url('{{ url_for('static', filename=visual_assets.hero_image) }}');"{% endif %}>
   <canvas id="networkCanvas" aria-hidden="true"></canvas>
   <div class="hero-overlay-grid" aria-hidden="true"></div>
-  <div class="hero-particles" aria-hidden="true">
-    <span></span><span></span><span></span><span></span><span></span><span></span>
-  </div>
+  <div class="hero-noise"></div>
+  <div class="hero-particles" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
 
   <div class="hero-shell">
     <div class="hero-glass" data-aos="fade-up">
@@ -70,22 +27,12 @@
       <div class="hero-copy">
         <div class="hero-kicker">TECNOLOG&Iacute;A &bull; SEGURIDAD &bull; CONFIANZA</div>
         <h1>
-          SOLUCIONES <span>TECNOL&Oacute;GICAS</span><br>
-          PARA EMPRESAS Y<br>
-          EMPRENDEDORES
+          INGENIER&Iacute;A DE <span>SOFTWARE</span><br>Y DEFENSA DIGITAL
         </h1>
-        <p class="hero-statement">
-          Ciberseguridad, sistemas empresariales, videovigilancia, soporte t&eacute;cnico, desarrollo web y soluciones digitales para impulsar tu negocio.
-        </p>
+        <p class="hero-statement">Soluciones de alta disponibilidad en Ciberseguridad, IA y Software Empresarial para organizaciones que no permiten fallos operativos.</p>
         <div class="hero-actions">
-          <a class="btn btn-primary-premium js-whatsapp" href="#" data-message="Hola AFCyber Solutions, quiero solicitar una cotizacion para mi negocio.">
-            <i class="fa-regular fa-paper-plane"></i>
-            Solicitar cotizaci&oacute;n
-          </a>
-          <a class="btn btn-outline-premium" href="#servicios">
-            <i class="fa-regular fa-eye"></i>
-            Ver servicios
-          </a>
+          <a class="btn btn-primary-premium js-whatsapp" href="#" data-message="Hola AFCyber Solutions, quiero solicitar una cotizacion."><i class="fa-regular fa-paper-plane"></i> Solicitar Auditor&iacute;a</a>
+          <a class="btn btn-outline-premium" href="#servicios"><i class="fa-regular fa-eye"></i> Explorar Soluciones</a>
         </div>
       </div>
 
@@ -115,23 +62,18 @@
       <article><i class="fa-solid fa-headset"></i><strong>24/7</strong><small>Soporte t&eacute;cnico</small></article>
       <article><i class="fa-solid fa-bolt"></i><strong>Respuesta r&aacute;pida</strong><small>Atenci&oacute;n inmediata</small></article>
     </div>
-
-    <div class="hero-service-strip" data-aos="fade-up" data-aos-delay="180">
-      {% for service in real_services[:4] %}
-      <a class="js-whatsapp" href="#" data-service="{{ service.name }}"><i class="{{ service.icon }}"></i><span>{{ service.short_name }}</span></a>
-      {% endfor %}
-    </div>
   </div>
 </header>
 
 <main>
+  <!-- 2. SERVICIOS -->
   <section id="servicios" class="services-section services-experience">
     <div class="container-fluid section-shell">
       <div class="services-hero-grid">
         <div class="services-heading" data-aos="fade-right">
-          <span class="section-kicker">Servicios AFCyber</span>
-          <h2>Soluciones que convierten tecnolog&iacute;a en confianza.</h2>
-          <p>Seguridad, sistemas y experiencias web listas para vender.</p>
+          <span class="section-kicker">Ecosistema Tecnol&oacute;gico</span>
+          <h2>Arquitectura de servicios para operaciones cr&iacute;ticas.</h2>
+          <p>Dise&ntilde;amos e implementamos infraestructura digital blindada y software a medida.</p>
           <div class="services-counter-row">
             <article><strong>+<span data-counter="50">50</span></strong><span>Proyectos</span></article>
             <article><strong>+<span data-counter="100">100</span></strong><span>Clientes</span></article>
@@ -160,7 +102,7 @@
       </div>
       <div class="service-card-grid featured-services-grid">
         {% for service in real_services[:4] %}
-        <article class="soc-service-card" id="{{ service.slug }}" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 45 }}">
+        <article class="soc-service-card" id="{{ service.slug }}" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 50 }}">
           <div class="service-image-wrap">
             <img src="{{ url_for('static', filename=service.image) }}" alt="{{ service.name }}" width="1024" height="1536" loading="lazy" decoding="async">
           </div>
@@ -182,11 +124,12 @@
     </div>
   </section>
 
+  <!-- 3. SOLUCIONES DESTACADAS -->
   <section id="soluciones" class="section solutions-band">
     <div class="container-fluid section-shell">
       <div class="solution-experience">
         <div class="section-heading" data-aos="fade-right">
-          <span class="section-kicker">Proceso premium</span>
+          <span class="section-kicker">Metodolog&iacute;a AFCyber</span>
           <h2>De la idea a una operaci&oacute;n m&aacute;s segura.</h2>
           <p>Un flujo claro, medible y r&aacute;pido.</p>
         </div>
@@ -205,10 +148,11 @@
     </div>
   </section>
 
+  <!-- 4. SOBRE EL CEO -->
   <section id="nosotros" class="section about-section">
     <div class="container">
       <div class="row align-items-center g-5">
-        <div class="col-lg-5" data-aos="fade-right">
+        <div class="col-lg-6" data-aos="fade-right">
           <div class="command-visual">
             <div class="command-top"></div>
             <div class="command-grid">
@@ -217,33 +161,48 @@
               <span><i class="fa-solid fa-camera"></i></span>
               <span><i class="fa-solid fa-laptop-code"></i></span>
             </div>
-            <strong>AFCyber Business Ready</strong>
+            <div class="ceo-badge">
+              <img src="{{ url_for('static', filename='img/ceo-profile.png') }}" alt="Ing. Amauri Feliz" class="ceo-img">
+              <div class="ceo-info">
+                <strong>Ing. Amauri Feliz</strong>
+                <span>CEO & Founder</span>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="col-lg-7" data-aos="fade-left">
-          <span class="section-kicker">Sobre Nosotros</span>
-          <h2>AFCyber Solutions convierte necesidades tecnol&oacute;gicas en sistemas seguros, medibles y escalables.</h2>
-          <p class="section-copy">{{ about.history }}</p>
-          <div class="info-card-grid">
-            <article><i class="fa-solid fa-bullseye"></i><h3>Misi&oacute;n</h3><p>{{ about.mission }}</p></article>
-            <article><i class="fa-solid fa-eye"></i><h3>Visi&oacute;n</h3><p>{{ about.vision }}</p></article>
-            <article><i class="fa-solid fa-gem"></i><h3>Valores</h3><p>{{ about.values }}</p></article>
-            <article><i class="fa-solid fa-chart-line"></i><h3>Experiencia</h3><p>{{ about.experience.replace('\n', ', ') }}</p></article>
-            <article><i class="fa-solid fa-layer-group"></i><h3>Capacidades</h3><p>Desarrollo web, soporte t&eacute;cnico, videovigilancia, sistemas POS, automatizaci&oacute;n y soluciones digitales.</p></article>
+        <div class="col-lg-6" data-aos="fade-left">
+          <span class="section-kicker">Liderazgo T&eacute;cnico</span>
+          <h2>Visi&oacute;n de Ingenier&iacute;a aplicada al Negocio.</h2>
+          <p class="section-copy">Bajo la direcci&oacute;n del <strong>Ing. Amauri Feliz</strong>, AFCyber Solutions fusiona el rigor de la ciberseguridad con la agilidad del desarrollo de software moderno.</p>
+          <div class="ceo-quote">
+            <i class="fa-solid fa-quote-left"></i>
+            <p>"La tecnolog&iacute;a no es el fin, sino el medio para blindar la continuidad y el crecimiento de tu empresa."</p>
           </div>
-          <div class="capability-card" data-aos="fade-up">
-            <h3><i class="fa-solid fa-layer-group"></i> Capacidades</h3>
-            <div>
-              {% for item in about.experience.replace(',', '\n').split('\n') %}
-              {% if item.strip() %}<span>{{ item }}</span>{% endif %}
-              {% endfor %}
-            </div>
+          <div class="info-card-grid mt-4">
+            <article><i class="fa-solid fa-certificate"></i><h3>Expertise</h3><p>Especialista en Ciberdefensa y Arquitectura de Sistemas.</p></article>
+            <article><i class="fa-solid fa-microchip"></i><h3>Innovaci&oacute;n</h3><p>Implementaci&oacute;n de IA para detecci&oacute;n de amenazas.</p></article>
           </div>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- 5. POR QUÉ ELEGIR AFCYBER -->
+  <section class="section why-choose-section bg-dark-premium">
+    <div class="container">
+      <div class="section-heading text-center" data-aos="fade-up">
+        <span class="section-kicker">Diferenciaci&oacute;n</span>
+        <h2>¿Por qu&eacute; confiar en AFCyber?</h2>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="0"><div class="feature-box"><i class="fa-solid fa-shield-halved"></i><h3>Seguridad por Dise&ntilde;o</h3><p>Cada l&iacute;nea de c&oacute;digo y cada cable instalado nace con protocolos de seguridad integrados.</p></div></div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="100"><div class="feature-box"><i class="fa-solid fa-headset"></i><h3>Soporte de &Eacute;lite</h3><p>No somos solo proveedores, somos tu departamento de IT externo con respuesta en tiempo real.</p></div></div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200"><div class="feature-box"><i class="fa-solid fa-gears"></i><h3>Escalabilidad Real</h3><p>Soluciones que crecen con tu empresa, evitando migraciones costosas en el futuro.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. PORTAFOLIO -->
   <section id="proyectos" class="section section-dark">
     <div class="container">
       <div class="section-heading text-center" data-aos="fade-up">
@@ -267,6 +226,7 @@
     </div>
   </section>
 
+  <!-- 7. TESTIMONIOS -->
   <section id="testimonios" class="section testimonials-section">
     <div class="container">
       <div class="section-heading text-center" data-aos="fade-up">
@@ -292,20 +252,22 @@
     </div>
   </section>
 
+  <!-- 8. FAQ -->
   <section id="blog" class="section blog-section">
     <div class="container">
       <div class="section-heading text-center" data-aos="fade-up">
-        <span class="section-kicker">Blog</span>
-        <h2>Gu&iacute;as r&aacute;pidas sobre los servicios disponibles.</h2>
+        <span class="section-kicker">Consultas Comunes</span>
+        <h2>Preguntas Frecuentes</h2>
       </div>
-      <div class="blog-grid">
-        <article data-aos="fade-up"><span>Aires acondicionados</span><h3>Cu&aacute;ndo hacer mantenimiento preventivo</h3><p>Limpieza profunda, diagn&oacute;stico y carga de gas refrigerante cuando el equipo lo requiere.</p></article>
-        <article data-aos="fade-up" data-aos-delay="80"><span>Sistemas POS</span><h3>Control de ventas e inventario</h3><p>Ventas r&aacute;pidas, reportes, clientes y compatibilidad con equipos de punto de venta.</p></article>
-        <article data-aos="fade-up" data-aos-delay="160"><span>Barber&iacute;as</span><h3>Citas, caja y clientes organizados</h3><p>Agenda, reservas 24/7, tickets, productos, reportes y acceso en la nube.</p></article>
+      <div class="accordion premium-accordion" id="faqAccordion" data-aos="fade-up">
+        <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">¿Ofrecen servicios fuera de San Crist&oacute;bal?</button></h2><div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion"><div class="accordion-body">S&iacute;, tenemos cobertura nacional para proyectos de software y consultor&iacute;a de ciberseguridad.</div></div></div>
+        <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">¿Sus sistemas POS cumplen con la DGII?</button></h2><div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body">Totalmente. Nuestros sistemas est&aacute;n preparados para el manejo de NCF y reportes fiscales vigentes.</div></div></div>
+        <div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">¿C&oacute;mo garantizan la seguridad de mis datos?</button></h2><div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body">Aplicamos cifrado de grado militar, backups automatizados y auditor&iacute;as de vulnerabilidades constantes.</div></div></div>
       </div>
     </div>
   </section>
 
+  <!-- 9. CONTACTO -->
   <section id="contacto" class="section contact-section">
     <div class="container">
       <div class="row g-5">
@@ -348,77 +310,7 @@
           </form>
         </div>
       </div>
-      <div class="channel-form-grid" data-aos="fade-up">
-        {% for key, channel in contact_channels.items() if key != 'cotizacion' and key != 'ingeniero' %}
-        <form class="mini-contact-form" method="post">
-          <input type="hidden" name="inquiry_type" value="{{ key }}">
-          <input type="hidden" name="subject" value="{{ channel.subject }}">
-          <input type="hidden" name="requested_service" value="{{ channel.label }}">
-          <i class="{{ channel.icon }}"></i>
-          <h3>{{ channel.label }}</h3>
-          <p>{{ channel.email }}</p>
-          <label>Nombre<input class="form-control" name="name" required></label>
-          <label>Tel&eacute;fono o correo<input class="form-control" name="phone" required></label>
-          <label>Descripci&oacute;n<textarea class="form-control" name="message" rows="3" required></textarea></label>
-          <button class="btn btn-outline-premium w-100" type="submit">Enviar</button>
-        </form>
-        {% endfor %}
-      </div>
     </div>
   </section>
 </main>
-
-<footer class="footer">
-  <div class="container">
-    <div class="row g-4 align-items-start">
-      <div class="col-lg-4">
-        <a class="footer-brand af-brand" href="#inicio">
-          {% if visual_assets.logo %}
-          <img class="brand-logo-img" src="{{ url_for('static', filename=visual_assets.logo) }}" alt="AFCyber Solutions">
-          {% else %}
-          <span class="brand-fallback">AF</span>
-          {% endif %}
-        </a>
-        <p>{{ settings.short_description }}</p>
-        <div class="footer-socials">
-          {% for social in socials %}
-          <a href="{{ social.url }}" aria-label="{{ social.name }}" target="_blank" rel="noopener"><i class="{{ social.icon }}"></i></a>
-          {% endfor %}
-        </div>
-      </div>
-      <div class="col-lg-2 col-6"><h3>Empresa</h3><a href="#inicio">Inicio</a><a href="#servicios">Servicios</a><a href="#proyectos">Portafolio</a><a href="#nosotros">Sobre Nosotros</a><a href="#blog">Blog</a><a href="#contacto">Contacto</a></div>
-      <div class="col-lg-3 col-6"><h3>Servicios</h3>{% for service in real_services[:4] %}<a href="#{{ service.slug }}">{{ service.short_name }}</a>{% endfor %}</div>
-      <div class="col-lg-3">
-        <h3>Contacto</h3>
-        <a class="js-whatsapp" href="#"><i class="fa-brands fa-whatsapp"></i> WhatsApp: {{ settings.phone }}</a>
-        <a href="mailto:info@afcybersolutions.com.do"><i class="fa-solid fa-envelope"></i> info@afcybersolutions.com.do</a>
-        <span><i class="fa-solid fa-location-dot"></i> Rep&uacute;blica Dominicana</span>
-        <div class="footer-map" aria-label="Mapa de cobertura AFCyber Solutions">
-          <i class="fa-solid fa-map-location-dot"></i>
-          <strong>Cobertura nacional</strong>
-          <small>Servicios t&eacute;cnicos y digitales</small>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>&copy; <span id="currentYear"></span> AFCyber Solutions. Todos los derechos reservados.</span>
-      <span>P&aacute;gina dise&ntilde;ada y desarrollada por el <strong>Ing. Amauri Feliz</strong> · Dise&ntilde;o corporativo AFCyber Solutions</span>
-    </div>
-  </div>
-</footer>
-
-<aside class="virtual-assistant" id="virtualAssistant" aria-label="Asistente virtual AFCyber">
-  <button class="assistant-toggle" type="button" aria-expanded="false" aria-controls="assistantPanel">
-    <i class="fa-solid fa-robot"></i>
-    <span>AI</span>
-  </button>
-  <div class="assistant-panel" id="assistantPanel">
-    <strong>Asistente AFCyber</strong>
-    <p>¿Quieres una web o sistema con este nivel visual?</p>
-    <a class="js-whatsapp" href="#" data-message="Hola AFCyber Solutions, quiero una propuesta premium para mi negocio.">Crear mi proyecto</a>
-  </div>
-</aside>
-
-<a class="whatsapp-float js-whatsapp" href="#" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
-<button class="back-to-top" id="backToTop" aria-label="Volver arriba"><i class="fa-solid fa-arrow-up"></i></button>
 {% endblock %}
