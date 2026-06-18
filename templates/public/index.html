@@ -74,8 +74,8 @@
       <div class="service-card-grid">
         {% for service in real_services[:4] %}
         <article class="soc-service-card" id="{{ service.slug }}" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 50 }}">
-          <div class="service-image-wrap">
-            <img src="{{ url_for('static', filename=service.image or 'img/projects/business-automation.webp') }}" alt="{{ service.name }}" width="1024" height="1536" loading="lazy" decoding="async">
+          <div class="service-image-wrap" style="aspect-ratio: 2/3;">
+            <img src="{{ url_for('static', filename='img/projects/pos-dashboard.webp') if 'POS' in service.name else url_for('static', filename='img/projects/cctv-security.webp') }}" alt="{{ service.name }}" width="1024" height="1536" loading="lazy" decoding="async" style="object-fit: cover; width: 100%; height: 100%;">
           </div>
           <div class="service-card-body">
             <i class="{{ service.icon }}"></i>
@@ -149,7 +149,7 @@
               <span><i class="fa-solid fa-laptop-code"></i></span>
             </div>
             <div class="ceo-badge">
-              <img src="{{ url_for('static', filename='img/projects/amauri-feliz-ceo.webp') }}" alt="Ing. Amauri Feliz" class="ceo-img">
+              <img src="{{ url_for('static', filename='img/projects/amauri-feliz-ceo.webp') }}" alt="Ing. Amauri Feliz" class="ceo-img" width="80" height="80" loading="lazy" style="object-fit: cover;">
               <div class="ceo-info">
                 <strong>Ing. Amauri Feliz</strong>
                 <span>CEO & Founder</span>
@@ -193,7 +193,7 @@
         <article class="project-premium-card" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 100 }}">
           <div class="project-card-inner">
             <div class="project-image-container">
-              <img src="{{ url_for('static', filename=project.image or 'img/projects/web-development.webp') }}" alt="{{ project.title }}" class="project-img-fluid">
+              <img src="{{ url_for('static', filename='img/projects/web-development.webp') if 'Web' in project.category else url_for('static', filename='img/projects/cybersecurity.webp') }}" alt="{{ project.title }}" class="project-img-fluid" width="600" height="400" loading="lazy" style="object-fit: cover;">
               <div class="project-category-badge">{{ project.category }}</div>
             </div>
             <div class="project-content">
