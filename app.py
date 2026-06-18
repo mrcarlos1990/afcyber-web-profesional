@@ -1,4 +1,5 @@
 import os
+import json
 import secrets
 import smtplib
 from email.message import EmailMessage
@@ -47,9 +48,25 @@ REAL_SERVICES = [
         "slug": "software-empresarial",
         "name": "Desarrollo de Software Empresarial",
         "short_name": "Software a medida",
-        "description": "Sistemas ERP, CRM y plataformas personalizadas para optimizar la gestión de su negocio.",
+        "description": "Plataformas personalizadas, CRMs y automatización de flujos de trabajo para optimizar la gestión de su negocio.",
         "icon": "fa-solid fa-gears",
         "image": "img/services/software-dev.jpeg",
+        "features": [
+            "Desarrollo Web & Mobile",
+            "Paneles administrativos",
+            "Automatización de procesos",
+            "Integración de APIs",
+            "Bases de datos escalables",
+            "Arquitectura en la nube"
+        ],
+    },
+    {
+        "slug": "sistemas-pos-erp",
+        "name": "Sistemas POS & ERP",
+        "short_name": "Sistemas de Ventas",
+        "description": "Soluciones robustas para el control de inventario, facturación y gestión de recursos empresariales.",
+        "icon": "fa-solid fa-cash-register",
+        "image": "img/services/pos-system.jpeg",
         "features": [
             "Sistemas ERP y CRM",
             "Paneles administrativos",
@@ -105,6 +122,21 @@ REAL_SERVICES = [
             "Monitoreo 24/7"
         ],
     },
+    {
+        "slug": "cctv-control-acceso",
+        "name": "CCTV & Control de Acceso",
+        "short_name": "Seguridad Física",
+        "description": "Instalación y configuración de sistemas de videovigilancia IP y analógica con monitoreo remoto.",
+        "icon": "fa-solid fa-video",
+        "image": "img/services/cctv.jpeg",
+        "features": [
+            "Cámaras IP y Analógicas",
+            "Control de acceso biométrico",
+            "Monitoreo remoto móvil",
+            "Sistemas de alarmas",
+            "Mantenimiento preventivo"
+        ],
+    },
 ]
 
 CONTACT_CHANNELS = {
@@ -113,6 +145,12 @@ CONTACT_CHANNELS = {
         "email": "cotizaciones@afcybersolutions.com.do",
         "subject": "Nueva Solicitud de Cotización",
         "icon": "fa-solid fa-file-invoice-dollar",
+    },
+    "ventas": {
+        "label": "Ventas",
+        "email": "ventas@afcybersolutions.com.do",
+        "subject": "Consulta de Ventas",
+        "icon": "fa-solid fa-cart-shopping",
     },
     "contacto": {
         "label": "Contacto General",
@@ -137,12 +175,6 @@ CONTACT_CHANNELS = {
         "email": "licencias@afcybersolutions.com.do",
         "subject": "Consulta sobre Licencias",
         "icon": "fa-solid fa-key",
-    },
-    "ventas": {
-        "label": "Ventas",
-        "email": "ventas@afcybersolutions.com.do",
-        "subject": "Consulta de Ventas",
-        "icon": "fa-solid fa-cart-shopping",
     },
 }
 
@@ -183,9 +215,41 @@ def register_template_helpers(app):
     @app.context_processor
     def inject_settings():
         settings = get_settings()
+        
+        # Datos estructurados de la empresa (Schema.org)
+        company_schema = {
+            "@context": "https://schema.org",
+            "@type": "ProfessionalService",
+            "name": settings.company_name if settings else "AFCyber SOLUTIONS",
+            "description": settings.meta_description if settings else "",
+            "url": request.url_root,
+            "logo": url_for('static', filename=settings.logo) if settings and settings.logo else "",
+            "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Santo Domingo",
+                "addressCountry": "DO",
+                "streetAddress": settings.address if settings else ""
+            },
+            "telephone": settings.phone if settings else "",
+            "email": settings.primary_email if settings else "",
+            "sameAs": [
+                settings.facebook,
+                settings.instagram,
+                settings.linkedin,
+                settings.tiktok,
+                settings.youtube
+            ]
+        }
+
         return {
             "settings": settings,
             "visual_assets": get_visual_assets(settings),
+            "company_schema": json.dumps(company_schema),
+            "meta": {
+                "title": settings.meta_title if settings else "AFCyber SOLUTIONS",
+                "description": settings.meta_description if settings else "",
+                "og_image": url_for('static', filename=settings.og_image) if settings and settings.og_image else ""
+            }
         }
 
     @app.template_filter("lines")

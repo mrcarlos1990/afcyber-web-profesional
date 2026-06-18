@@ -1,106 +1,77 @@
 {% extends "public/base.html" %}
 {% block content %}
-<!-- 1. HERO PRINCIPAL -->
+
+<!-- 1. PREMIUM HERO SECTION -->
 <header id="inicio" class="hero-section" {% if visual_assets.hero_image %}style="--hero-bg: url('{{ url_for('static', filename=visual_assets.hero_image) }}');"{% endif %}>
   <canvas id="networkCanvas" aria-hidden="true"></canvas>
   <div class="hero-overlay-grid" aria-hidden="true"></div>
-  <div class="hero-noise"></div>
-  <div class="hero-particles" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
-
-  <div class="hero-shell">
-    <div class="hero-glass" data-aos="fade-up">
-      <aside class="hero-mascot" data-parallax="0.05" aria-label="Mascota cyber AFCyber">
-        <div class="mascot-scan" aria-hidden="true"></div>
-        <div class="cyber-mascot" aria-hidden="true">
-          <div class="mascot-hood">
-            <div class="mascot-face">
-              <span></span><span></span>
-            </div>
-          </div>
-          <div class="mascot-body">
-            <div class="mascot-shield"><i class="fa-solid fa-lock"></i></div>
-          </div>
+  <div class="hero-glow"></div>
+  
+  <div class="container hero-shell">
+    <div class="row align-items-center min-vh-100">
+      <div class="col-lg-7" data-aos="fade-right">
+        <div class="hero-badge mb-4">
+          <span class="badge-dot"></span>
+          <span class="badge-text">Ingeniería de Soluciones & Ciberdefensa</span>
         </div>
-        <div class="mascot-caption"><i class="fa-solid fa-shield-halved"></i> Ethical Cyber Defense</div>
-      </aside>
-
-      <div class="hero-copy">
-        <div class="hero-kicker">TECNOLOG&Iacute;A &bull; SEGURIDAD &bull; CONFIANZA</div>
-        <h1>
-          INGENIER&Iacute;A DE <span>SOFTWARE</span><br>Y DEFENSA DIGITAL
+        <h1 class="display-3 fw-bold mb-4">
+          Transformamos <span class="text-gradient">tecnología</span> en resultados reales
         </h1>
-        <p class="hero-statement">Soluciones de alta disponibilidad en Ciberseguridad, IA y Software Empresarial para organizaciones que no permiten fallos operativos.</p>
-        <div class="hero-actions">
-          <a class="btn btn-primary-premium js-whatsapp" href="#" data-message="Hola AFCyber Solutions, quiero solicitar una cotizacion."><i class="fa-regular fa-paper-plane"></i> Solicitar Auditor&iacute;a</a>
-          <a class="btn btn-outline-premium" href="#servicios"><i class="fa-regular fa-eye"></i> Explorar Soluciones</a>
+        <p class="lead mb-5 opacity-75">
+          Desarrollamos sistemas empresariales, protegemos infraestructuras tecnológicas y automatizamos procesos para empresas que buscan crecer con seguridad, control y eficiencia.
+        </p>
+        <div class="hero-actions d-flex gap-3 flex-wrap">
+          <a class="btn btn-primary-premium btn-lg js-whatsapp" href="#" data-message="Hola AFCyber Solutions, quiero solicitar una cotización.">
+            Solicitar Cotización <i class="fa-solid fa-arrow-right ms-2"></i>
+          </a>
+          <a class="btn btn-outline-premium btn-lg" href="#proyectos">
+            Ver Portafolio
+          </a>
         </div>
       </div>
-
-      <aside class="hero-tech-panel" data-parallax="-0.04">
-        <div class="cloud-security"><i class="fa-solid fa-cloud"></i><span><i class="fa-solid fa-lock"></i></span></div>
-        <div class="laptop-security">
-          <div class="laptop-screen"><i class="fa-solid fa-shield-halved"></i></div>
-          <div class="laptop-base"></div>
+      <div class="col-lg-5 d-none d-lg-block" data-aos="fade-left">
+        <div class="hero-visual-stack">
+          <div class="glass-card main-card">
+            <div class="card-header-ui"><span></span><span></span><span></span></div>
+            <div class="card-body-ui">
+              <div class="shimmer-line"></div>
+              <div class="shimmer-line short"></div>
+              <div class="stats-row">
+                <div class="stat-item"></div>
+                <div class="stat-item"></div>
+              </div>
+            </div>
+          </div>
+          <div class="floating-icon icon-1"><i class="fa-solid fa-shield-halved"></i></div>
+          <div class="floating-icon icon-2"><i class="fa-solid fa-code"></i></div>
+          <div class="floating-icon icon-3"><i class="fa-solid fa-server"></i></div>
         </div>
-        <div class="tech-device camera-device"><i class="fa-solid fa-video"></i><span>IP</span></div>
-        <div class="tech-device router-device"><i class="fa-solid fa-wifi"></i><span></span><span></span><span></span></div>
-        <article class="protection-card">
-          <h2>Protecci&oacute;n</h2>
-          <ul>
-            <li><i class="fa-regular fa-circle-check"></i> Redes seguras</li>
-            <li><i class="fa-regular fa-circle-check"></i> Datos protegidos</li>
-            <li><i class="fa-regular fa-circle-check"></i> Accesos controlados</li>
-            <li><i class="fa-regular fa-circle-check"></i> Monitoreo 24/7</li>
-          </ul>
-        </article>
-      </aside>
+      </div>
     </div>
+  </div>
 
-    <div class="hero-stats-grid" data-aos="fade-up" data-aos-delay="120">
-      <article><i class="fa-solid fa-briefcase"></i><strong>+<span data-counter="50">50</span></strong><small>Proyectos realizados</small></article>
-      <article><i class="fa-solid fa-users"></i><strong>+<span data-counter="100">100</span></strong><small>Clientes satisfechos</small></article>
-      <article><i class="fa-solid fa-headset"></i><strong>24/7</strong><small>Soporte t&eacute;cnico</small></article>
-      <article><i class="fa-solid fa-bolt"></i><strong>Respuesta r&aacute;pida</strong><small>Atenci&oacute;n inmediata</small></article>
+  <div class="hero-stats-bar" data-aos="fade-up">
+    <div class="container">
+      <div class="stats-grid-premium">
+        <article><strong>+<span data-counter="50">50</span></strong><small>Proyectos</small></article>
+        <article><strong>+<span data-counter="100">100</span></strong><small>Clientes</small></article>
+        <article><strong>24/7</strong><small>Soporte</small></article>
+        <article><strong>99.9%</strong><small>Disponibilidad</small></article>
+      </div>
     </div>
   </div>
 </header>
 
 <main>
-  <!-- 2. SERVICIOS -->
-  <section id="servicios" class="services-section services-experience">
+  <!-- 2. SERVICIOS CORE -->
+  <section id="servicios" class="services-section py-5">
     <div class="container-fluid section-shell">
-      <div class="services-hero-grid">
-        <div class="services-heading" data-aos="fade-right">
-          <span class="section-kicker">Ecosistema Tecnol&oacute;gico</span>
-          <h2>Arquitectura de servicios para operaciones cr&iacute;ticas.</h2>
-          <p>Dise&ntilde;amos e implementamos infraestructura digital blindada y software a medida.</p>
-          <div class="services-counter-row">
-            <article><strong>+<span data-counter="50">50</span></strong><span>Proyectos</span></article>
-            <article><strong>+<span data-counter="100">100</span></strong><span>Clientes</span></article>
-            <article><strong>24/7</strong><span>Soporte</span></article>
-          </div>
-        </div>
-        <div class="cyber-dashboard" data-aos="fade-left" aria-label="Dashboard de ciberseguridad AFCyber">
-          <div class="dashboard-top"><span>Security Command</span><strong>Activo</strong></div>
-          <div class="dashboard-grid">
-            <div class="dashboard-orbit"><i class="fa-solid fa-shield-halved"></i><span></span><span></span><span></span></div>
-            <div class="dashboard-lines"><span style="--w:86%"></span><span style="--w:64%"></span><span style="--w:92%"></span><span style="--w:52%"></span></div>
-            <div class="dashboard-alerts">
-              <article><i class="fa-solid fa-lock"></i> Accesos controlados</article>
-              <article><i class="fa-solid fa-video"></i> Monitoreo visual</article>
-              <article><i class="fa-solid fa-cloud"></i> Sistemas conectados</article>
-            </div>
-          </div>
-        </div>
+      <div class="section-heading text-center mb-5" data-aos="fade-up">
+        <span class="section-kicker">Servicios Core</span>
+        <h2>Especialización en Infraestructura y Desarrollo</h2>
       </div>
-      <div class="conversion-benefits" data-aos="fade-up">
-        <article><i class="fa-solid fa-circle-check"></i><span>Soporte t&eacute;cnico</span></article>
-        <article><i class="fa-solid fa-shield-halved"></i><span>Garant&iacute;a</span></article>
-        <article><i class="fa-solid fa-screwdriver-wrench"></i><span>Instalaci&oacute;n profesional</span></article>
-        <article><i class="fa-solid fa-bolt"></i><span>Atenci&oacute;n r&aacute;pida</span></article>
-        <article><i class="fa-solid fa-layer-group"></i><span>Soluciones personalizadas</span></article>
-      </div>
-      <div class="service-card-grid featured-services-grid">
+      
+      <div class="service-card-grid">
         {% for service in real_services[:4] %}
         <article class="soc-service-card" id="{{ service.slug }}" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 50 }}">
           <div class="service-image-wrap">
@@ -121,10 +92,26 @@
         </article>
         {% endfor %}
       </div>
+
+      <div class="row g-4 mt-4" data-aos="fade-up">
+        <div class="col-md-4">
+          <div class="glass-card p-4 text-center h-100">
+            <i class="fa-solid fa-microchip mb-3 fs-1 text-primary"></i>
+            <h4>Inteligencia Artificial</h4>
+            <p class="small opacity-75">Automatización de procesos y análisis de datos predictivo.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card p-4 text-center h-100"><i class="fa-solid fa-fingerprint mb-3 fs-1 text-primary"></i><h4>Control de Acceso</h4><p class="small opacity-75">Sistemas biométricos y seguridad física perimetral.</p></div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card p-4 text-center h-100"><i class="fa-solid fa-network-wired mb-3 fs-1 text-primary"></i><h4>Infraestructura TI</h4><p class="small opacity-75">Redes de alta disponibilidad y gestión de servidores.</p></div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- 3. SOLUCIONES DESTACADAS -->
+  <!-- 3. METODOLOGÍA -->
   <section id="soluciones" class="section solutions-band">
     <div class="container-fluid section-shell">
       <div class="solution-experience">
@@ -148,7 +135,7 @@
     </div>
   </section>
 
-  <!-- 4. SOBRE EL CEO -->
+  <!-- 4. SECCIÓN CEO -->
   <section id="nosotros" class="section about-section">
     <div class="container">
       <div class="row align-items-center g-5">
@@ -178,47 +165,40 @@
             <i class="fa-solid fa-quote-left"></i>
             <p>"La tecnolog&iacute;a no es el fin, sino el medio para blindar la continuidad y el crecimiento de tu empresa."</p>
           </div>
-          <div class="info-card-grid mt-4">
-            <article><i class="fa-solid fa-certificate"></i><h3>Expertise</h3><p>Especialista en Ciberdefensa y Arquitectura de Sistemas.</p></article>
-            <article><i class="fa-solid fa-microchip"></i><h3>Innovaci&oacute;n</h3><p>Implementaci&oacute;n de IA para detecci&oacute;n de amenazas.</p></article>
+          <p class="mt-3">Ingeniero en Ciberseguridad, desarrollador de sistemas empresariales y consultor tecnológico enfocado en automatización, infraestructura TI y seguridad digital para empresas.</p>
+          <div class="d-flex flex-wrap gap-2 mt-4">
+            <span class="badge bg-dark border border-primary p-2">Ciberseguridad</span>
+            <span class="badge bg-dark border border-primary p-2">Desarrollo Full Stack</span>
+            <span class="badge bg-dark border border-primary p-2">Sistemas POS/ERP</span>
+            <span class="badge bg-dark border border-primary p-2">Infraestructura TI</span>
+            <span class="badge bg-dark border border-primary p-2">Automatización</span>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 5. POR QUÉ ELEGIR AFCYBER -->
-  <section class="section why-choose-section bg-dark-premium">
-    <div class="container">
-      <div class="section-heading text-center" data-aos="fade-up">
-        <span class="section-kicker">Diferenciaci&oacute;n</span>
-        <h2>¿Por qu&eacute; confiar en AFCyber?</h2>
-      </div>
-      <div class="row g-4">
-        <div class="col-md-4" data-aos="fade-up" data-aos-delay="0"><div class="feature-box"><i class="fa-solid fa-shield-halved"></i><h3>Seguridad por Dise&ntilde;o</h3><p>Cada l&iacute;nea de c&oacute;digo y cada cable instalado nace con protocolos de seguridad integrados.</p></div></div>
-        <div class="col-md-4" data-aos="fade-up" data-aos-delay="100"><div class="feature-box"><i class="fa-solid fa-headset"></i><h3>Soporte de &Eacute;lite</h3><p>No somos solo proveedores, somos tu departamento de IT externo con respuesta en tiempo real.</p></div></div>
-        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200"><div class="feature-box"><i class="fa-solid fa-gears"></i><h3>Escalabilidad Real</h3><p>Soluciones que crecen con tu empresa, evitando migraciones costosas en el futuro.</p></div></div>
-      </div>
-    </div>
-  </section>
-
+  
   <!-- 6. PORTAFOLIO -->
   <section id="proyectos" class="section section-dark">
     <div class="container">
       <div class="section-heading text-center" data-aos="fade-up">
-        <span class="section-kicker">Showcase real</span>
-        <h2>Proyectos que venden antes de hablar.</h2>
-        <p>Visuales fuertes, mensajes claros y tecnolog&iacute;a lista para convertir.</p>
+        <span class="section-kicker">Casos de Estudio</span>
+        <h2>Soluciones Implementadas</h2>
+        <p>Proyectos de alto impacto que garantizan eficiencia operativa y seguridad.</p>
       </div>
       <div class="portfolio-grid project-showcase-grid">
         {% for service in real_services[:4] %}
         <article class="portfolio-card" data-aos="zoom-in">
           <img class="project-img" src="{{ url_for('static', filename=service.alt_image|default(service.image)) }}" alt="{{ service.name }}" width="1024" height="1536" loading="lazy" decoding="async">
-          <div>
-            <span>{{ service.short_name }}</span>
+          <div class="portfolio-overlay">
+            <span class="category-tag">{{ service.short_name or 'Tech Solution' }}</span>
             <h3>{{ service.name }}</h3>
-            <p>{{ service.features[0] }}</p>
-            <a class="js-whatsapp" href="#" data-service="{{ service.name }}">Ver proyecto</a>
+            <div class="tech-stack mb-3">
+              <small><i class="fa-solid fa-check-double text-primary"></i> {{ service.features[0] }}</small>
+            </div>
+            <p class="result-text small"><i class="fa-solid fa-chart-line"></i> Optimización de procesos y seguridad activa.</p>
+            <a class="btn btn-sm btn-primary-premium js-whatsapp" href="#" data-service="{{ service.name }}">Ver Proyecto</a>
           </div>
         </article>
         {% endfor %}
@@ -226,7 +206,7 @@
     </div>
   </section>
 
-  <!-- 7. TESTIMONIOS -->
+  <!-- 7. TESTIMONIOS PREMIUM -->
   <section id="testimonios" class="section testimonials-section">
     <div class="container">
       <div class="section-heading text-center" data-aos="fade-up">
@@ -235,9 +215,6 @@
         <p>Experiencias enfocadas en confianza, respuesta r&aacute;pida y resultados profesionales.</p>
       </div>
       <div class="testimonial-slider" data-aos="fade-up">
-        <article class="testimonial-card"><div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><h3>Excelente servicio</h3><p>Equipo muy profesional, claro y atento durante todo el proceso.</p><span>Cliente empresarial</span></article>
-        <article class="testimonial-card"><div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><h3>Muy profesionales</h3><p>La implementaci&oacute;n fue ordenada, r&aacute;pida y con buena comunicaci&oacute;n.</p><span>Comercio local</span></article>
-        <article class="testimonial-card"><div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><h3>Respuesta r&aacute;pida</h3><p>Recibimos soporte y orientaci&oacute;n en el momento que lo necesit&aacute;bamos.</p><span>Emprendedor</span></article>
         {% if testimonials %}
           {% for testimonial in testimonials[:5] %}
           <article class="testimonial-card">
@@ -247,6 +224,10 @@
             <span>{{ testimonial.company or 'Cliente AFCyber Solutions' }}</span>
           </article>
           {% endfor %}
+        {% else %}
+          <article class="testimonial-card"><div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><h3>Excelente servicio</h3><p>La implementación del sistema POS fue impecable. Ahora tenemos control total de nuestras ventas y NCF.</p><span>Supermercado Local (Proyecto POS)</span></article>
+          <article class="testimonial-card"><div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><h3>Muy profesionales</h3><p>El hardening de nuestros servidores nos dio la tranquilidad que necesitábamos ante ataques externos.</p><span>Financiera (Ciberseguridad)</span></article>
+          <article class="testimonial-card"><div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><h3>Respuesta r&aacute;pida</h3><p>Soporte técnico de alto nivel. Resolvieron problemas de red que otros no pudieron identificar.</p><span>Centro Médico (Infraestructura)</span></article>
         {% endif %}
       </div>
     </div>

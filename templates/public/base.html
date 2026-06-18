@@ -3,15 +3,50 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ settings.meta_title }}</title>
-  <meta name="description" content="{{ settings.meta_description }}">
-  <meta name="keywords" content="{{ settings.keywords }}">
+  <title>{{ settings.meta_title or 'AFCyber Solutions | Software, IA & Ciberseguridad en República Dominicana' }}</title>
+  <meta name="description" content="{{ settings.meta_description or 'Expertos en desarrollo de software empresarial, sistemas POS, inteligencia artificial y ciberseguridad avanzada para empresas en República Dominicana.' }}">
+  <meta name="keywords" content="{{ settings.keywords or 'AFCyber Solutions, software empresarial, ciberseguridad, sistemas POS, inteligencia artificial, infraestructura tecnológica, República Dominicana, Amauri Feliz' }}">
   <meta name="author" content="{{ settings.company_name }}">
   <meta name="theme-color" content="#050B14">
-  <meta property="og:title" content="{{ settings.meta_title }}">
-  <meta property="og:description" content="{{ settings.meta_description }}">
+  
+  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ request.url }}">
+  <meta property="og:title" content="{{ settings.meta_title or 'AFCyber Solutions | Ingeniería de Soluciones' }}">
+  <meta property="og:description" content="{{ settings.meta_description or 'Transformamos tecnología en resultados reales con software a medida y ciberdefensa.' }}">
   {% if visual_assets.hero_image %}<meta property="og:image" content="{{ url_for('static', filename=visual_assets.hero_image, _external=True) }}">{% elif settings.og_image %}<meta property="og:image" content="{{ url_for('static', filename=settings.og_image, _external=True) }}">{% endif %}
+
+  <!-- Schema.org para Empresas Tecnológicas -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechBusiness",
+    "name": "AFCyber Solutions",
+    "alternateName": "AFCyber",
+    "url": "{{ request.url_root }}",
+    "logo": "{{ url_for('static', filename=visual_assets.logo, _external=True) if visual_assets.logo else '' }}",
+    "description": "Desarrollo de software empresarial, ciberseguridad e infraestructura tecnológica.",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "San Cristóbal",
+      "addressCountry": "DO"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "{{ settings.phone }}",
+      "contactType": "sales"
+    },
+    "founder": {
+      "@type": "Person",
+      "name": "Ing. Amauri Feliz"
+    },
+    "offers": [
+      {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Sistemas POS"}},
+      {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Ciberseguridad"}}
+    ]
+  }
+  </script>
+
   {% if settings.favicon %}<link rel="icon" href="{{ url_for('static', filename=settings.favicon) }}">{% endif %}
   {% if visual_assets.hero_image %}<link rel="preload" as="image" href="{{ url_for('static', filename=visual_assets.hero_image) }}">{% endif %}
   {% if visual_assets.logo %}<link rel="preload" as="image" href="{{ url_for('static', filename=visual_assets.logo) }}">{% endif %}
@@ -61,8 +96,6 @@
           <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#soluciones">Soluciones</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#proyectos">Portafolio</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#nosotros">CEO</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#testimonios">Testimonios</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#blog">FAQ</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#contacto">Contacto</a></li>
         </ul>
         <div class="nav-actions">
@@ -80,6 +113,55 @@
   {% include "partials/_flash.html" %}
   
   {% block content %}{% endblock %}
+
+  <footer class="footer-premium py-5 mt-5">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <div class="footer-brand mb-3">
+            {% if visual_assets.logo %}
+            <img src="{{ url_for('static', filename=visual_assets.logo) }}" alt="Logo AFCyber Solutions" class="footer-logo">
+            {% else %}
+            <span class="brand-fallback">AFCyber Solutions</span>
+            {% endif %}
+          </div>
+          <p class="opacity-75">Líderes en transformación digital, ciberseguridad avanzada e infraestructura de alta disponibilidad.</p>
+          <div class="social-links-footer d-flex gap-3 mt-4">
+            {% for social in socials %}
+            <a href="{{ social.url }}" class="social-icon-circle" target="_blank"><i class="{{ social.icon }}"></i></a>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-4">
+          <h5 class="footer-title">Servicios</h5>
+          <ul class="list-unstyled footer-links">
+            {% for service in real_services[:5] %}
+            <li><a href="{{ url_for('index') }}#{{ service.slug }}">{{ service.short_name or service.name }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="col-lg-2 col-md-4">
+          <h5 class="footer-title">Soluciones</h5>
+          <ul class="list-unstyled footer-links">
+            <li><a href="{{ url_for('index') }}#soluciones">Metodología</a></li>
+            <li><a href="{{ url_for('index') }}#proyectos">Portafolio</a></li>
+            <li><a href="{{ url_for('index') }}#blog">Preguntas Frecuentes</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-4 col-md-4">
+          <h5 class="footer-title">Contacto</h5>
+          <p class="mb-1 opacity-75"><i class="fa-solid fa-phone me-2"></i> {{ settings.phone }}</p>
+          <p class="mb-1 opacity-75"><i class="fa-solid fa-envelope me-2"></i> {{ settings.email }}</p>
+          <p class="opacity-75"><i class="fa-solid fa-location-dot me-2"></i> San Cristóbal, Rep. Dom.</p>
+        </div>
+      </div>
+      <hr class="my-4 opacity-25">
+      <div class="footer-bottom d-flex justify-content-between flex-wrap gap-3">
+        <p class="mb-0">&copy; <span id="currentYear"></span> {{ settings.company_name }}. Todos los derechos reservados.</p>
+        <p class="mb-0">Desarrollado por <strong>AFCyber Solutions</strong></p>
+      </div>
+    </div>
+  </footer>
 
   <aside class="virtual-assistant" id="virtualAssistant">
     <button class="assistant-toggle" type="button" aria-expanded="false" aria-controls="assistantPanel">

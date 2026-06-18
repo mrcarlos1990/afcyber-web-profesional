@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initAdminShortcut();
   initInteractiveTimeline();
   initVirtualAssistant();
+  initSmoothScroll();
 });
 
 function initAos() {
@@ -37,7 +38,7 @@ function initAos() {
 function initNavbar() {
   const nav = document.getElementById("mainNav");
   const menu = document.getElementById("navbarMenu");
-  const links = document.querySelectorAll(".premium-nav .nav-link");
+  const links = document.querySelectorAll(".nav-link, .navbar-brand");
   const collapse = menu && window.bootstrap
     ? bootstrap.Collapse.getOrCreateInstance(menu, { toggle: false })
     : null;
@@ -50,9 +51,11 @@ function initNavbar() {
 
   links.forEach((link) => {
     link.addEventListener("click", () => {
-      links.forEach((item) => item.classList.remove("active"));
-      link.classList.add("active");
-      if (window.innerWidth < 1200 && collapse) collapse.hide();
+      if (window.innerWidth < 1200 && collapse && menu.classList.contains("show")) {
+        setTimeout(() => {
+          collapse.hide();
+        }, 150);
+      }
     });
   });
 
@@ -78,6 +81,19 @@ function initNavbar() {
   });
 
   targets.forEach((target) => observer.observe(target));
+}
+
+function initSmoothScroll() {
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      const targetId = this.getAttribute('href');
+      if (targetId === "#") return;
+      const targetElement = document.querySelector(targetId);
+      if (!targetElement) return;
+      e.preventDefault();
+      targetElement.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
 }
 
 function buildWhatsappUrl(message) {

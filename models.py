@@ -142,6 +142,8 @@ class PortfolioProject(db.Model):
     image = db.Column(db.String(255), default="")
     link = db.Column(db.String(255), default="#")
     category = db.Column(db.String(120), default="Proyecto")
+    is_case_study = db.Column(db.Boolean, default=False)
+    challenge_solution = db.Column(db.Text, default="")
     technologies = db.Column(db.Text, default="")
 
 
