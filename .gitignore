@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+instance/afcyber.db
+instance/security.log
