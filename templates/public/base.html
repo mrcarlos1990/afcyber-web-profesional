@@ -14,7 +14,7 @@
   <meta property="og:url" content="{{ request.url }}">
   <meta property="og:title" content="{{ settings.meta_title or 'AFCyber Solutions | Ingeniería de Soluciones' }}">
   <meta property="og:description" content="{{ settings.meta_description or 'Transformamos tecnología en resultados reales con software a medida y ciberdefensa.' }}">
-  {% if visual_assets.hero_image %}<meta property="og:image" content="{{ url_for('static', filename=visual_assets.hero_image, _external=True) }}">{% elif settings.og_image %}<meta property="og:image" content="{{ url_for('static', filename=settings.og_image, _external=True) }}">{% endif %}
+  <meta property="og:image" content="{{ url_for('static', filename='img/og-afcyber.svg', _external=True) }}">
 
   <!-- Schema.org para Empresas Tecnológicas -->
   <script type="application/ld+json">
@@ -23,7 +23,7 @@
     "@type": "TechBusiness",
     "name": "AFCyber Solutions",
     "alternateName": "AFCyber",
-    "url": "{{ request.url_root }}",
+    "url": "{{ request.host_url }}",
     "logo": "{{ url_for('static', filename=visual_assets.logo, _external=True) if visual_assets.logo else '' }}",
     "description": "Desarrollo de software empresarial, ciberseguridad e infraestructura tecnológica.",
     "address": {
@@ -47,9 +47,9 @@
   }
   </script>
 
-  {% if settings.favicon %}<link rel="icon" href="{{ url_for('static', filename=settings.favicon) }}">{% endif %}
+  <link rel="icon" href="{{ url_for('static', filename='img/favicon.svg') }}">
   {% if visual_assets.hero_image %}<link rel="preload" as="image" href="{{ url_for('static', filename=visual_assets.hero_image) }}">{% endif %}
-  {% if visual_assets.logo %}<link rel="preload" as="image" href="{{ url_for('static', filename=visual_assets.logo) }}">{% endif %}
+  <link rel="preload" as="image" href="{{ url_for('static', filename='img/afcyber-logo-main.png') }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
@@ -78,11 +78,7 @@
   <nav class="navbar navbar-expand-xl fixed-top premium-nav" id="mainNav">
     <div class="container-fluid nav-shell">
       <a class="navbar-brand af-brand" href="{{ url_for('index') }}#inicio" aria-label="AFCyber Solutions">
-        {% if visual_assets.logo %}
-        <img class="brand-logo-img" src="{{ url_for('static', filename=visual_assets.logo) }}" alt="Logo AFCyber Solutions">
-        {% else %}
-        <span class="brand-fallback">AF</span>
-        {% endif %}
+        <img class="brand-logo-img" src="{{ url_for('static', filename='img/afcyber-logo-main.png') }}" alt="Logo AFCyber Solutions">
       </a>
 
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu" aria-label="Abrir menú">
@@ -119,11 +115,7 @@
       <div class="row g-4">
         <div class="col-lg-4">
           <div class="footer-brand mb-3">
-            {% if visual_assets.logo %}
-            <img src="{{ url_for('static', filename=visual_assets.logo) }}" alt="Logo AFCyber Solutions" class="footer-logo">
-            {% else %}
-            <span class="brand-fallback">AFCyber Solutions</span>
-            {% endif %}
+            <img src="{{ url_for('static', filename='img/afcyber-logo-main.png') }}" alt="Logo AFCyber Solutions" class="footer-logo">
           </div>
           <p class="opacity-75">Líderes en transformación digital, ciberseguridad avanzada e infraestructura de alta disponibilidad.</p>
           <div class="social-links-footer d-flex gap-3 mt-4">

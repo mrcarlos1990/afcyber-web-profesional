@@ -139,7 +139,7 @@ class PortfolioProject(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(160), nullable=False)
     description = db.Column(db.Text, nullable=False)
-    image = db.Column(db.String(255), default="")
+    image = db.Column(db.String(255), default="")  # Almacena rutas relativas (ej: img/projects/pos.webp)
     link = db.Column(db.String(255), default="#")
     category = db.Column(db.String(120), default="Proyecto")
     is_case_study = db.Column(db.Boolean, default=False)

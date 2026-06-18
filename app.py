@@ -746,13 +746,20 @@ def seed_database():
         ])
 
     if not PortfolioProject.query.first():
-        for service in REAL_SERVICES:
+        default_projects = [
+            ("Sistema POS Avanzado", "Sistemas de Ventas", "Python, Flask, PostgreSQL", "img/projects/pos-dashboard.webp"),
+            ("Plataforma Web Corporativa", "Software a medida", "React, Node.js, AWS", "img/projects/web-development.webp"),
+            ("Auditoría de Ciberseguridad", "Ciberseguridad", "Kali Linux, Wireshark, Metasploit", "img/projects/cybersecurity.webp"),
+            ("Instalación CCTV Inteligente", "Seguridad Física", "Hikvision, Dahua, Networking", "img/projects/cctv-security.webp"),
+            ("Automatización de Procesos", "IA & Automatización", "Python, Selenium, Docker", "img/projects/business-automation.webp"),
+        ]
+        for name, cat, tech, img_path in default_projects:
             db.session.add(PortfolioProject(
-                name=service["name"],
-                category=service["short_name"],
-                technologies=", ".join(service["features"][:4]),
-                description=service["description"],
-                image=service.get("alt_image") or service["image"],
+                name=name,
+                category=cat,
+                technologies=tech,
+                description="Solución tecnológica implementada con altos estándares de calidad y seguridad.",
+                image=img_path
             ))
 
     if not Testimonial.query.first():
