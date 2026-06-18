@@ -1,4 +1,4 @@
-import os
+﻿import os
 import json
 import secrets
 import smtplib
@@ -46,104 +46,82 @@ ALLOWED_PDF = {"pdf"}
 REAL_SERVICES = [
     {
         "slug": "software-empresarial",
-        "name": "Desarrollo de Software Empresarial",
-        "short_name": "Software a medida",
-        "description": "Plataformas personalizadas, CRMs y automatización de flujos de trabajo para optimizar la gestión de su negocio.",
+        "name": "Software Empresarial",
+        "short_name": "Software Empresarial",
+        "description": "Desarrollo de sistemas a medida, dashboards, inventario, facturación y gestión operativa.",
         "icon": "fa-solid fa-gears",
-        "image": "img/services/software-dev.jpeg",
-        "features": [
-            "Desarrollo Web & Mobile",
-            "Paneles administrativos",
-            "Automatización de procesos",
-            "Integración de APIs",
-            "Bases de datos escalables",
-            "Arquitectura en la nube"
-        ],
+        "image": "img/projects/web-development.webp",
+        "features": ["Dashboards", "Facturación", "Inventario", "Gestión operativa"],
     },
     {
         "slug": "sistemas-pos-erp",
-        "name": "Sistemas POS & ERP",
-        "short_name": "Sistemas de Ventas",
-        "description": "Soluciones robustas para el control de inventario, facturación y gestión de recursos empresariales.",
+        "name": "Sistemas POS / ERP",
+        "short_name": "POS / ERP",
+        "description": "Puntos de venta, control de caja, inventario, clientes, proveedores y reportes.",
         "icon": "fa-solid fa-cash-register",
-        "image": "img/services/pos-system.jpeg",
-        "features": [
-            "Sistemas ERP y CRM",
-            "Paneles administrativos",
-            "Automatización de procesos",
-            "Integración de APIs",
-            "Bases de datos escalables",
-            "Arquitectura en la nube"
-        ],
+        "image": "img/projects/pos-dashboard.webp",
+        "features": ["Caja", "Inventario", "Clientes", "Reportes"],
+    },
+    {
+        "slug": "landing-pages-webs",
+        "name": "Landing Pages y Webs",
+        "short_name": "Webs Profesionales",
+        "description": "Páginas web profesionales para empresas, catálogos digitales y presencia online.",
+        "icon": "fa-solid fa-globe",
+        "image": "img/projects/web-development.webp",
+        "features": ["Landing pages", "Catálogos", "SEO básico", "WhatsApp"],
     },
     {
         "slug": "ciberseguridad",
-        "name": "Ciberseguridad Avanzada",
+        "name": "Ciberseguridad Básica",
         "short_name": "Ciberseguridad",
-        "description": "Protección de activos digitales, auditorías de seguridad y respuesta ante incidentes.",
+        "description": "Protección de equipos, buenas prácticas, revisión de vulnerabilidades, backups y seguridad de acceso.",
         "icon": "fa-solid fa-shield-virus",
-        "image": "img/services/cybersecurity.jpeg",
-        "features": [
-            "Auditorías de seguridad",
-            "Protección de datos",
-            "Pentesting",
-            "Seguridad perimetral",
-            "Cumplimiento normativo",
-            "Recuperación ante desastres"
-        ],
-    },
-    {
-        "slug": "inteligencia-artificial",
-        "name": "Soluciones de Inteligencia Artificial",
-        "short_name": "IA & Automatización",
-        "description": "Implementación de modelos de IA para análisis de datos y automatización inteligente.",
-        "icon": "fa-solid fa-brain",
-        "image": "img/services/ai-solutions.jpeg",
-        "features": [
-            "Chatbots inteligentes",
-            "Análisis predictivo",
-            "Procesamiento de lenguaje natural",
-            "Automatización con IA",
-            "Machine Learning aplicado"
-        ],
-    },
-    {
-        "slug": "infraestructura-tecnologica",
-        "name": "Infraestructura Tecnológica",
-        "short_name": "Infraestructura",
-        "description": "Diseño y despliegue de redes, servidores y soluciones de alta disponibilidad.",
-        "icon": "fa-solid fa-server",
-        "image": "img/services/infrastructure.jpeg",
-        "features": [
-            "Redes empresariales",
-            "Virtualización",
-            "Cloud Computing",
-            "Soporte de servidores",
-            "Monitoreo 24/7"
-        ],
+        "image": "img/projects/cybersecurity.webp",
+        "features": ["Backups", "Accesos", "Antivirus", "Buenas prácticas"],
     },
     {
         "slug": "cctv-control-acceso",
-        "name": "CCTV & Control de Acceso",
-        "short_name": "Seguridad Física",
-        "description": "Instalación y configuración de sistemas de videovigilancia IP y analógica con monitoreo remoto.",
+        "name": "CCTV y Control de Acceso",
+        "short_name": "CCTV y Acceso",
+        "description": "Cámaras IP, monitoreo remoto, grabación, biometría y seguridad física.",
         "icon": "fa-solid fa-video",
-        "image": "img/services/cctv.jpeg",
-        "features": [
-            "Cámaras IP y Analógicas",
-            "Control de acceso biométrico",
-            "Monitoreo remoto móvil",
-            "Sistemas de alarmas",
-            "Mantenimiento preventivo"
-        ],
+        "image": "img/projects/cctv-security.webp",
+        "features": ["Cámaras IP", "NVR", "Biometría", "Acceso remoto"],
+    },
+    {
+        "slug": "aires-acondicionados",
+        "name": "Aires Acondicionados",
+        "short_name": "Climatización",
+        "description": "Instalación, mantenimiento preventivo, limpieza y soporte técnico para equipos de climatización.",
+        "icon": "fa-solid fa-wind",
+        "image": "",
+        "features": ["Instalación", "Limpieza", "Mantenimiento", "Diagnóstico"],
+    },
+    {
+        "slug": "mantenimiento-computadoras",
+        "name": "Mantenimiento de Computadoras",
+        "short_name": "Soporte Técnico",
+        "description": "Formateo, limpieza, optimización, diagnóstico, reparación básica y mejora de rendimiento.",
+        "icon": "fa-solid fa-computer",
+        "image": "",
+        "features": ["Formateo", "Limpieza", "Optimización", "Diagnóstico"],
+    },
+    {
+        "slug": "instalacion-software",
+        "name": "Instalación de Software",
+        "short_name": "Software",
+        "description": "Instalación de programas, configuración de sistemas, drivers, antivirus y herramientas de trabajo.",
+        "icon": "fa-solid fa-download",
+        "image": "",
+        "features": ["Programas", "Drivers", "Antivirus", "Herramientas"],
     },
 ]
-
 CONTACT_CHANNELS = {
     "cotizacion": {
         "label": "Cotizaciones",
         "email": "cotizaciones@afcybersolutions.com.do",
-        "subject": "Nueva Solicitud de Cotización",
+        "subject": "Nueva Solicitud de CotizaciÃ³n",
         "icon": "fa-solid fa-file-invoice-dollar",
     },
     "ventas": {
@@ -165,9 +143,9 @@ CONTACT_CHANNELS = {
         "icon": "fa-solid fa-user-tie",
     },
     "soporte": {
-        "label": "Soporte Técnico",
+        "label": "Soporte TÃ©cnico",
         "email": "soporte@afcybersolutions.com.do",
-        "subject": "Solicitud de Soporte Técnico",
+        "subject": "Solicitud de Soporte TÃ©cnico",
         "icon": "fa-solid fa-headset",
     },
     "licencias": {
@@ -279,7 +257,7 @@ def register_template_helpers(app):
 def register_error_handlers(app):
     @app.errorhandler(404)
     def not_found(_error):
-        return render_template("public/error.html", code=404, title="Página no encontrada"), 404
+        return render_template("public/error.html", code=404, title="PÃ¡gina no encontrada"), 404
 
     @app.errorhandler(500)
     def server_error(_error):
@@ -294,6 +272,16 @@ def register_routes(app):
             inquiry_type = request.form.get("inquiry_type", "cotizacion").strip().lower()
             channel = CONTACT_CHANNELS.get(inquiry_type, CONTACT_CHANNELS["contacto"])
             subject = request.form.get("subject", channel["subject"]).strip() or channel["subject"]
+            message_body = request.form.get("message", "").strip()
+            estimated_budget = request.form.get("estimated_budget", "").strip()
+            tentative_date = request.form.get("tentative_date", "").strip()
+            details = []
+            if estimated_budget:
+                details.append(f"Presupuesto estimado: {estimated_budget}")
+            if tentative_date:
+                details.append(f"Fecha tentativa: {tentative_date}")
+            if details:
+                message_body = "\n".join([message_body, "", *details]).strip()
             message = ContactMessage(
                 inquiry_type=inquiry_type if inquiry_type in CONTACT_CHANNELS else "contacto",
                 subject=subject,
@@ -302,15 +290,15 @@ def register_routes(app):
                 phone=request.form.get("phone", "").strip(),
                 email=request.form.get("email", "").strip(),
                 requested_service=request.form.get("requested_service", "").strip(),
-                message=request.form.get("message", "").strip(),
+                message=message_body,
             )
             if not message.name or not (message.phone or message.email) or not message.message:
-                flash("Completa nombre, teléfono o correo, y descripción.", "danger")
+                flash("Completa nombre, telÃ©fono o correo, y descripciÃ³n.", "danger")
             else:
                 db.session.add(message)
                 db.session.commit()
                 send_contact_notification(message, channel)
-                flash("Solicitud enviada correctamente. Nuestro equipo se comunicará con usted.", "success")
+                flash("Solicitud enviada correctamente. Nuestro equipo se comunicarÃ¡ con usted.", "success")
                 return redirect(url_for("index", _anchor="contacto"))
 
         return render_template(
@@ -324,7 +312,7 @@ def register_routes(app):
             certificates=Certificate.query.filter_by(is_active=True).order_by(Certificate.order.asc(), Certificate.id.asc()).all(),
             services=Service.query.filter_by(is_active=True).order_by(Service.id.asc()).all(),
             plans=Plan.query.order_by(Plan.id.asc()).all(),
-            projects=PortfolioProject.query.order_by(PortfolioProject.id.desc()).all(),
+            projects=PortfolioProject.query.order_by(PortfolioProject.id.asc()).all(),
             testimonials=Testimonial.query.order_by(Testimonial.id.desc()).all(),
             faqs=FAQ.query.filter_by(is_active=True).order_by(FAQ.order.asc(), FAQ.id.asc()).all(),
             socials=SocialLink.query.filter_by(is_active=True).all(),
@@ -346,7 +334,7 @@ def register_routes(app):
                     db.session.commit()
                 login_user(user)
                 return redirect(url_for("admin_dashboard"))
-            flash("Contraseña maestra incorrecta.", "danger")
+            flash("ContraseÃ±a maestra incorrecta.", "danger")
         return render_template("admin/login.html")
 
     @app.route("/admin/logout")
@@ -381,9 +369,9 @@ def register_routes(app):
         if request.method == "POST":
             update_model_from_form(item, fields)
             db.session.commit()
-            flash("Configuración actualizada.", "success")
+            flash("ConfiguraciÃ³n actualizada.", "success")
             return redirect(url_for("admin_settings"))
-        return render_template("admin/edit_single.html", title="Configuración general", item=item, fields=fields)
+        return render_template("admin/edit_single.html", title="ConfiguraciÃ³n general", item=item, fields=fields)
 
     @app.route("/admin/<module>", methods=["GET", "POST"])
     @login_required
@@ -513,7 +501,7 @@ def admin_fields():
             ("linkedin", "LinkedIn", "url"), ("tiktok", "TikTok", "url"), ("youtube", "YouTube", "url"),
             ("primary_color", "Color primario", "color"), ("secondary_color", "Color secundario", "color"),
             ("background_color", "Color fondo", "color"), ("button_color", "Color botones", "color"),
-            ("theme_mode", "Modo oscuro/claro", "text"), ("tech_gradients", "Gradientes tecnológicos", "textarea"),
+            ("theme_mode", "Modo oscuro/claro", "text"), ("tech_gradients", "Gradientes tecnolÃ³gicos", "textarea"),
             ("meta_title", "Meta title", "text"), ("meta_description", "Meta description", "textarea"),
             ("keywords", "Keywords", "textarea"), ("og_image", "Imagen Open Graph", "image"),
             ("google_analytics_id", "Google Analytics ID", "text"), ("google_search_console", "Google Search Console", "text"),
@@ -526,12 +514,12 @@ def admin_modules():
     return {
         "hero": {"title": "Hero principal", "singular": "hero", "model": HeroSection, "single": True, "fields": [
             ("eyebrow", "Etiqueta", "text"), ("company_name", "Nombre visible", "text"), ("title", "Titulo principal", "text"),
-            ("subtitle", "Subtítulo", "textarea"), ("primary_button_text", "Botón principal", "text"), ("primary_button_url", "URL botón principal", "text"),
-            ("secondary_button_text", "Botón secundario", "text"), ("secondary_button_url", "URL botón secundario", "text"),
+            ("subtitle", "SubtÃ­tulo", "textarea"), ("primary_button_text", "BotÃ³n principal", "text"), ("primary_button_url", "URL botÃ³n principal", "text"),
+            ("secondary_button_text", "BotÃ³n secundario", "text"), ("secondary_button_url", "URL botÃ³n secundario", "text"),
             ("hero_image", "Imagen/animacion", "image"), ("trust_items", "Puntos de confianza, uno por linea", "textarea"),
         ]},
         "about": {"title": "Nosotros", "singular": "nosotros", "model": AboutSection, "single": True, "fields": [
-            ("history", "Historia", "textarea"), ("mission", "Misión", "textarea"), ("vision", "Visión", "textarea"),
+            ("history", "Historia", "textarea"), ("mission", "MisiÃ³n", "textarea"), ("vision", "VisiÃ³n", "textarea"),
             ("values", "Valores", "textarea"), ("experience", "Experiencia", "textarea"),
             ("cards", "Tarjetas: titulo|texto|icono, una por linea", "textarea"),
         ]},
@@ -540,7 +528,7 @@ def admin_modules():
             ("headline", "Linea premium", "text"), ("profile", "Descripcion profesional", "textarea"),
             ("experience", "Experiencia, una por linea", "textarea"), ("linkedin", "LinkedIn", "url"), ("whatsapp", "WhatsApp", "text"),
             ("cv_pdf", "CV PDF", "pdf"), ("projects_count", "Proyectos realizados", "number"),
-            ("clients_count", "Clientes atendidos", "number"), ("systems_count", "Sistemas desarrollados", "number"), ("experience_years", "Experiencia tecnológica", "number"),
+            ("clients_count", "Clientes atendidos", "number"), ("systems_count", "Sistemas desarrollados", "number"), ("experience_years", "Experiencia tecnolÃ³gica", "number"),
         ]},
         "skills": {"title": "Habilidades CEO", "singular": "habilidad", "model": Skill, "fields": [
             ("name", "Nombre", "text"), ("icon", "Icono Font Awesome", "text"), ("order", "Orden", "number"), ("is_active", "Activo", "checkbox"),
@@ -551,11 +539,11 @@ def admin_modules():
         ]},
         "services": {"title": "Servicios", "singular": "servicio", "model": Service, "fields": [
             ("name", "Nombre", "text"), ("description", "Descripcion", "textarea"), ("icon", "Icono Font Awesome", "text"),
-            ("image", "Imagen", "image"), ("price", "Precio opcional", "text"), ("whatsapp_button", "Botón WhatsApp", "text"), ("is_active", "Activo", "checkbox"),
+            ("image", "Imagen", "image"), ("price", "Precio opcional", "text"), ("whatsapp_button", "BotÃ³n WhatsApp", "text"), ("is_active", "Activo", "checkbox"),
         ]},
         "plans": {"title": "Planes", "singular": "plan", "model": Plan, "fields": [
             ("name", "Nombre", "text"), ("price", "Precio", "text"), ("description", "Descripcion", "textarea"),
-            ("features", "Características, una por línea", "textarea"), ("contact_button", "Botón de contacto", "text"), ("is_featured", "Destacado", "checkbox"),
+            ("features", "CaracterÃ­sticas, una por lÃ­nea", "textarea"), ("contact_button", "BotÃ³n de contacto", "text"), ("is_featured", "Destacado", "checkbox"),
         ]},
         "portfolio": {"title": "Portafolio", "singular": "proyecto", "model": PortfolioProject, "fields": [
             ("name", "Nombre", "text"), ("description", "Descripcion", "textarea"), ("image", "Imagen", "image"),
@@ -606,15 +594,15 @@ def save_upload(file, pdf=False):
 
 
 def ensure_database_schema():
-    # Migración para ContactMessage
+    # MigraciÃ³n para ContactMessage
     inspector_sql = text("PRAGMA table_info(contact_message)")
     existing_columns = {row[1] for row in db.session.execute(inspector_sql).fetchall()}
     if "inquiry_type" not in existing_columns:
         db.session.execute(text("ALTER TABLE contact_message ADD COLUMN inquiry_type VARCHAR(60) DEFAULT 'cotizacion'"))
     if "subject" not in existing_columns:
-        db.session.execute(text("ALTER TABLE contact_message ADD COLUMN subject VARCHAR(180) DEFAULT 'Nueva Solicitud de Cotización'"))
+        db.session.execute(text("ALTER TABLE contact_message ADD COLUMN subject VARCHAR(180) DEFAULT 'Nueva Solicitud de CotizaciÃ³n'"))
     
-    # Migración para PortfolioProject
+    # MigraciÃ³n para PortfolioProject
     portfolio_inspector = text("PRAGMA table_info(portfolio_project)")
     portfolio_columns = {row[1] for row in db.session.execute(portfolio_inspector).fetchall()}
     if "is_case_study" not in portfolio_columns:
@@ -724,9 +712,16 @@ def seed_database():
         admin.set_password(secrets.token_urlsafe(48))
         db.session.add(admin)
 
-    for model in (SiteSettings, HeroSection, AboutSection, CEOProfile):
+    for model in (SiteSettings, HeroSection, AboutSection):
         if not model.query.first():
             db.session.add(model())
+
+    ceo = CEOProfile.query.first()
+    if not ceo:
+        ceo = CEOProfile(photo="img/projects/amauri-feliz-ceo.webp")
+        db.session.add(ceo)
+    else:
+        ceo.photo = "img/projects/amauri-feliz-ceo.webp"
 
     if not Service.query.first():
         for service in REAL_SERVICES:
@@ -735,43 +730,97 @@ def seed_database():
                 description=service["description"],
                 icon=service["icon"],
                 image=service["image"],
-                whatsapp_button="Solicitar información",
+                whatsapp_button="Solicitar informaciÃ³n",
             ))
+
+    service_images = {service["name"]: service["image"] for service in REAL_SERVICES}
+    service_images.update({
+        "Desarrollo de Software Empresarial": "img/projects/web-development.webp",
+        "Sistemas POS & ERP": "img/projects/pos-dashboard.webp",
+        "Ciberseguridad Avanzada": "img/projects/cybersecurity.webp",
+        "Soluciones de Inteligencia Artificial": "img/projects/web-development.webp",
+        "Infraestructura TecnolÃ³gica": "img/projects/cybersecurity.webp",
+        "CCTV & Control de Acceso": "img/projects/cctv-security.webp",
+    })
+    for service in Service.query.all():
+        if service.name in service_images:
+            service.image = service_images[service.name]
+
+    existing_service_names = {service.name for service in Service.query.all()}
+    for service in REAL_SERVICES:
+        if service["name"] not in existing_service_names:
+            db.session.add(Service(
+                name=service["name"],
+                description=service["description"],
+                icon=service["icon"],
+                image=service["image"],
+                whatsapp_button="Solicitar información",
+                is_active=True,
+            ))
+
+    retired_services = {"Inteligencia Artificial", "Infraestructura TI", "Soluciones de Inteligencia Artificial"}
+    for service in Service.query.all():
+        if service.name in retired_services:
+            service.is_active = False
 
     if not Plan.query.first():
         db.session.add_all([
-            Plan(name="Plan Básico", price="Desde RD$ 12,000", description="Presencia inicial profesional.", features="Página informativa\nBotón WhatsApp\nDiseño responsive"),
-            Plan(name="Plan Profesional", price="Desde RD$ 28,000", description="Web avanzada para marcas en crecimiento.", features="Página avanzada\nDominio y hosting\nSEO básico\nSecciones premium", is_featured=True),
-            Plan(name="Plan Empresarial", price="A cotizar", description="Software, paneles e integraciones a medida.", features="Sistema personalizado\nPanel admin\nAutomatización\nSoporte técnico"),
+            Plan(name="Plan BÃ¡sico", price="Desde RD$ 12,000", description="Presencia inicial profesional.", features="PÃ¡gina informativa\nBotÃ³n WhatsApp\nDiseÃ±o responsive"),
+            Plan(name="Plan Profesional", price="Desde RD$ 28,000", description="Web avanzada para marcas en crecimiento.", features="PÃ¡gina avanzada\nDominio y hosting\nSEO bÃ¡sico\nSecciones premium", is_featured=True),
+            Plan(name="Plan Empresarial", price="A cotizar", description="Software, paneles e integraciones a medida.", features="Sistema personalizado\nPanel admin\nAutomatizaciÃ³n\nSoporte tÃ©cnico"),
         ])
 
-    if not PortfolioProject.query.first():
-        default_projects = [
-            ("Sistema POS Avanzado", "Sistemas de Ventas", "Python, Flask, PostgreSQL", "img/projects/pos-dashboard.webp"),
-            ("Plataforma Web Corporativa", "Software a medida", "React, Node.js, AWS", "img/projects/web-development.webp"),
-            ("Auditoría de Ciberseguridad", "Ciberseguridad", "Kali Linux, Wireshark, Metasploit", "img/projects/cybersecurity.webp"),
-            ("Instalación CCTV Inteligente", "Seguridad Física", "Hikvision, Dahua, Networking", "img/projects/cctv-security.webp"),
-            ("Automatización de Procesos", "IA & Automatización", "Python, Selenium, Docker", "img/projects/business-automation.webp"),
-        ]
-        for name, cat, tech, img_path in default_projects:
-            db.session.add(PortfolioProject(
-                name=name,
-                category=cat,
-                technologies=tech,
-                description="Solución tecnológica implementada con altos estándares de calidad y seguridad.",
-                image=img_path
-            ))
+    # Limpiar y recrear proyectos específicos para evitar duplicados y rutas erróneas
+    PortfolioProject.query.delete()
+    default_projects = [
+        ("Sistema POS Empresarial", "Software / POS", "POS, Inventario, Caja, Reportes", "img/projects/pos-dashboard.webp"),
+        ("Página Web Profesional", "Landing Page / Web", "Flask, Jinja, HTML, CSS, JavaScript", "img/projects/web-development.webp"),
+        ("Seguridad Digital", "Ciberseguridad", "Backups, Accesos, Antivirus, Buenas prácticas", "img/projects/cybersecurity.webp"),
+        ("CCTV Inteligente", "Videovigilancia", "Cámaras IP, NVR, Acceso Remoto, Biometría", "img/projects/cctv-security.webp"),
+    ]
+    for name, cat, tech, img_path in default_projects:
+        db.session.add(PortfolioProject(
+            name=name,
+            category=cat,
+            technologies=tech,
+            description="Caso de servicio presentado como solución profesional para negocios y empresas.",
+            image=img_path,
+            is_case_study=True,
+        ))
 
+    project_details = {
+        "Sistema POS Empresarial": (
+            "Sistema de ventas para organizar caja, productos, clientes e inventario.",
+            "Control de ventas, inventario, caja y reportes.",
+        ),
+        "Página Web Profesional": (
+            "Página web corporativa enfocada en presencia digital y contacto comercial.",
+            "Presencia digital moderna y orientada a clientes.",
+        ),
+        "Seguridad Digital": (
+            "Servicio de protección básica para equipos, accesos, respaldos y datos.",
+            "Protección básica de equipos, accesos y datos.",
+        ),
+        "CCTV Inteligente": (
+            "Solución de videovigilancia con grabación, acceso remoto y seguridad física.",
+            "Monitoreo remoto y seguridad física 24/7.",
+        ),
+    }
+    for project in PortfolioProject.query.all():
+        description, result = project_details.get(project.name, (project.description, project.challenge_solution))
+        project.description = description
+        project.challenge_solution = result
+        project.is_case_study = True
     if not Testimonial.query.first():
         db.session.add_all([
-            Testimonial(client_name="Cliente comercial", company="Servicios profesionales", comment="La presencia digital quedó moderna, rápida y lista para captar clientes por WhatsApp.", stars=5),
+            Testimonial(client_name="Cliente comercial", company="Servicios profesionales", comment="La presencia digital quedÃ³ moderna, rÃ¡pida y lista para captar clientes por WhatsApp.", stars=5),
             Testimonial(client_name="Gerente operativo", company="Empresa local", comment="Nos ayudaron a organizar procesos y entender que solucion necesitaba el negocio.", stars=5),
-            Testimonial(client_name="Emprendedor", company="Marca digital", comment="Excelente trato, diseño profesional y soporte claro durante todo el proceso.", stars=5),
+            Testimonial(client_name="Emprendedor", company="Marca digital", comment="Excelente trato, diseÃ±o profesional y soporte claro durante todo el proceso.", stars=5),
         ])
 
     if not FAQ.query.first():
         db.session.add_all([
-            FAQ(question="¿Puedo editar el contenido del sitio?", answer="Sí. El panel admin permite modificar textos, imágenes, servicios, planes, SEO y mensajes.", order=1),
+            FAQ(question="Â¿Puedo editar el contenido del sitio?", answer="SÃ­. El panel admin permite modificar textos, imÃ¡genes, servicios, planes, SEO y mensajes.", order=1),
             FAQ(question="Los mensajes del formulario se guardan?", answer="Si. Cada mensaje queda almacenado en SQLite y se consulta desde el panel admin.", order=2),
             FAQ(question="Se puede desplegar en Render?", answer="Si. El proyecto incluye Procfile, requirements.txt y render.yaml.", order=3),
         ])
@@ -782,17 +831,17 @@ def seed_database():
 
     if not Skill.query.first():
         skill_names = [
-            "Desarrollo de Software", "Ciberseguridad", "Inteligencia Artificial", 
-            "Infraestructura Cloud", "Automatización Industrial", "Análisis de Datos",
-            "Seguridad de Redes", "DevOps", "Consultoría IT", "Soporte Crítico"
+            "Desarrollo de Software", "Sistemas POS", "Landing Pages", "Ciberseguridad Básica",
+            "CCTV", "Control de Acceso", "Soporte Técnico", "Aires Acondicionados",
+            "Mantenimiento de Computadoras", "Instalación de Software"
         ]
         for index, name in enumerate(skill_names, start=1):
             db.session.add(Skill(name=name, icon="fa-solid fa-microchip", order=index))
 
     if not Certificate.query.first():
         certificates = [
-            ("Implementación de sistemas empresariales", "AFCyber SOLUTIONS", ""),
-            ("Servicios técnicos y digitales", "AFCyber SOLUTIONS", ""),
+            ("ImplementaciÃ³n de sistemas empresariales", "AFCyber SOLUTIONS", ""),
+            ("Servicios tÃ©cnicos y digitales", "AFCyber SOLUTIONS", ""),
             ("Soporte e instalacion profesional", "AFCyber SOLUTIONS", ""),
         ]
         for index, (name, issuer, year) in enumerate(certificates, start=1):

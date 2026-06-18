@@ -3,70 +3,75 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ settings.meta_title or 'AFCyber Solutions | Software, IA & Ciberseguridad en República Dominicana' }}</title>
-  <meta name="description" content="{{ settings.meta_description or 'Expertos en desarrollo de software empresarial, sistemas POS, inteligencia artificial y ciberseguridad avanzada para empresas en República Dominicana.' }}">
-  <meta name="keywords" content="{{ settings.keywords or 'AFCyber Solutions, software empresarial, ciberseguridad, sistemas POS, inteligencia artificial, infraestructura tecnológica, República Dominicana, Amauri Feliz' }}">
-  <meta name="author" content="{{ settings.company_name }}">
-  <meta name="theme-color" content="#050B14">
-  
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="{{ request.url }}">
-  <meta property="og:title" content="{{ settings.meta_title or 'AFCyber Solutions | Ingeniería de Soluciones' }}">
-  <meta property="og:description" content="{{ settings.meta_description or 'Transformamos tecnología en resultados reales con software a medida y ciberdefensa.' }}">
-  <meta property="og:image" content="{{ url_for('static', filename='img/og-afcyber.svg', _external=True) }}">
+  <title>AFCyber Solutions | Sistema POS, Desarrollo Web, CCTV y Soporte Tecnico</title>
+  <meta name="description" content="AFCyber Solutions ofrece Sistema POS, Desarrollo Web, Landing Page, CCTV, Soporte Tecnico, Aires Acondicionados y Ciberseguridad Dominicana para empresas, negocios y hogares.">
+  <meta name="keywords" content="AFCyber Solutions, Sistema POS, Desarrollo Web, Landing Page, CCTV, Soporte Tecnico, Aires Acondicionados, Ciberseguridad Dominicana">
+  <meta name="author" content="AFCyber Solutions">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#050b18">
+  <link rel="canonical" href="{{ request.base_url }}">
 
-  <!-- Schema.org para Empresas Tecnológicas -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_DO">
+  <meta property="og:url" content="{{ request.url }}">
+  <meta property="og:site_name" content="AFCyber Solutions">
+  <meta property="og:title" content="AFCyber Solutions | Tecnologia, Seguridad y Soporte">
+  <meta property="og:description" content="Sistema POS, Desarrollo Web, Landing Page, CCTV, Soporte Tecnico, Aires Acondicionados y Ciberseguridad Dominicana.">
+  <meta property="og:image" content="{{ url_for('static', filename='img/og-afcyber.svg', _external=True) }}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AFCyber Solutions | Sistema POS, Web, CCTV y Soporte">
+  <meta name="twitter:description" content="Soluciones tecnologicas premium para empresas, negocios y hogares en Republica Dominicana.">
+  <meta name="twitter:image" content="{{ url_for('static', filename='img/og-afcyber.svg', _external=True) }}">
+
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "TechBusiness",
+    "@type": "ProfessionalService",
     "name": "AFCyber Solutions",
-    "alternateName": "AFCyber",
     "url": "{{ request.host_url }}",
-    "logo": "{{ url_for('static', filename=visual_assets.logo, _external=True) if visual_assets.logo else '' }}",
-    "description": "Desarrollo de software empresarial, ciberseguridad e infraestructura tecnológica.",
+    "logo": "{{ url_for('static', filename='img/afcyber-logo-main.png', _external=True) }}",
+    "image": "{{ url_for('static', filename='img/og-afcyber.svg', _external=True) }}",
+    "description": "Sistema POS, Desarrollo Web, Landing Page, CCTV, Soporte Tecnico, Aires Acondicionados y Ciberseguridad Dominicana.",
+    "telephone": "829-919-8058",
+    "email": "info@afcybersolutions.com.do",
     "address": {
       "@type": "PostalAddress",
-      "addressLocality": "San Cristóbal",
+      "addressLocality": "San Cristobal",
       "addressCountry": "DO"
-    },
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "telephone": "{{ settings.phone }}",
-      "contactType": "sales"
     },
     "founder": {
       "@type": "Person",
       "name": "Ing. Amauri Feliz"
     },
-    "offers": [
-      {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Sistemas POS"}},
-      {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Ciberseguridad"}}
-    ]
+    "areaServed": "Republica Dominicana",
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Servicios AFCyber Solutions",
+      "itemListElement": [
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Sistema POS"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Desarrollo Web"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Landing Page"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "CCTV"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Soporte Tecnico"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Aires Acondicionados"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Ciberseguridad Dominicana"}}
+      ]
+    }
   }
   </script>
 
   <link rel="icon" href="{{ url_for('static', filename='img/favicon.svg') }}">
-  {% if visual_assets.hero_image %}<link rel="preload" as="image" href="{{ url_for('static', filename=visual_assets.hero_image) }}">{% endif %}
   <link rel="preload" as="image" href="{{ url_for('static', filename='img/afcyber-logo-main.png') }}">
+  <link rel="preload" as="image" href="{{ url_for('static', filename='img/projects/pos-dashboard.webp') }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
-  <style>
-    :root {
-      --primary: {{ settings.primary_color }};
-      --secondary: {{ settings.secondary_color }};
-      --dark: {{ settings.background_color }};
-      --button: {{ settings.button_color }};
-    }
-  </style>
   {% if settings.google_analytics_id %}
   <script async src="https://www.googletagmanager.com/gtag/js?id={{ settings.google_analytics_id }}"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','{{ settings.google_analytics_id }}');</script>
@@ -80,90 +85,91 @@
       <a class="navbar-brand af-brand" href="{{ url_for('index') }}#inicio" aria-label="AFCyber Solutions">
         <img class="brand-logo-img" src="{{ url_for('static', filename='img/afcyber-logo-main.png') }}" alt="Logo AFCyber Solutions">
       </a>
-
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu" aria-label="Abrir menú">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu" aria-label="Abrir menu">
         <span class="navbar-toggler-icon"></span>
       </button>
-
       <div class="collapse navbar-collapse" id="navbarMenu">
         <ul class="navbar-nav nav-center mx-auto align-items-xl-center">
           <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#inicio">Inicio</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#servicios">Servicios</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#soluciones">Soluciones</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#galeria-servicios">Galeria</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#casos-exito">Casos</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#proyectos">Portafolio</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#nosotros">CEO</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#contacto">Contacto</a></li>
         </ul>
         <div class="nav-actions">
-          <a class="btn nav-cta js-whatsapp" href="#" data-message="Hola AFCyber Solutions, quiero solicitar una cotización para mi proyecto.">
-            <i class="fa-regular fa-file-lines"></i> Solicitar Cotización
-          </a>
-          <a class="nav-whatsapp js-whatsapp" href="#" aria-label="WhatsApp">
-            <i class="fa-brands fa-whatsapp"></i>
-          </a>
+          <a class="btn nav-cta js-whatsapp" href="#" data-message="Hola AFCyber Solutions, quiero solicitar una cotizacion."><i class="fa-regular fa-file-lines"></i> Cotizar</a>
+          <a class="nav-whatsapp js-whatsapp" href="#" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
         </div>
       </div>
     </div>
   </nav>
 
   {% include "partials/_flash.html" %}
-  
   {% block content %}{% endblock %}
 
-  <footer class="footer-premium py-5 mt-5">
+  <footer class="footer-premium">
     <div class="container">
-      <div class="row g-4">
-        <div class="col-lg-4">
-          <div class="footer-brand mb-3">
-            <img src="{{ url_for('static', filename='img/afcyber-logo-main.png') }}" alt="Logo AFCyber Solutions" class="footer-logo">
-          </div>
-          <p class="opacity-75">Líderes en transformación digital, ciberseguridad avanzada e infraestructura de alta disponibilidad.</p>
-          <div class="social-links-footer d-flex gap-3 mt-4">
+      <div class="footer-grid">
+        <div class="footer-company">
+          <img src="{{ url_for('static', filename='img/afcyber-logo-main.png') }}" alt="AFCyber Solutions" class="footer-logo">
+          <p>Empresa tecnologica integral enfocada en software empresarial, sistemas POS, paginas web, CCTV, soporte tecnico, ciberseguridad basica y climatizacion.</p>
+          <div class="social-links-footer">
             {% for social in socials %}
-            <a href="{{ social.url }}" class="social-icon-circle" target="_blank"><i class="{{ social.icon }}"></i></a>
+            <a href="{{ social.url }}" aria-label="{{ social.name }}" target="_blank" rel="noopener"><i class="{{ social.icon }}"></i></a>
             {% endfor %}
           </div>
         </div>
-        <div class="col-lg-2 col-md-4">
-          <h5 class="footer-title">Servicios</h5>
-          <ul class="list-unstyled footer-links">
-            {% for service in real_services[:5] %}
-            <li><a href="{{ url_for('index') }}#{{ service.slug }}">{{ service.short_name or service.name }}</a></li>
-            {% endfor %}
-          </ul>
+        <div>
+          <h3>Servicios</h3>
+          <a href="{{ url_for('index') }}#sistemas-pos-erp">Sistema POS</a>
+          <a href="{{ url_for('index') }}#software-empresarial">Desarrollo de Software</a>
+          <a href="{{ url_for('index') }}#landing-pages-webs">Landing Pages</a>
+          <a href="{{ url_for('index') }}#cctv-control-acceso">CCTV</a>
         </div>
-        <div class="col-lg-2 col-md-4">
-          <h5 class="footer-title">Soluciones</h5>
-          <ul class="list-unstyled footer-links">
-            <li><a href="{{ url_for('index') }}#soluciones">Metodología</a></li>
-            <li><a href="{{ url_for('index') }}#proyectos">Portafolio</a></li>
-            <li><a href="{{ url_for('index') }}#blog">Preguntas Frecuentes</a></li>
-          </ul>
+        <div>
+          <h3>Soluciones</h3>
+          <a href="{{ url_for('index') }}#aires-acondicionados">Aires Acondicionados</a>
+          <a href="{{ url_for('index') }}#mantenimiento-computadoras">Mantenimiento de Computadoras</a>
+          <a href="{{ url_for('index') }}#instalacion-software">Instalacion de Software</a>
+          <a href="{{ url_for('index') }}#ciberseguridad">Ciberseguridad Basica</a>
         </div>
-        <div class="col-lg-4 col-md-4">
-          <h5 class="footer-title">Contacto</h5>
-          <p class="mb-1 opacity-75"><i class="fa-solid fa-phone me-2"></i> {{ settings.phone }}</p>
-          <p class="mb-1 opacity-75"><i class="fa-solid fa-envelope me-2"></i> {{ settings.email }}</p>
-          <p class="opacity-75"><i class="fa-solid fa-location-dot me-2"></i> San Cristóbal, Rep. Dom.</p>
+        <div>
+          <h3>Contacto</h3>
+          <span><i class="fa-brands fa-whatsapp"></i> 829-919-8058</span>
+          <span><i class="fa-solid fa-envelope"></i> info@afcybersolutions.com.do</span>
+          <span><i class="fa-solid fa-location-dot"></i> San Cristobal, Republica Dominicana</span>
         </div>
       </div>
-      <hr class="my-4 opacity-25">
-      <div class="footer-bottom d-flex justify-content-between flex-wrap gap-3">
-        <p class="mb-0">&copy; <span id="currentYear"></span> {{ settings.company_name }}. Todos los derechos reservados.</p>
-        <p class="mb-0">Desarrollado por <strong>AFCyber Solutions</strong></p>
+      <div class="footer-bottom">
+        <p>&copy; <span id="currentYear"></span> AFCyber Solutions. Todos los derechos reservados.</p>
+        <p>Desarrollado por <strong>AFCyber Solutions</strong></p>
       </div>
     </div>
   </footer>
 
-  <aside class="virtual-assistant" id="virtualAssistant">
-    <button class="assistant-toggle" type="button" aria-expanded="false" aria-controls="assistantPanel">
-      <i class="fa-solid fa-robot"></i>
-      <span>AI</span>
+  <aside class="help-bot" id="helpBot">
+    <button class="help-bot-toggle" type="button" aria-expanded="false" aria-controls="helpBotPanel">
+      <i class="fa-solid fa-comments"></i>
+      <span>Ayuda</span>
     </button>
-    <div class="assistant-panel" id="assistantPanel">
-      <strong>AFCyber Assistant</strong>
-      <p>¿Necesitas una solución tecnológica a medida?</p>
-      <a class="js-whatsapp" href="#" data-message="Hola, me gustaría recibir asesoría técnica para mi empresa.">Hablar con un experto</a>
+    <div class="help-bot-panel" id="helpBotPanel">
+      <div class="help-bot-header">
+        <strong>Asistente AFCyber</strong>
+        <button type="button" class="help-bot-close" aria-label="Cerrar asistente"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <p>Hola &#128075; Soy el asistente virtual de AFCyber Solutions. &iquest;Como podemos ayudarte?</p>
+      <div class="help-bot-options">
+        <a class="js-whatsapp" href="#" data-message="Hola AFCyber Solutions, quiero solicitar una cotizacion.">Solicitar cotizacion</a>
+        <a class="js-whatsapp" href="#" data-message="Hola AFCyber Solutions, me interesa una cotizacion para un Sistema POS.">Sistemas POS / ERP</a>
+        <a class="js-whatsapp" href="#" data-message="Hola AFCyber Solutions, necesito desarrollo de software empresarial.">Desarrollo de Software</a>
+        <a class="js-whatsapp" href="#" data-message="Hola AFCyber Solutions, necesito una Landing Page profesional.">Landing Pages</a>
+        <a class="js-whatsapp" href="#" data-message="Hola AFCyber Solutions, deseo una cotizacion para camaras de seguridad.">CCTV y Control de Acceso</a>
+        <a class="js-whatsapp" href="#" data-message="Hola AFCyber Solutions, necesito servicio para aire acondicionado.">Aires Acondicionados</a>
+        <a class="js-whatsapp" href="#" data-message="Hola AFCyber Solutions, necesito mantenimiento de computadoras.">Mantenimiento de Computadoras</a>
+        <a class="js-whatsapp" href="#" data-message="Hola AFCyber Solutions, necesito instalacion de software.">Instalacion de Software</a>
+        <a class="primary js-whatsapp" href="#" data-message="Hola AFCyber Solutions, quiero hablar por WhatsApp.">Hablar por WhatsApp</a>
+      </div>
     </div>
   </aside>
 
@@ -172,8 +178,8 @@
 
   <script>
     window.AF_SITE = {
-      whatsapp: "{{ settings.whatsapp }}",
-      defaultMessage: "Hola {{ settings.company_name }}, quiero solicitar informaci\u00f3n sobre sus servicios tecnol\u00f3gicos."
+      whatsapp: "{{ settings.whatsapp or '18299198058' }}",
+      defaultMessage: "Hola AFCyber Solutions, quiero solicitar informacion sobre sus servicios."
     };
   </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
