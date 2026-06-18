@@ -966,16 +966,38 @@ def seed_database():
 
     service_images = {service["name"]: service["image"] for service in REAL_SERVICES}
     service_images.update({
-        "Desarrollo de Software Empresarial": "img/projects/web-development.webp",
+        "Desarrollo web": "img/projects/web-development.webp",
+        "Desarrollo Web": "img/projects/web-development.webp",
+        "Desarrollo de Software Empresarial": "img/projects/business-automation.webp",
+        "Software Empresarial": "img/projects/business-automation.webp",
+        "Sistemas POS": "img/projects/pos-dashboard.webp",
         "Sistemas POS & ERP": "img/projects/pos-dashboard.webp",
+        "Sistemas POS / ERP": "img/projects/pos-dashboard.webp",
+        "Sistemas CMMS": "img/projects/business-automation.webp",
+        "Sistemas de citas": "img/projects/web-development.webp",
+        "Automatizacion de procesos": "img/projects/business-automation.webp",
+        "Automatización de procesos": "img/projects/business-automation.webp",
+        "Ciberseguridad basica": "img/projects/cybersecurity.webp",
+        "Ciberseguridad Básica": "img/projects/cybersecurity.webp",
         "Ciberseguridad Avanzada": "img/projects/cybersecurity.webp",
-        "Soluciones de Inteligencia Artificial": "img/projects/web-development.webp",
-        "Infraestructura TecnolÃ³gica": "img/projects/cybersecurity.webp",
+        "Soporte tecnico": "img/projects/computer-maintenance.webp",
+        "Soporte Técnico": "img/projects/computer-maintenance.webp",
+        "Mantenimiento de Computadoras": "img/projects/computer-maintenance.webp",
+        "Instalación de Software": "img/projects/software-installation.webp",
+        "Camaras de seguridad": "img/projects/cctv-security.webp",
+        "Cámaras de seguridad": "img/projects/cctv-security.webp",
         "CCTV & Control de Acceso": "img/projects/cctv-security.webp",
+        "CCTV y Control de Acceso": "img/projects/cctv-security.webp",
+        "Aires Acondicionados": "img/projects/air-conditioning.webp",
+        "Redes empresariales": "img/projects/cybersecurity.webp",
+        "Correos corporativos": "img/projects/web-development.webp",
+        "Soluciones de Inteligencia Artificial": "img/projects/business-automation.webp",
+        "Infraestructura TecnolÃ³gica": "img/projects/cybersecurity.webp",
     })
     for service in Service.query.all():
-        if service.name in service_images:
-            service.image = service_images[service.name]
+        current_image = (service.image or "").strip()
+        if current_image.startswith("img/services/") or not current_image or service.name in service_images:
+            service.image = service_images.get(service.name, current_image.replace("img/services/", "img/projects/"))
 
     existing_service_names = {service.name for service in Service.query.all()}
     for service in REAL_SERVICES:
@@ -1008,6 +1030,10 @@ def seed_database():
         ("Página Web Profesional", "Landing Page / Web", "Flask, Jinja, HTML, CSS, JavaScript", "img/projects/web-development.webp"),
         ("Seguridad Digital", "Ciberseguridad", "Backups, Accesos, Antivirus, Buenas prácticas", "img/projects/cybersecurity.webp"),
         ("CCTV Inteligente", "Videovigilancia", "Cámaras IP, NVR, Acceso Remoto, Biometría", "img/projects/cctv-security.webp"),
+        ("Automatización Empresarial", "Automatización", "Procesos, Flujos, Reportes, Integración", "img/projects/business-automation.webp"),
+        ("Aires Acondicionados", "Climatización", "Instalación, Limpieza, Mantenimiento, Diagnóstico", "img/projects/air-conditioning.webp"),
+        ("Mantenimiento de Computadoras", "Soporte Técnico", "Formateo, Optimización, Limpieza, Drivers", "img/projects/computer-maintenance.webp"),
+        ("Instalación de Software", "Software", "Programas, Antivirus, Drivers, Configuración", "img/projects/software-installation.webp"),
     ]
     for name, cat, tech, img_path in default_projects:
         db.session.add(PortfolioProject(
@@ -1035,6 +1061,22 @@ def seed_database():
         "CCTV Inteligente": (
             "Solución de videovigilancia con grabación, acceso remoto y seguridad física.",
             "Monitoreo remoto y seguridad física 24/7.",
+        ),
+        "Automatización Empresarial": (
+            "Optimización de tareas internas, reportes y flujos de trabajo para negocios.",
+            "Procesos más claros, medibles y eficientes.",
+        ),
+        "Aires Acondicionados": (
+            "Instalación, limpieza y mantenimiento preventivo para equipos de climatización.",
+            "Equipos con mejor rendimiento, limpieza y soporte confiable.",
+        ),
+        "Mantenimiento de Computadoras": (
+            "Diagnóstico, formateo, limpieza, optimización e instalación de herramientas.",
+            "Computadoras más estables y listas para trabajar.",
+        ),
+        "Instalación de Software": (
+            "Instalación de programas, antivirus, drivers y herramientas de trabajo.",
+            "Equipos configurados con las herramientas necesarias.",
         ),
     }
     for project in PortfolioProject.query.all():
