@@ -142,14 +142,19 @@
     <div class="admin-lock"><i class="fa-solid fa-lock"></i></div>
     <div class="admin-brand justify-content-center"><span>AF</span><strong>AFCyber SOLUTIONS</strong></div>
     <h1>Acceso Administrativo AFCyber Solutions</h1>
-    <p>Ingresa la contrase&ntilde;a maestra para gestionar contenido, im&aacute;genes, mensajes y configuraci&oacute;n del sitio.</p>
+    <p>Ingresa tus credenciales administrativas para gestionar contenido, im&aacute;genes, mensajes y configuraci&oacute;n del sitio.</p>
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% for category, message in messages %}<div class="alert alert-{{ category }}">{{ message }}</div>{% endfor %}
     {% endwith %}
     <form method="post">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
       <label class="master-field">
-        <span>Contrase&ntilde;a maestra</span>
-        <input class="form-control" type="password" name="password" required autocomplete="current-password" autofocus>
+        <span>Correo administrativo</span>
+        <input class="form-control" type="email" name="email" required autocomplete="username" autofocus>
+      </label>
+      <label class="master-field">
+        <span>Contrase&ntilde;a</span>
+        <input class="form-control" type="password" name="password" required autocomplete="current-password">
       </label>
       <div class="login-actions">
         <button class="btn btn-admin w-100" type="submit">Iniciar sesi&oacute;n</button>

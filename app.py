@@ -1,21 +1,28 @@
 ﻿import os
 import json
+import re
 import secrets
 import smtplib
+import time
 from email.message import EmailMessage
+from urllib.parse import urlencode
+from urllib.request import Request as UrlRequest, urlopen
 
 from dotenv import load_dotenv
 from flask import (
     Flask,
+    Response,
     abort,
     flash,
     redirect,
     render_template,
     request,
+    session,
     url_for,
 )
 from flask_login import current_user, login_required, login_user, logout_user
 from sqlalchemy import text
+from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.utils import secure_filename
 
 from extensions import db, login_manager
@@ -41,6 +48,9 @@ load_dotenv()
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 ALLOWED_IMAGES = {"jpg", "jpeg", "png", "webp", "svg"}
 ALLOWED_PDF = {"pdf"}
+CONTACT_RATE_LIMITS = {}
+ADMIN_RATE_LIMITS = {}
+SECURITY_LOG = os.path.join(BASE_DIR, "instance", "security.log")
 
 
 REAL_SERVICES = [
@@ -95,7 +105,7 @@ REAL_SERVICES = [
         "short_name": "Climatización",
         "description": "Instalación, mantenimiento preventivo, limpieza y soporte técnico para equipos de climatización.",
         "icon": "fa-solid fa-wind",
-        "image": "",
+        "image": "img/projects/air-conditioning.webp",
         "features": ["Instalación", "Limpieza", "Mantenimiento", "Diagnóstico"],
     },
     {
@@ -104,7 +114,7 @@ REAL_SERVICES = [
         "short_name": "Soporte Técnico",
         "description": "Formateo, limpieza, optimización, diagnóstico, reparación básica y mejora de rendimiento.",
         "icon": "fa-solid fa-computer",
-        "image": "",
+        "image": "img/projects/computer-maintenance.webp",
         "features": ["Formateo", "Limpieza", "Optimización", "Diagnóstico"],
     },
     {
@@ -113,7 +123,7 @@ REAL_SERVICES = [
         "short_name": "Software",
         "description": "Instalación de programas, configuración de sistemas, drivers, antivirus y herramientas de trabajo.",
         "icon": "fa-solid fa-download",
-        "image": "",
+        "image": "img/projects/software-installation.webp",
         "features": ["Programas", "Drivers", "Antivirus", "Herramientas"],
     },
 ]
@@ -121,7 +131,7 @@ CONTACT_CHANNELS = {
     "cotizacion": {
         "label": "Cotizaciones",
         "email": "cotizaciones@afcybersolutions.com.do",
-        "subject": "Nueva Solicitud de CotizaciÃ³n",
+        "subject": "Nueva solicitud de cotizacion",
         "icon": "fa-solid fa-file-invoice-dollar",
     },
     "ventas": {
@@ -131,21 +141,21 @@ CONTACT_CHANNELS = {
         "icon": "fa-solid fa-cart-shopping",
     },
     "contacto": {
-        "label": "Contacto General",
+        "label": "Informacion General",
         "email": "info@afcybersolutions.com.do",
         "subject": "Consulta desde sitio web AFCyber Solutions",
         "icon": "fa-solid fa-envelope-open-text",
     },
     "ingeniero": {
-        "label": "Contactar al Ingeniero",
+        "label": "Direccion Ejecutiva",
         "email": "a.felizv@afcybersolutions.com.do",
-        "subject": "Contacto para Ing. Amauri Feliz",
+        "subject": "Contacto para direccion ejecutiva",
         "icon": "fa-solid fa-user-tie",
     },
     "soporte": {
-        "label": "Soporte TÃ©cnico",
+        "label": "Soporte Tecnico",
         "email": "soporte@afcybersolutions.com.do",
-        "subject": "Solicitud de Soporte TÃ©cnico",
+        "subject": "Solicitud de soporte tecnico",
         "icon": "fa-solid fa-headset",
     },
     "licencias": {
@@ -159,6 +169,7 @@ CONTACT_CHANNELS = {
 
 def create_app():
     app = Flask(__name__, instance_relative_config=True)
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1)
     app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-change-this-secret-key")
     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
         "DATABASE_URL", f"sqlite:///{os.path.join(app.instance_path, 'afcyber.db')}"
@@ -166,6 +177,10 @@ def create_app():
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["UPLOAD_FOLDER"] = os.path.join(app.root_path, "static", "uploads")
     app.config["MAX_CONTENT_LENGTH"] = 8 * 1024 * 1024
+    app.config["SESSION_COOKIE_HTTPONLY"] = True
+    app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+    secure_cookie_default = bool(os.environ.get("RENDER") or os.environ.get("FLASK_ENV") == "production")
+    app.config["SESSION_COOKIE_SECURE"] = os.environ.get("SESSION_COOKIE_SECURE", "1" if secure_cookie_default else "0") == "1"
 
     os.makedirs(app.instance_path, exist_ok=True)
     os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
@@ -180,6 +195,7 @@ def create_app():
 
     register_routes(app)
     register_template_helpers(app)
+    register_security(app)
     register_error_handlers(app)
     return app
 
@@ -189,10 +205,165 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+def register_security(app):
+    @app.before_request
+    def enforce_request_security():
+        https_response = enforce_https()
+        if https_response:
+            return https_response
+
+        if request.method == "POST":
+            if not validate_csrf_token():
+                log_security_event("csrf_rejected", request.endpoint or "unknown")
+                abort(400)
+
+            if request.endpoint == "index" and is_rate_limited(CONTACT_RATE_LIMITS, get_client_ip(), 5, 600):
+                log_security_event("contact_rate_limited", request.form.get("email", ""))
+                flash("Hemos recibido varias solicitudes desde esta conexion. Intenta nuevamente en unos minutos.", "warning")
+                return redirect(url_for("index", _anchor="contacto"))
+
+            if request.endpoint == "admin_login" and is_rate_limited(ADMIN_RATE_LIMITS, get_client_ip(), 6, 900):
+                log_security_event("admin_login_rate_limited", get_client_ip())
+                flash("Demasiados intentos. Espera unos minutos antes de intentar nuevamente.", "danger")
+                return render_template("admin/login.html"), 429
+
+            if request.endpoint == "index" and not verify_turnstile():
+                log_security_event("turnstile_rejected", request.form.get("email", ""))
+                flash("No pudimos validar la proteccion anti-spam. Intenta nuevamente.", "danger")
+                return redirect(url_for("index", _anchor="contacto"))
+
+    @app.after_request
+    def set_security_headers(response):
+        response.headers["Content-Security-Policy"] = build_csp()
+        response.headers["X-Frame-Options"] = "SAMEORIGIN"
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=(), payment=(), usb=(), interest-cohort=()"
+        if request.is_secure or request.headers.get("X-Forwarded-Proto", "").lower() == "https":
+            response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
+        return response
+
+
+def enforce_https():
+    if request.method == "GET" and request.path.startswith("/static/"):
+        return None
+    if os.environ.get("FORCE_HTTPS", "1") == "0":
+        return None
+    host = request.host.split(":")[0]
+    if host in {"localhost", "127.0.0.1"}:
+        return None
+    forwarded_proto = request.headers.get("X-Forwarded-Proto", "").lower()
+    is_https = request.is_secure or forwarded_proto == "https"
+    is_production = os.environ.get("RENDER") or os.environ.get("FLASK_ENV") == "production"
+    if is_production and not is_https:
+        return redirect(request.url.replace("http://", "https://", 1), code=301)
+    return None
+
+
+def build_csp():
+    return "; ".join([
+        "default-src 'self'",
+        "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://challenges.cloudflare.com https://www.googletagmanager.com",
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com",
+        "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:",
+        "img-src 'self' data: https:",
+        "frame-src https://www.google.com https://maps.google.com https://challenges.cloudflare.com",
+        "connect-src 'self' https://challenges.cloudflare.com https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com",
+        "form-action 'self'",
+        "base-uri 'self'",
+        "frame-ancestors 'self'",
+        "upgrade-insecure-requests",
+    ])
+
+
+def csrf_token():
+    token = session.get("_csrf_token")
+    if not token:
+        token = secrets.token_urlsafe(32)
+        session["_csrf_token"] = token
+    return token
+
+
+def validate_csrf_token():
+    expected = session.get("_csrf_token")
+    submitted = request.form.get("_csrf_token", "")
+    return bool(expected and submitted and secrets.compare_digest(expected, submitted))
+
+
+def get_client_ip():
+    forwarded = request.headers.get("X-Forwarded-For", "")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    return request.remote_addr or "unknown"
+
+
+def is_rate_limited(bucket, key, max_requests, window_seconds):
+    now = time.time()
+    attempts = [stamp for stamp in bucket.get(key, []) if now - stamp < window_seconds]
+    limited = len(attempts) >= max_requests
+    attempts.append(now)
+    bucket[key] = attempts[-max_requests:]
+    return limited
+
+
+def verify_turnstile():
+    secret_key = os.environ.get("TURNSTILE_SECRET_KEY", "").strip()
+    if not secret_key:
+        return True
+    token = request.form.get("cf-turnstile-response", "").strip()
+    if not token:
+        return False
+    payload = urlencode({
+        "secret": secret_key,
+        "response": token,
+        "remoteip": get_client_ip(),
+    }).encode()
+    try:
+        turnstile_request = UrlRequest("https://challenges.cloudflare.com/turnstile/v0/siteverify", data=payload, method="POST")
+        with urlopen(turnstile_request, timeout=5) as response:
+            result = json.loads(response.read().decode("utf-8"))
+        return bool(result.get("success"))
+    except Exception:
+        return False
+
+
+def sanitize_text(value, max_length=500, allow_newlines=False):
+    value = str(value or "")
+    if not allow_newlines:
+        value = value.replace("\r", " ").replace("\n", " ")
+    value = re.sub(r"<[^>]*>", "", value)
+    value = re.sub(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]", "", value)
+    value = re.sub(r"[ \t]+", " ", value)
+    return value.strip()[:max_length]
+
+
+def sanitize_email(value):
+    email = sanitize_text(value, 160).lower()
+    if not email:
+        return ""
+    return email if re.fullmatch(r"[^@\s]+@[^@\s]+\.[^@\s]+", email) else ""
+
+
+def sanitize_phone(value):
+    return re.sub(r"[^0-9+()\-.\s]", "", str(value or ""))[:40].strip()
+
+
+def log_security_event(event, detail=""):
+    os.makedirs(os.path.dirname(SECURITY_LOG), exist_ok=True)
+    line = f"{time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}\t{get_client_ip()}\t{event}\t{sanitize_text(detail, 180)}\n"
+    try:
+        with open(SECURITY_LOG, "a", encoding="utf-8") as log_file:
+            log_file.write(line)
+    except OSError:
+        pass
+
+
 def register_template_helpers(app):
     @app.context_processor
     def inject_settings():
         settings = get_settings()
+        google_analytics_id = os.environ.get("GOOGLE_ANALYTICS_ID", "").strip() or (settings.google_analytics_id if settings else "")
+        google_search_console = os.environ.get("GOOGLE_SEARCH_CONSOLE", "").strip() or (settings.google_search_console if settings else "")
         
         # Datos estructurados de la empresa (Schema.org)
         company_schema = {
@@ -222,6 +393,10 @@ def register_template_helpers(app):
         return {
             "settings": settings,
             "visual_assets": get_visual_assets(settings),
+            "csrf_token": csrf_token,
+            "turnstile_site_key": os.environ.get("TURNSTILE_SITE_KEY", "").strip(),
+            "google_analytics_id": google_analytics_id,
+            "google_search_console": google_search_console,
             "company_schema": json.dumps(company_schema),
             "meta": {
                 "title": settings.meta_title if settings else "AFCyber SOLUTIONS",
@@ -269,12 +444,12 @@ def register_routes(app):
     @app.route("/", methods=["GET", "POST"])
     def index():
         if request.method == "POST":
-            inquiry_type = request.form.get("inquiry_type", "cotizacion").strip().lower()
+            inquiry_type = sanitize_text(request.form.get("inquiry_type", "cotizacion"), 60).lower()
             channel = CONTACT_CHANNELS.get(inquiry_type, CONTACT_CHANNELS["contacto"])
-            subject = request.form.get("subject", channel["subject"]).strip() or channel["subject"]
-            message_body = request.form.get("message", "").strip()
-            estimated_budget = request.form.get("estimated_budget", "").strip()
-            tentative_date = request.form.get("tentative_date", "").strip()
+            subject = sanitize_text(request.form.get("subject", channel["subject"]), 180) or channel["subject"]
+            message_body = sanitize_text(request.form.get("message", ""), 2500, allow_newlines=True)
+            estimated_budget = sanitize_text(request.form.get("estimated_budget", ""), 80)
+            tentative_date = sanitize_text(request.form.get("tentative_date", ""), 40)
             details = []
             if estimated_budget:
                 details.append(f"Presupuesto estimado: {estimated_budget}")
@@ -285,14 +460,14 @@ def register_routes(app):
             message = ContactMessage(
                 inquiry_type=inquiry_type if inquiry_type in CONTACT_CHANNELS else "contacto",
                 subject=subject,
-                name=request.form.get("name", "").strip(),
-                company=request.form.get("company", "").strip(),
-                phone=request.form.get("phone", "").strip(),
-                email=request.form.get("email", "").strip(),
-                requested_service=request.form.get("requested_service", "").strip(),
+                name=sanitize_text(request.form.get("name", ""), 140),
+                company=sanitize_text(request.form.get("company", ""), 140),
+                phone=sanitize_phone(request.form.get("phone", "")),
+                email=sanitize_email(request.form.get("email", "")),
+                requested_service=sanitize_text(request.form.get("requested_service", ""), 160),
                 message=message_body,
             )
-            if not message.name or not (message.phone or message.email) or not message.message:
+            if not message.name or not (message.phone or message.email) or not message.message or len(message.message) < 8:
                 flash("Completa nombre, telÃ©fono o correo, y descripciÃ³n.", "danger")
             else:
                 db.session.add(message)
@@ -318,23 +493,64 @@ def register_routes(app):
             socials=SocialLink.query.filter_by(is_active=True).all(),
         )
 
+    @app.route("/privacy-policy")
+    def privacy_policy():
+        return render_template("public/privacy_policy.html", socials=SocialLink.query.filter_by(is_active=True).all())
+
+    @app.route("/terms-and-conditions")
+    def terms_and_conditions():
+        return render_template("public/terms_conditions.html", socials=SocialLink.query.filter_by(is_active=True).all())
+
+    @app.route("/robots.txt")
+    def robots_txt():
+        body = "\n".join([
+            "User-agent: *",
+            "Allow: /",
+            "Disallow: /admin",
+            f"Sitemap: {url_for('sitemap_xml', _external=True)}",
+            "",
+        ])
+        return Response(body, mimetype="text/plain")
+
+    @app.route("/sitemap.xml")
+    def sitemap_xml():
+        pages = [
+            ("index", "daily", "1.0"),
+            ("privacy_policy", "monthly", "0.4"),
+            ("terms_and_conditions", "monthly", "0.4"),
+        ]
+        urls = [
+            f"<url><loc>{url_for(endpoint, _external=True)}</loc><changefreq>{changefreq}</changefreq><priority>{priority}</priority></url>"
+            for endpoint, changefreq, priority in pages
+        ]
+        body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">" + "".join(urls) + "</urlset>"
+        return Response(body, mimetype="application/xml")
+
     @app.route("/admin/login", methods=["GET", "POST"])
     def admin_login():
         if current_user.is_authenticated:
             return redirect(url_for("admin_dashboard"))
         if request.method == "POST":
+            email = sanitize_email(request.form.get("email", ""))
             password = request.form.get("password", "")
             master_password = os.getenv("ADMIN_MASTER_PASSWORD")
+            user = User.query.filter_by(email=email, is_active_admin=True).first() if email else None
+            if user and user.check_password(password):
+                ADMIN_RATE_LIMITS.pop(get_client_ip(), None)
+                login_user(user)
+                return redirect(url_for("admin_dashboard"))
             if master_password and password == master_password:
+                ADMIN_RATE_LIMITS.pop(get_client_ip(), None)
                 user = User.query.filter_by(is_active_admin=True).order_by(User.id.asc()).first()
                 if not user:
                     user = User(email=os.environ.get("ADMIN_EMAIL", "admin@afcybersolutions.com.do"), name="Administrador AFCyber")
-                    user.set_password(secrets.token_urlsafe(48))
+                    user.set_password(os.environ.get("ADMIN_PASSWORD", "ingeniero24"))
                     db.session.add(user)
                     db.session.commit()
                 login_user(user)
                 return redirect(url_for("admin_dashboard"))
-            flash("ContraseÃ±a maestra incorrecta.", "danger")
+            log_security_event("admin_login_failed", email or "master_password")
+            flash("Credenciales administrativas incorrectas.", "danger")
         return render_template("admin/login.html")
 
     @app.route("/admin/logout")
@@ -459,8 +675,8 @@ def register_routes(app):
     @login_required
     def admin_users():
         if request.method == "POST":
-            email = request.form.get("email", "").strip().lower()
-            name = request.form.get("name", "").strip() or "Administrador"
+            email = sanitize_email(request.form.get("email", ""))
+            name = sanitize_text(request.form.get("name", ""), 140) or "Administrador"
             password = request.form.get("password", "")
             if not email or len(password) < 8:
                 flash("Indica correo y una contrasena de al menos 8 caracteres.", "danger")
@@ -575,8 +791,15 @@ def update_model_from_form(item, fields):
             setattr(item, name, name in request.form)
         elif field_type == "number":
             setattr(item, name, int(request.form.get(name) or 0))
+        elif field_type == "email":
+            setattr(item, name, sanitize_email(request.form.get(name, "")))
+        elif field_type == "url":
+            value = sanitize_text(request.form.get(name, ""), 255)
+            if value and not value.startswith(("http://", "https://", "#")):
+                value = ""
+            setattr(item, name, value)
         else:
-            setattr(item, name, request.form.get(name, "").strip())
+            setattr(item, name, sanitize_text(request.form.get(name, ""), 4000, allow_newlines=field_type == "textarea"))
 
 
 def save_upload(file, pdf=False):
@@ -614,8 +837,8 @@ def ensure_database_schema():
         
     db.session.commit()
 def send_contact_notification(message, channel):
-    smtp_host = os.environ.get("SMTP_HOST", "").strip()
-    smtp_user = os.environ.get("SMTP_USER", "").strip()
+    smtp_host = os.environ.get("SMTP_SERVER", "").strip() or os.environ.get("SMTP_HOST", "").strip()
+    smtp_user = os.environ.get("SMTP_USERNAME", "").strip() or os.environ.get("SMTP_USER", "").strip()
     smtp_password = os.environ.get("SMTP_PASSWORD", "").strip()
     if not smtp_host or not smtp_user or not smtp_password:
         return False
@@ -646,6 +869,7 @@ def send_contact_notification(message, channel):
 def build_contact_email_body(message, channel):
     return "\n".join([
         f"Tipo: {channel['label']}",
+        f"Destino: {channel['email']}",
         f"Asunto: {message.subject or channel['subject']}",
         f"Nombre: {message.name}",
         f"Empresa: {message.company or 'No indicada'}",
@@ -707,10 +931,17 @@ def first_or_404(model):
 
 
 def seed_database():
-    if not User.query.first():
-        admin = User(email=os.environ.get("ADMIN_EMAIL", "admin@afcybersolutions.com.do"), name="Administrador AFCyber")
-        admin.set_password(secrets.token_urlsafe(48))
+    admin_email = os.environ.get("ADMIN_EMAIL", "admin@afcybersolutions.com.do")
+    admin_password = os.environ.get("ADMIN_PASSWORD", "ingeniero24")
+    admin = User.query.filter_by(email=admin_email).first()
+    if admin:
+        admin.name = admin.name or "Administrador AFCyber"
+        admin.is_active_admin = True
+        admin.set_password(admin_password)
+    elif not User.query.filter_by(is_active_admin=True).first():
+        admin = User(email=admin_email, name="Administrador AFCyber")
         db.session.add(admin)
+        admin.set_password(admin_password)
 
     for model in (SiteSettings, HeroSection, AboutSection):
         if not model.query.first():

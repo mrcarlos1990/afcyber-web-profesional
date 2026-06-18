@@ -1,5 +1,6 @@
 const siteConfig = {
   whatsappNumber: window.AF_SITE?.whatsapp || "18299198058",
+  analyticsId: window.AF_SITE?.analyticsId || "",
   defaultWhatsappMessage: window.AF_SITE?.defaultMessage || "Hola AFCyber Solutions, quiero solicitar informacion sobre sus servicios."
 };
 
@@ -38,7 +39,39 @@ document.addEventListener("DOMContentLoaded", () => {
   initServiceFilters();
   initSmartServiceSelect();
   initSmoothScroll();
+  initAnalyticsTracking();
+  initAdminShortcut();
 });
+
+function trackEvent(eventName, parameters = {}) {
+  if (typeof window.gtag !== "function") return;
+  window.gtag("event", eventName, {
+    page_path: window.location.pathname,
+    ...parameters
+  });
+}
+
+function initAnalyticsTracking() {
+  trackEvent("af_page_view", { page_title: document.title });
+
+  document.querySelectorAll('a[href="#contact-form"], a[href*="#contacto"], .nav-cta').forEach((link) => {
+    link.addEventListener("click", () => {
+      trackEvent("contact_click", {
+        link_text: (link.textContent || "contacto").trim().slice(0, 80)
+      });
+    });
+  });
+}
+
+function initAdminShortcut() {
+  document.addEventListener("keydown", (event) => {
+    // Admin shortcut: Ctrl + Alt + A
+    if (event.ctrlKey && event.altKey && event.key.toLowerCase() === "a") {
+      event.preventDefault();
+      window.location.href = "/admin/login";
+    }
+  });
+}
 
 function initAos() {
   if (!window.AOS) return;
@@ -122,6 +155,12 @@ function initWhatsappLinks() {
     link.setAttribute("href", buildWhatsappUrl(message));
     link.setAttribute("target", "_blank");
     link.setAttribute("rel", "noopener");
+    link.addEventListener("click", () => {
+      trackEvent("whatsapp_click", {
+        service: service || link.dataset.message || "general",
+        link_text: (link.textContent || "WhatsApp").trim().slice(0, 80)
+      });
+    });
   });
 }
 
@@ -162,10 +201,25 @@ function initContactForm() {
       return;
     }
 
+    const turnstileWidget = form.querySelector(".cf-turnstile");
+    const turnstileResponse = form.querySelector('[name="cf-turnstile-response"]');
+    if (turnstileWidget && turnstileResponse && !turnstileResponse.value) {
+      event.preventDefault();
+      if (status) {
+        status.textContent = "Confirma la verificacion de seguridad antes de enviar.";
+        status.className = "form-status show error";
+      }
+      return;
+    }
+
     if (status) {
       status.textContent = "Solicitud lista. Enviando tus datos de forma segura...";
       status.className = "form-status show success";
     }
+
+    const service = form.querySelector('[name="requested_service"]')?.value || "No indicado";
+    const inquiryType = form.querySelector('[name="inquiry_type"]')?.value || "cotizacion";
+    trackEvent("quote_form_submit", { service, inquiry_type: inquiryType });
   });
 }
 
