@@ -197,7 +197,7 @@ def create_app():
 
     with app.app_context():
         db.create_all()
-        ensure_contact_message_schema()
+        ensure_database_schema()
         seed_database()
 
     register_routes(app)
@@ -605,16 +605,26 @@ def save_upload(file, pdf=False):
     return path.replace("\\", "/")
 
 
-def ensure_contact_message_schema():
+def ensure_database_schema():
+    # Migración para ContactMessage
     inspector_sql = text("PRAGMA table_info(contact_message)")
     existing_columns = {row[1] for row in db.session.execute(inspector_sql).fetchall()}
     if "inquiry_type" not in existing_columns:
         db.session.execute(text("ALTER TABLE contact_message ADD COLUMN inquiry_type VARCHAR(60) DEFAULT 'cotizacion'"))
     if "subject" not in existing_columns:
         db.session.execute(text("ALTER TABLE contact_message ADD COLUMN subject VARCHAR(180) DEFAULT 'Nueva Solicitud de Cotización'"))
+    
+    # Migración para PortfolioProject
+    portfolio_inspector = text("PRAGMA table_info(portfolio_project)")
+    portfolio_columns = {row[1] for row in db.session.execute(portfolio_inspector).fetchall()}
+    if "is_case_study" not in portfolio_columns:
+        db.session.execute(text("ALTER TABLE portfolio_project ADD COLUMN is_case_study BOOLEAN DEFAULT 0"))
+    if "challenge_solution" not in portfolio_columns:
+        db.session.execute(text("ALTER TABLE portfolio_project ADD COLUMN challenge_solution TEXT DEFAULT ''"))
+    if "technologies" not in portfolio_columns:
+        db.session.execute(text("ALTER TABLE portfolio_project ADD COLUMN technologies TEXT DEFAULT ''"))
+        
     db.session.commit()
-
-
 def send_contact_notification(message, channel):
     smtp_host = os.environ.get("SMTP_HOST", "").strip()
     smtp_user = os.environ.get("SMTP_USER", "").strip()
