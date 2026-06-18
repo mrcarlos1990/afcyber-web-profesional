@@ -3232,8 +3232,148 @@ img {
     border-radius: var(--af-radius);
   }
 
-  .services-section .nav-pills .nav-link {
-    width: 100%;
-    white-space: normal;
+/* ==========================================================================
+   Portfolio Section - Modern Tech Aesthetic (Stripe/Linear Style)
+   ========================================================================== */
+
+.portfolio-section {
+  position: relative;
+  padding: 120px 0;
+  background: radial-gradient(circle at 50% -20%, rgba(0, 98, 255, 0.15), transparent 70%), var(--af-bg);
+  overflow: hidden;
+}
+
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 2.5rem;
+  margin-top: 4rem;
+}
+
+.project-card {
+  position: relative;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--af-line);
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.project-image {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #0a0f1d;
+}
+
+.project-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s scale(1.01);
+}
+
+.project-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 30%, rgba(3, 7, 18, 0.9));
+  opacity: 0.6;
+  transition: opacity 0.4s ease;
+}
+
+.project-content {
+  padding: 2rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0) 100%);
+  backdrop-filter: blur(10px);
+}
+
+.project-category {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--af-electric);
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.project-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--af-white);
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.project-description {
+  font-size: 0.95rem;
+  color: var(--af-muted);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.project-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: auto;
+  margin-bottom: 1.5rem;
+}
+
+.project-tech span {
+  font-size: 0.7rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--af-line);
+  color: var(--af-text);
+  font-weight: 600;
+}
+
+.project-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--af-white);
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: gap 0.3s ease;
+}
+
+.project-button i {
+  font-size: 0.8rem;
+  transition: transform 0.3s ease;
+}
+
+/* Hover Effects */
+.project-card:hover {
+  transform: translateY(-10px);
+  border-color: rgba(0, 212, 255, 0.3);
+  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 212, 255, 0.1);
+}
+
+.project-card:hover .project-image img {
+  transform: scale(1.08);
+}
+
+.project-card:hover .project-overlay {
+  opacity: 0.2;
+}
+
+.project-card:hover .project-button {
+  color: var(--af-electric);
+  gap: 0.8rem;
+}
+
+@media (max-width: 768px) {
+  .portfolio-grid {
+    grid-template-columns: 1fr;
   }
+}
 }

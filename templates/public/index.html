@@ -179,26 +179,37 @@
   </section>
 
   
-  <!-- 6. PORTAFOLIO -->
-  <section id="proyectos" class="section section-dark">
-    <div class="container">
+  <!-- 6. PORTAFOLIO PREMIUM (ESTILO LINEAR/STRIPE) -->
+  <section id="proyectos" class="section-portfolio py-6">
+    <div class="container-fluid section-shell">
       <div class="section-heading text-center" data-aos="fade-up">
-        <span class="section-kicker">Casos de Estudio</span>
-        <h2>Soluciones Implementadas</h2>
-        <p>Proyectos de alto impacto que garantizan eficiencia operativa y seguridad.</p>
+        <span class="section-kicker">Showcase</span>
+        <h2>Ingeniería de Vanguardia</h2>
+        <p>Explora nuestras implementaciones más recientes en infraestructura y desarrollo de alto rendimiento.</p>
       </div>
-      <div class="portfolio-grid project-showcase-grid">
-        {% for service in real_services[:4] %}
-        <article class="portfolio-card" data-aos="zoom-in">
-          <img class="project-img" src="{{ url_for('static', filename=service.alt_image|default(service.image)) }}" alt="{{ service.name }}" width="1024" height="1536" loading="lazy" decoding="async">
-          <div class="portfolio-overlay">
-            <span class="category-tag">{{ service.short_name or 'Tech Solution' }}</span>
-            <h3>{{ service.name }}</h3>
-            <div class="tech-stack mb-3">
-              <small><i class="fa-solid fa-check-double text-primary"></i> {{ service.features[0] }}</small>
+
+      <div class="project-premium-grid">
+        {% for project in projects[:4] %}
+        <article class="project-premium-card" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 100 }}">
+          <div class="project-card-inner">
+            <div class="project-image-container">
+              <img src="{{ url_for('static', filename=project.image) }}" alt="{{ project.title }}" class="project-img-fluid">
+              <div class="project-category-badge">{{ project.category }}</div>
             </div>
-            <p class="result-text small"><i class="fa-solid fa-chart-line"></i> Optimización de procesos y seguridad activa.</p>
-            <a class="btn btn-sm btn-primary-premium js-whatsapp" href="#" data-service="{{ service.name }}">Ver Proyecto</a>
+            <div class="project-content">
+              <div class="project-tech-stack">
+                {% for tech in project.technologies[:3] %}
+                <span class="tech-pill">{{ tech }}</span>
+                {% endfor %}
+              </div>
+              <h3 class="project-title">{{ project.title }}</h3>
+              <p class="project-excerpt">{{ project.description|truncate(100) }}</p>
+              <div class="project-footer">
+                <a href="#" class="btn-project-link js-whatsapp" data-service="{{ project.title }}">
+                  Ver Proyecto <i class="fa-solid fa-arrow-right-long"></i>
+                </a>
+              </div>
+            </div>
           </div>
         </article>
         {% endfor %}
