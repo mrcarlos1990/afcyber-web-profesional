@@ -1,20 +1,19 @@
 {% extends "public/base.html" %}
 {% block content %}
-<main class="hero-section error-page">
-  <canvas id="networkCanvas" aria-hidden="true"></canvas>
-  <div class="hero-noise"></div>
-  <div class="container position-relative">
-    <div class="row align-items-center min-vh-100">
-      <div class="col-lg-8" data-aos="fade-up">
-        <span class="eyebrow"><i class="fa-solid fa-triangle-exclamation"></i> {{ code }}</span>
-        <h1>{{ title }}</h1>
-        <p class="hero-subtitle">La solicitud no pudo completarse. Puedes volver al inicio o contactar a AFCyber SOLUTIONS para asistencia.</p>
+<main class="error-page">
+  <section class="section">
+    <div class="container">
+      <div class="error-card">
+        <span class="section-kicker">AFCyber Solutions</span>
+        <h1>{{ code }}</h1>
+        <h2>{{ title }}</h2>
+        <p>{{ message }}</p>
         <div class="hero-actions">
-          <a class="btn btn-primary-premium" href="{{ url_for('index') }}">Volver al inicio</a>
-          <a class="btn btn-glass js-whatsapp" href="#"><i class="fa-brands fa-whatsapp"></i> Contactar soporte</a>
+          <a class="btn btn-cyber" href="{{ url_for('index') }}">Volver al inicio</a>
+          <a class="btn btn-glass js-wa" href="#" data-message="Hola AFCyber Solutions, necesito ayuda con la página web.">Contactar por WhatsApp</a>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 </main>
 {% endblock %}

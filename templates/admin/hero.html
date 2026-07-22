@@ -1,0 +1,18 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div class="admin-header"><h1>Hero principal</h1><p>Edita la primera impresion de la web.</p></div>
+<form class="admin-card stacked-form" method="post" enctype="multipart/form-data">
+  <label>Titulo<input class="form-control" name="title" value="{{ item.title }}"></label>
+  <label>Subtitulo<input class="form-control" name="subtitle" value="{{ item.subtitle }}"></label>
+  <label>Descripción<textarea class="form-control" name="description">{{ item.description }}</textarea></label>
+  <div class="grid-2">
+    <label>Boton principal<input class="form-control" name="primary_button_text" value="{{ item.primary_button_text }}"></label>
+    <label>URL boton principal<input class="form-control" name="primary_button_url" value="{{ item.primary_button_url }}"></label>
+    <label>Boton secundario<input class="form-control" name="secondary_button_text" value="{{ item.secondary_button_text }}"></label>
+    <label>Mensaje WhatsApp<textarea class="form-control" name="secondary_button_message">{{ item.secondary_button_message }}</textarea></label>
+  </div>
+  <label>Imagen hero<input class="form-control image-input" type="file" name="image" accept=".jpg,.jpeg,.png,.webp"><img class="preview wide" src="{% if item.image %}{{ item.image|asset }}{% endif %}"></label>
+  <label class="check"><input type="checkbox" name="animation_enabled" {% if item.animation_enabled %}checked{% endif %}> Fondo tecnologico animado</label>
+  <button class="btn btn-primary">Guardar hero</button>
+</form>
+{% endblock %}

@@ -10,39 +10,47 @@
 </head>
 <body>
   <aside class="admin-sidebar">
-    <a class="admin-brand" href="{{ url_for('admin_dashboard') }}"><span>AF</span><strong>AFCyber Admin</strong></a>
+    <a class="admin-brand" href="{{ url_for('admin_dashboard') }}"><span>AF</span>AFCyber Admin</a>
     <nav>
-      <a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
-      <a href="{{ url_for('admin_settings') }}"><i class="fa-solid fa-sliders"></i> Configuración general</a>
-      <a href="{{ url_for('admin_module', module='hero') }}"><i class="fa-solid fa-bolt"></i> Hero principal</a>
-      <a href="{{ url_for('admin_module', module='about') }}"><i class="fa-solid fa-building"></i> Nosotros</a>
-      <a href="{{ url_for('admin_module', module='ceo') }}"><i class="fa-solid fa-user-tie"></i> CEO & Founder</a>
-      <a href="{{ url_for('admin_module', module='skills') }}"><i class="fa-solid fa-code"></i> Habilidades CEO</a>
-      <a href="{{ url_for('admin_module', module='certificates') }}"><i class="fa-solid fa-certificate"></i> Certificaciones</a>
-      <a href="{{ url_for('admin_module', module='services') }}"><i class="fa-solid fa-layer-group"></i> Servicios</a>
-      <a href="{{ url_for('admin_module', module='plans') }}"><i class="fa-solid fa-tags"></i> Planes</a>
-      <a href="{{ url_for('admin_module', module='portfolio') }}"><i class="fa-solid fa-briefcase"></i> Portafolio</a>
-      <a href="{{ url_for('admin_module', module='testimonials') }}"><i class="fa-solid fa-star"></i> Testimonios</a>
-      <a href="{{ url_for('admin_module', module='faq') }}"><i class="fa-solid fa-circle-question"></i> FAQ</a>
-      <a href="{{ url_for('admin_messages') }}"><i class="fa-solid fa-envelope-open-text"></i> Mensajes</a>
-      <a href="{{ url_for('admin_module', module='socials') }}"><i class="fa-solid fa-share-nodes"></i> Redes sociales</a>
-      <a href="{{ url_for('admin_users') }}"><i class="fa-solid fa-users-gear"></i> Usuarios admin</a>
+      <a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-chart-line"></i>Dashboard</a>
+      <a href="{{ url_for('admin_settings') }}"><i class="fa-solid fa-sliders"></i>Configuración</a>
+      <a href="{{ url_for('admin_hero') }}"><i class="fa-solid fa-wand-magic-sparkles"></i>Hero</a>
+      <a href="{{ url_for('admin_about') }}"><i class="fa-solid fa-building-shield"></i>Nosotros</a>
+      <a href="{{ url_for('admin_ceo') }}"><i class="fa-solid fa-user-tie"></i>CEO/Fundador</a>
+      <a href="{{ url_for('admin_services') }}"><i class="fa-solid fa-layer-group"></i>Servicios</a>
+      <a href="{{ url_for('admin_downloads') }}"><i class="fa-solid fa-download"></i>Descargas</a>
+      <a href="{{ url_for('admin_service_requests') }}"><i class="fa-solid fa-clipboard-list"></i>Solicitudes</a>
+      <a href="{{ url_for('admin_documents') }}"><i class="fa-solid fa-file-signature"></i>Documentos y firmas</a>
+      <a href="{{ url_for('admin_document_templates') }}"><i class="fa-solid fa-file-lines"></i>Plantillas</a>
+      <a href="{{ url_for('admin_plans') }}"><i class="fa-solid fa-tags"></i>Planes</a>
+      <a href="{{ url_for('admin_portfolio') }}"><i class="fa-solid fa-briefcase"></i>Portafolio</a>
+      <a href="{{ url_for('admin_testimonials') }}"><i class="fa-solid fa-star"></i>Testimonios</a>
+      <a href="{{ url_for('admin_faq') }}"><i class="fa-solid fa-circle-question"></i>FAQ</a>
+      <a href="{{ url_for('admin_social') }}"><i class="fa-solid fa-share-nodes"></i>Redes</a>
+      <a href="{{ url_for('admin_messages') }}"><i class="fa-solid fa-inbox"></i>Mensajes</a>
+      <a href="{{ url_for('admin_users') }}"><i class="fa-solid fa-users-gear"></i>Usuarios</a>
+      <a href="{{ url_for('index') }}" target="_blank" rel="noopener"><i class="fa-solid fa-eye"></i>Ver web</a>
+      <form class="sidebar-logout" method="post" action="{{ url_for('admin_logout') }}">
+        <button type="submit"><i class="fa-solid fa-right-from-bracket"></i>Salir</button>
+      </form>
     </nav>
   </aside>
   <main class="admin-main">
-    <header class="admin-topbar">
-      <div><span>Panel administrativo</span><strong>{{ settings.company_name }}</strong></div>
-      <div class="top-actions"><a href="{{ url_for('index') }}" target="_blank">Ver web</a><a href="{{ url_for('admin_logout') }}">Cerrar sesion</a></div>
-    </header>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="alert alert-{{ category }} mt-3">{{ message }}</div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
-    {% block admin_content %}{% endblock %}
+    {% include "public/partials/flash.html" %}
+    {% block content %}{% endblock %}
   </main>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    window.CSRF_TOKEN = "{{ csrf_token }}";
+    document.querySelectorAll('form[method="post"], form[method="POST"]').forEach((form) => {
+      if (!form.querySelector('input[name="_csrf_token"]')) {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "_csrf_token";
+        input.value = window.CSRF_TOKEN;
+        form.prepend(input);
+      }
+    });
+  </script>
+  <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
 </body>
 </html>

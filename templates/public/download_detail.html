@@ -1,0 +1,42 @@
+{% extends "public/base.html" %}
+{% block content %}
+<nav class="navbar navbar-expand-lg fixed-top cyber-nav nav-scrolled" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="{{ url_for('index') }}#inicio"><span class="logo-mark">AF</span><span>{{ settings.company_name }}</span></a>
+    <div class="ms-auto"><a class="btn btn-glass" href="{{ url_for('downloads') }}">Volver a descargas</a></div>
+  </div>
+</nav>
+<main class="page-shell" id="contenido">
+  <section class="section">
+    <div class="container">
+      <article class="detail-panel reveal">
+        <span class="section-kicker">{{ "Programa" if kind == "programa" else "Manual" }}</span>
+        <h1>{{ item.name if kind == "programa" else item.title }}</h1>
+        <p class="muted">{{ item.description }}</p>
+        <div class="detail-grid">
+          <span><strong>Versión</strong>{{ item.version }}</span>
+          <span><strong>Categoría</strong>{{ item.category }}</span>
+          <span><strong>Estado</strong>{{ item.status }}</span>
+          <span><strong>Tamaño</strong>{{ item.file_size|filesize }}</span>
+          <span><strong>Actualización</strong>{{ item.updated_on.strftime('%d/%m/%Y') if item.updated_on else 'No indicada' }}</span>
+          <span><strong>SHA-256</strong>{{ item.sha256 or 'Pendiente' }}</span>
+          {% if kind == "programa" %}
+          <span><strong>Sistema</strong>{{ item.operating_system }}</span>
+          <span><strong>Arquitectura</strong>{{ item.architecture }}</span>
+          <span><strong>Licencia</strong>{{ item.license_type }}</span>
+          <span><strong>Dirigido a</strong>{{ item.target_business or 'No indicado' }}</span>
+          {% endif %}
+        </div>
+        {% if kind == "programa" and item.requirements %}
+        <div class="detail-copy"><h2>Requisitos mínimos</h2><p>{{ item.requirements }}</p></div>
+        {% endif %}
+        <div class="card-actions">
+          <a class="btn btn-cyber" href="{{ url_for('download_program', slug=item.slug) if kind == 'programa' else url_for('download_manual', slug=item.slug) }}"><i class="fa-solid fa-download"></i>Descargar</a>
+          {% if kind == "programa" and item.manual %}<a class="btn btn-glass" href="{{ url_for('manual_detail', slug=item.manual.slug) }}">Manual relacionado</a>{% endif %}
+          <a class="btn btn-glass" href="{{ url_for('request_service') }}">Solicitar licencia o soporte</a>
+        </div>
+      </article>
+    </div>
+  </section>
+</main>
+{% endblock %}

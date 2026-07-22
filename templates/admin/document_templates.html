@@ -1,0 +1,32 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div class="admin-header"><h1>Plantillas de documentos</h1><p>Plantillas editables para solicitudes, órdenes, contratos, actas e informes.</p></div>
+<form class="admin-card stacked-form" method="post">
+  <h2>Nueva plantilla</h2>
+  <div class="grid-4">
+    <input class="form-control" name="name" placeholder="Nombre" required>
+    <input class="form-control" name="document_type" placeholder="Tipo de documento" required>
+    <input class="form-control" type="number" name="version" value="1" min="1">
+    <select class="form-control" name="status"><option>borrador</option><option>publicada</option></select>
+  </div>
+  <textarea class="form-control tall mt-2" name="body" placeholder="Contenido con variables: {{customer_name}}, {{service}}, {{need}}" required></textarea>
+  <label class="check mt-2"><input type="checkbox" name="is_active" checked> Activa</label>
+  <div class="form-actions"><button class="btn btn-primary">Crear plantilla</button></div>
+</form>
+
+{% for item in items %}
+<form class="admin-card stacked-form" method="post" action="{{ url_for('update_document_template', item_id=item.id) }}">
+  <div class="grid-4">
+    <input class="form-control" name="name" value="{{ item.name }}" required>
+    <input class="form-control" name="document_type" value="{{ item.document_type }}" required>
+    <input class="form-control" type="number" name="version" value="{{ item.version }}" min="1">
+    <select class="form-control" name="status"><option {% if item.status == 'borrador' %}selected{% endif %}>borrador</option><option {% if item.status == 'publicada' %}selected{% endif %}>publicada</option></select>
+  </div>
+  <textarea class="form-control tall mt-2" name="body" required>{{ item.body }}</textarea>
+  <label class="check mt-2"><input type="checkbox" name="is_active" {% if item.is_active %}checked{% endif %}> Activa</label>
+  <div class="form-actions"><button class="btn btn-primary">Guardar</button></div>
+</form>
+{% else %}
+<section class="admin-card"><p>No hay plantillas.</p></section>
+{% endfor %}
+{% endblock %}

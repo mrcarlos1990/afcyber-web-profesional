@@ -1,0 +1,21 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div class="admin-header"><h1>Preguntas frecuentes</h1><p>FAQ editable con orden y estado.</p></div>
+<form class="admin-card mini-form" method="post">
+  <input class="form-control" name="question" placeholder="Pregunta" required>
+  <input class="form-control" type="number" name="position" placeholder="Orden">
+  <textarea class="form-control" name="answer" placeholder="Respuesta" required></textarea>
+  <label class="check"><input type="checkbox" name="is_active" checked> Activo</label>
+  <button class="btn btn-primary">Crear FAQ</button>
+</form>
+{% for item in items %}
+<form class="admin-card edit-row" method="post" action="{{ url_for('update_faq', item_id=item.id) }}">
+  <input class="form-control" name="question" value="{{ item.question }}" required>
+  <input class="form-control" type="number" name="position" value="{{ item.position }}">
+  <textarea class="form-control" name="answer" required>{{ item.answer }}</textarea>
+  <label class="check"><input type="checkbox" name="is_active" {% if item.is_active %}checked{% endif %}> Activo</label>
+  <button class="btn btn-primary">Guardar</button>
+  <button class="btn btn-outline-danger" formaction="{{ url_for('delete_faq', item_id=item.id) }}">Eliminar</button>
+</form>
+{% endfor %}
+{% endblock %}

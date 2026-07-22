@@ -1,0 +1,21 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div class="admin-header"><h1>Solicitudes de servicios</h1><p>Solicitudes enviadas por clientes con consentimiento registrado.</p></div>
+{% for item in items %}
+<section class="admin-card message-card">
+  <div class="message-head">
+    <strong>{{ item.customer.full_name }}</strong>
+    <span>{{ item.status }} · {{ item.created_at.strftime('%d/%m/%Y %H:%M') }}</span>
+  </div>
+  <p><strong>Servicio:</strong> {{ item.requested_service }} · <strong>Modalidad:</strong> {{ item.modality }} · <strong>Prioridad:</strong> {{ item.priority }}</p>
+  <p>{{ item.need_description }}</p>
+  <p><strong>Contacto:</strong> {{ item.customer.email }} · {{ item.customer.phone }}{% if item.customer.company %} · {{ item.customer.company }}{% endif %}</p>
+  <p><strong>Consentimientos:</strong> privacidad {{ 'sí' if item.accepted_privacy else 'no' }}, contacto {{ 'sí' if item.accepted_contact else 'no' }}, firma electrónica {{ 'sí' if item.accepted_e_signature else 'no' }}.</p>
+  {% if item.documents %}
+    <div class="message-actions">{% for doc in item.documents %}<a class="btn btn-outline-primary" href="{{ url_for('admin_documents') }}">Documento {{ doc.code }}</a>{% endfor %}</div>
+  {% endif %}
+</section>
+{% else %}
+<section class="admin-card"><p>No hay solicitudes registradas.</p></section>
+{% endfor %}
+{% endblock %}
