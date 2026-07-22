@@ -4,12 +4,48 @@ services:
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
+    disk:
+      name: afcyber-private-storage
+      mountPath: /var/data/afcyber-storage
+      sizeGB: 1
     envVars:
       - key: SECRET_KEY
         generateValue: true
       - key: DATABASE_URL
-        value: sqlite:///instance/afcyber_platform.db
+        sync: false
+      - key: SIGNING_SECRET
+        generateValue: true
       - key: ADMIN_EMAIL
         value: admin@afcybersolutions.com.do
       - key: ADMIN_PASSWORD
         sync: false
+      - key: FLASK_DEBUG
+        value: "0"
+      - key: AUTO_CREATE_DB
+        value: "0"
+      - key: SESSION_COOKIE_SECURE
+        value: "1"
+      - key: BASE_URL
+        sync: false
+      - key: PRIVATE_STORAGE_ROOT
+        value: /var/data/afcyber-storage
+      - key: STORAGE_PROVIDER
+        value: render_disk
+      - key: MAIL_SERVER
+        sync: false
+      - key: MAIL_PORT
+        value: "587"
+      - key: MAIL_USE_TLS
+        value: "1"
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: MAIL_DEFAULT_SENDER
+        sync: false
+      - key: MAIL_MAX_RETRIES
+        value: "2"
+      - key: REQUIRE_SMTP
+        value: "1"
+      - key: COMPANY_NOTIFICATION_EMAIL
+        value: info@afcybersolutions.com.do

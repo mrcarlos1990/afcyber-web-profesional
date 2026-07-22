@@ -1,20 +1,23 @@
 {% extends "admin/base.html" %}
 {% block content %}
-<div class="admin-header"><h1>Dashboard</h1><p>Estado general de la plataforma AFCyber SOLUTIONS.</p></div>
+<div class="admin-header"><h1>Dashboard</h1><p>Estado general de la plataforma AFCyber Solutions.</p></div>
 <div class="stats-grid">
   <article><span>Mensajes nuevos</span><strong>{{ totals.messages }}</strong></article>
   <article><span>Servicios</span><strong>{{ totals.services }}</strong></article>
-  <article><span>Planes</span><strong>{{ totals.plans }}</strong></article>
-  <article><span>Proyectos</span><strong>{{ totals.projects }}</strong></article>
-  <article><span>Testimonios</span><strong>{{ totals.testimonials }}</strong></article>
-  <article><span>FAQ</span><strong>{{ totals.faqs }}</strong></article>
+  <article><span>Programas</span><strong>{{ totals.programs }}</strong></article>
+  <article><span>Manuales</span><strong>{{ totals.manuals }}</strong></article>
+  <article><span>Solicitudes</span><strong>{{ totals.requests }}</strong></article>
+  <article><span>Documentos</span><strong>{{ totals.documents }}</strong></article>
 </div>
 <section class="admin-card">
-  <h2>Accesos rapidos</h2>
+  <h2>Accesos rápidos</h2>
   <div class="quick-grid">
-    <a href="{{ url_for('admin_settings') }}">Configuracion general</a>
+    <a href="{{ url_for('admin_settings') }}">Configuración general</a>
     <a href="{{ url_for('admin_ceo') }}">Editar CEO/Fundador</a>
     <a href="{{ url_for('admin_services') }}">Gestionar servicios</a>
+    <a href="{{ url_for('admin_downloads') }}">Gestionar descargas</a>
+    <a href="{{ url_for('admin_service_requests') }}">Ver solicitudes</a>
+    <a href="{{ url_for('admin_documents') }}">Documentos y firmas</a>
     <a href="{{ url_for('admin_messages') }}">Ver mensajes</a>
   </div>
 </section>

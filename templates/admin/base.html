@@ -13,11 +13,15 @@
     <a class="admin-brand" href="{{ url_for('admin_dashboard') }}"><span>AF</span>AFCyber Admin</a>
     <nav>
       <a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-chart-line"></i>Dashboard</a>
-      <a href="{{ url_for('admin_settings') }}"><i class="fa-solid fa-sliders"></i>Configuracion</a>
+      <a href="{{ url_for('admin_settings') }}"><i class="fa-solid fa-sliders"></i>Configuración</a>
       <a href="{{ url_for('admin_hero') }}"><i class="fa-solid fa-wand-magic-sparkles"></i>Hero</a>
       <a href="{{ url_for('admin_about') }}"><i class="fa-solid fa-building-shield"></i>Nosotros</a>
       <a href="{{ url_for('admin_ceo') }}"><i class="fa-solid fa-user-tie"></i>CEO/Fundador</a>
       <a href="{{ url_for('admin_services') }}"><i class="fa-solid fa-layer-group"></i>Servicios</a>
+      <a href="{{ url_for('admin_downloads') }}"><i class="fa-solid fa-download"></i>Descargas</a>
+      <a href="{{ url_for('admin_service_requests') }}"><i class="fa-solid fa-clipboard-list"></i>Solicitudes</a>
+      <a href="{{ url_for('admin_documents') }}"><i class="fa-solid fa-file-signature"></i>Documentos y firmas</a>
+      <a href="{{ url_for('admin_document_templates') }}"><i class="fa-solid fa-file-lines"></i>Plantillas</a>
       <a href="{{ url_for('admin_plans') }}"><i class="fa-solid fa-tags"></i>Planes</a>
       <a href="{{ url_for('admin_portfolio') }}"><i class="fa-solid fa-briefcase"></i>Portafolio</a>
       <a href="{{ url_for('admin_testimonials') }}"><i class="fa-solid fa-star"></i>Testimonios</a>
@@ -25,8 +29,10 @@
       <a href="{{ url_for('admin_social') }}"><i class="fa-solid fa-share-nodes"></i>Redes</a>
       <a href="{{ url_for('admin_messages') }}"><i class="fa-solid fa-inbox"></i>Mensajes</a>
       <a href="{{ url_for('admin_users') }}"><i class="fa-solid fa-users-gear"></i>Usuarios</a>
-      <a href="{{ url_for('index') }}" target="_blank"><i class="fa-solid fa-eye"></i>Ver web</a>
-      <a href="{{ url_for('admin_logout') }}"><i class="fa-solid fa-right-from-bracket"></i>Salir</a>
+      <a href="{{ url_for('index') }}" target="_blank" rel="noopener"><i class="fa-solid fa-eye"></i>Ver web</a>
+      <form class="sidebar-logout" method="post" action="{{ url_for('admin_logout') }}">
+        <button type="submit"><i class="fa-solid fa-right-from-bracket"></i>Salir</button>
+      </form>
     </nav>
   </aside>
   <main class="admin-main">

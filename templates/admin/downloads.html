@@ -1,0 +1,104 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div class="admin-header"><h1>Gestión de Descargas</h1><p>Administra programas y manuales sin exponer rutas internas ni subir ejecutables al área pública.</p></div>
+
+<section class="admin-card">
+  <h2>Nuevo programa</h2>
+  <form class="stacked-form" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="item_type" value="program">
+    <div class="grid-4">
+      <input class="form-control" name="name" placeholder="Nombre" required>
+      <input class="form-control" name="version" placeholder="Versión">
+      <input class="form-control" name="category" placeholder="Categoría">
+      <input class="form-control" name="target_business" placeholder="Negocio dirigido">
+      <input class="form-control" name="operating_system" placeholder="Sistema operativo">
+      <input class="form-control" name="architecture" placeholder="Arquitectura">
+      <input class="form-control" name="license_type" placeholder="Licencia">
+      <input class="form-control" type="date" name="updated_on">
+      <input class="form-control" name="short_description" placeholder="Descripción corta" required>
+      <select class="form-control" name="manual_id"><option value="0">Sin manual relacionado</option>{% for manual in manuals %}<option value="{{ manual.id }}">{{ manual.title }}</option>{% endfor %}</select>
+      <select class="form-control" name="status"><option>borrador</option><option>publicado</option><option>desactivado</option></select>
+      <input class="form-control" name="external_url" placeholder="URL externa segura opcional">
+    </div>
+    <textarea class="form-control mt-2" name="description" placeholder="Descripción completa" required></textarea>
+    <textarea class="form-control mt-2" name="requirements" placeholder="Requisitos mínimos"></textarea>
+    <div class="grid-3 mt-2">
+      <input class="form-control" type="file" name="program_file" accept=".exe,.msi,.zip">
+      <input class="form-control" type="file" name="image" accept=".jpg,.jpeg,.png,.webp">
+      <label class="check"><input type="checkbox" name="is_featured"> Destacado</label>
+      <label class="check"><input type="checkbox" name="is_active"> Activo público</label>
+    </div>
+    <div class="form-actions"><button class="btn btn-primary">Crear programa</button></div>
+  </form>
+</section>
+
+<section class="admin-card">
+  <h2>Nuevo manual</h2>
+  <form class="stacked-form" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="item_type" value="manual">
+    <div class="grid-4">
+      <input class="form-control" name="title" placeholder="Título" required>
+      <input class="form-control" name="related_item" placeholder="Programa o servicio relacionado">
+      <input class="form-control" name="category" placeholder="Categoría">
+      <input class="form-control" name="version" placeholder="Versión">
+      <input class="form-control" type="date" name="updated_on">
+      <select class="form-control" name="status"><option>borrador</option><option>publicado</option><option>desactivado</option></select>
+      <input class="form-control" name="external_url" placeholder="URL externa segura opcional">
+      <input class="form-control" type="file" name="manual_file" accept=".pdf">
+    </div>
+    <textarea class="form-control mt-2" name="description" placeholder="Descripción" required></textarea>
+    <label class="check mt-2"><input type="checkbox" name="is_active"> Activo público</label>
+    <div class="form-actions"><button class="btn btn-primary">Crear manual</button></div>
+  </form>
+</section>
+
+<section class="admin-card">
+  <h2>Programas</h2>
+  {% for item in programs %}
+  <form class="edit-row" method="post" enctype="multipart/form-data" action="{{ url_for('update_program_download', item_id=item.id) }}">
+    <input class="form-control" name="name" value="{{ item.name }}" required>
+    <input class="form-control" name="version" value="{{ item.version }}">
+    <input class="form-control" name="category" value="{{ item.category }}">
+    <input class="form-control" name="target_business" value="{{ item.target_business or '' }}">
+    <input class="form-control" name="operating_system" value="{{ item.operating_system }}">
+    <input class="form-control" name="architecture" value="{{ item.architecture }}">
+    <input class="form-control" name="license_type" value="{{ item.license_type }}">
+    <input class="form-control" type="date" name="updated_on" value="{{ item.updated_on.isoformat() if item.updated_on else '' }}">
+    <input class="form-control" name="short_description" value="{{ item.short_description }}" required>
+    <select class="form-control" name="manual_id"><option value="0">Sin manual</option>{% for manual in manuals %}<option value="{{ manual.id }}" {% if item.manual_id == manual.id %}selected{% endif %}>{{ manual.title }}</option>{% endfor %}</select>
+    <select class="form-control" name="status"><option {% if item.status == 'borrador' %}selected{% endif %}>borrador</option><option {% if item.status == 'publicado' %}selected{% endif %}>publicado</option><option {% if item.status == 'desactivado' %}selected{% endif %}>desactivado</option></select>
+    <input class="form-control" name="external_url" value="{{ item.external_url or '' }}">
+    <textarea class="form-control" name="description" required>{{ item.description }}</textarea>
+    <textarea class="form-control" name="requirements">{{ item.requirements or '' }}</textarea>
+    <input class="form-control" type="file" name="program_file" accept=".exe,.msi,.zip">
+    <input class="form-control" type="file" name="image" accept=".jpg,.jpeg,.png,.webp">
+    <label class="check"><input type="checkbox" name="is_featured" {% if item.is_featured %}checked{% endif %}> Destacado</label>
+    <label class="check"><input type="checkbox" name="is_active" {% if item.is_active %}checked{% endif %}> Activo</label>
+    <small>SHA-256: {{ item.sha256 or 'Pendiente' }} · Descargas: {{ item.download_count }}</small>
+    <button class="btn btn-primary">Guardar</button>
+    <button class="btn btn-outline-danger" formaction="{{ url_for('delete_download_item', item_type='programs', item_id=item.id) }}">Desactivar</button>
+  </form>
+  {% else %}<p>No hay programas.</p>{% endfor %}
+</section>
+
+<section class="admin-card">
+  <h2>Manuales</h2>
+  {% for item in manuals %}
+  <form class="edit-row" method="post" enctype="multipart/form-data" action="{{ url_for('update_manual_download', item_id=item.id) }}">
+    <input class="form-control" name="title" value="{{ item.title }}" required>
+    <input class="form-control" name="related_item" value="{{ item.related_item or '' }}">
+    <input class="form-control" name="category" value="{{ item.category }}">
+    <input class="form-control" name="version" value="{{ item.version }}">
+    <input class="form-control" type="date" name="updated_on" value="{{ item.updated_on.isoformat() if item.updated_on else '' }}">
+    <select class="form-control" name="status"><option {% if item.status == 'borrador' %}selected{% endif %}>borrador</option><option {% if item.status == 'publicado' %}selected{% endif %}>publicado</option><option {% if item.status == 'desactivado' %}selected{% endif %}>desactivado</option></select>
+    <input class="form-control" name="external_url" value="{{ item.external_url or '' }}">
+    <input class="form-control" type="file" name="manual_file" accept=".pdf">
+    <textarea class="form-control" name="description" required>{{ item.description }}</textarea>
+    <label class="check"><input type="checkbox" name="is_active" {% if item.is_active %}checked{% endif %}> Activo</label>
+    <small>SHA-256: {{ item.sha256 or 'Pendiente' }} · Descargas: {{ item.download_count }}</small>
+    <button class="btn btn-primary">Guardar</button>
+    <button class="btn btn-outline-danger" formaction="{{ url_for('delete_download_item', item_type='manuals', item_id=item.id) }}">Desactivar</button>
+  </form>
+  {% else %}<p>No hay manuales.</p>{% endfor %}
+</section>
+{% endblock %}

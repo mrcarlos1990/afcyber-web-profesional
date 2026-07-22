@@ -1,0 +1,51 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div class="admin-header"><h1>Documentos y firmas</h1><p>Control de versiones, firma electrónica, PDF final y auditoría básica.</p></div>
+{% for doc in documents %}
+<section class="admin-card message-card">
+  <div class="message-head">
+    <strong>{{ doc.code }} · {{ doc.title }}</strong>
+    <span>{{ doc.status }} · v{{ doc.current_version }}</span>
+  </div>
+  <p><strong>Verificación:</strong> {{ url_for('verify_document', codigo=doc.verification_code, _external=True) }}</p>
+  <p><strong>Hash final:</strong> {{ doc.final_sha256 or 'Pendiente' }}</p>
+  <div class="audit-list">
+    {% for sig in doc.signatures %}
+      <article><strong>{{ sig.signer_role }}</strong><span>{{ sig.signer_name }} · {{ sig.created_at.strftime('%d/%m/%Y %H:%M') }} UTC</span></article>
+    {% else %}
+      <p>No hay firmas registradas.</p>
+    {% endfor %}
+  </div>
+  <div class="message-actions">
+    {% if doc.final_pdf_path %}<a class="btn btn-outline-primary" href="{{ url_for('admin_download_document_pdf', item_id=doc.id) }}">Descargar PDF</a>{% endif %}
+  </div>
+  <form class="mini-form mt-2" method="post" action="{{ url_for('admin_request_afcyber_otp', item_id=doc.id) }}">
+    <button class="btn btn-outline-primary">Enviar OTP AFCyber</button>
+  </form>
+  <form class="mini-form mt-2" method="post" action="{{ url_for('admin_sign_document', item_id=doc.id) }}">
+    <input class="form-control" name="signature_text" placeholder="Nombre del representante" value="{{ current_user.name }}">
+    <input class="form-control" name="otp" placeholder="OTP del representante" inputmode="numeric" maxlength="6">
+    <label class="check"><input type="checkbox" name="consent"> Acepto firmar electrónicamente</label>
+    <button class="btn btn-primary">Firmar como AFCyber</button>
+    <button class="btn btn-outline-danger" formaction="{{ url_for('admin_cancel_document', item_id=doc.id) }}">Cancelar documento</button>
+  </form>
+  <form class="mini-form mt-2" method="post" action="{{ url_for('admin_create_document_version', item_id=doc.id) }}">
+    <label>Nueva version del contenido</label>
+    <textarea class="form-control" name="content" rows="7">{{ latest_versions.get(doc.id).content if latest_versions.get(doc.id) else '' }}</textarea>
+    <input class="form-control" name="reason" placeholder="Motivo del cambio">
+    <button class="btn btn-outline-primary">Crear nueva version y requerir firmas</button>
+  </form>
+</section>
+{% else %}
+<section class="admin-card"><p>No hay documentos generados.</p></section>
+{% endfor %}
+
+<section class="admin-card">
+  <h2>Últimos correos registrados</h2>
+  {% for email in emails %}
+    <div class="message-row"><strong>{{ email.email_type }}</strong><span>{{ email.recipient }} · {{ email.status }}{% if email.error %} · {{ email.error }}{% endif %}</span></div>
+  {% else %}
+    <p>No hay correos registrados.</p>
+  {% endfor %}
+</section>
+{% endblock %}

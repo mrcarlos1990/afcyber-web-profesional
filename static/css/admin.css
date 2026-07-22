@@ -3,8 +3,12 @@ body { margin: 0; font-family: Inter, system-ui, sans-serif; background: #f4f7fb
 .admin-brand { display: flex; align-items: center; gap: 10px; color: #fff; font-weight: 900; font-size: 1.12rem; text-decoration: none; margin-bottom: 22px; }
 .admin-brand span { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 8px; background: linear-gradient(135deg,#1777ff,#00d4ff); }
 .admin-sidebar nav { display: grid; gap: 8px; }
-.admin-sidebar a { color: #cbd5e1; text-decoration: none; padding: 10px 12px; border-radius: 8px; font-weight: 700; display: flex; gap: 10px; align-items: center; }
-.admin-sidebar a:hover { background: rgba(255,255,255,.08); color: #fff; }
+.admin-sidebar a,
+.sidebar-logout button { color: #cbd5e1; text-decoration: none; padding: 10px 12px; border-radius: 8px; font-weight: 700; display: flex; gap: 10px; align-items: center; }
+.admin-sidebar a:hover,
+.sidebar-logout button:hover { background: rgba(255,255,255,.08); color: #fff; }
+.sidebar-logout { margin: 0; }
+.sidebar-logout button { width: 100%; border: 0; background: transparent; text-align: left; }
 .admin-main { margin-left: 280px; padding: 32px; }
 .admin-header { margin-bottom: 24px; }
 .admin-header h1 { font-weight: 900; margin: 0; }

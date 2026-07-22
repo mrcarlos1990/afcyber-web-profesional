@@ -1,0 +1,19 @@
+{% extends "public/base.html" %}
+{% block content %}
+<main class="error-page">
+  <section class="section">
+    <div class="container">
+      <div class="error-card">
+        <span class="section-kicker">AFCyber Solutions</span>
+        <h1>{{ code }}</h1>
+        <h2>{{ title }}</h2>
+        <p>{{ message }}</p>
+        <div class="hero-actions">
+          <a class="btn btn-cyber" href="{{ url_for('index') }}">Volver al inicio</a>
+          <a class="btn btn-glass js-wa" href="#" data-message="Hola AFCyber Solutions, necesito ayuda con la página web.">Contactar por WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

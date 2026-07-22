@@ -1,0 +1,68 @@
+{% extends "public/base.html" %}
+{% block content %}
+<nav class="navbar navbar-expand-lg fixed-top cyber-nav nav-scrolled" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="{{ url_for('index') }}#inicio"><span class="logo-mark">AF</span><span>{{ settings.company_name }}</span></a>
+    <div class="ms-auto"><a class="btn btn-glass" href="{{ url_for('index') }}">Inicio</a></div>
+  </div>
+</nav>
+<main class="page-shell" id="contenido">
+  {% include "public/partials/flash.html" %}
+  <section class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="section-kicker">Solicitar Servicio</span>
+        <h1>Completa una solicitud profesional de servicio.</h1>
+        <p class="muted">La información se usa para preparar una revisión inicial, generar un documento de solicitud y, si corresponde, iniciar el flujo de firma electrónica con trazabilidad técnica.</p>
+      </div>
+      <form class="contact-form service-form reveal" method="post" enctype="multipart/form-data">
+        <h2>Datos del cliente</h2>
+        <div class="form-grid">
+          <label>Nombre completo<input class="form-control" name="full_name" autocomplete="name" required></label>
+          <label>Documento/RNC opcional<input class="form-control" name="identity_document"></label>
+          <label>Empresa<input class="form-control" name="company" autocomplete="organization"></label>
+          <label>Cargo<input class="form-control" name="position"></label>
+          <label>Correo<input class="form-control" type="email" name="email" autocomplete="email" required></label>
+          <label>Teléfono<input class="form-control" name="phone" autocomplete="tel" required></label>
+          <label>WhatsApp<input class="form-control" name="whatsapp" autocomplete="tel"></label>
+          <label>Dirección<input class="form-control" name="address" autocomplete="street-address"></label>
+          <label>Ciudad<input class="form-control" name="city"></label>
+          <label>Provincia<input class="form-control" name="province"></label>
+        </div>
+        <h2>Datos del servicio</h2>
+        <div class="form-grid">
+          <label>Servicio solicitado
+            <select class="form-control" name="requested_service" required>
+              <option value="">Selecciona</option>
+              {% for service in services %}<option>{{ service.name }}</option>{% endfor %}
+              <option>Otro servicio</option>
+            </select>
+          </label>
+          <label>Tipo de servicio<input class="form-control" name="service_type" placeholder="Instalación, soporte, desarrollo, revisión..."></label>
+          <label>Cantidad de equipos o ubicaciones<input class="form-control" name="equipment_count"></label>
+          <label>Fecha estimada<input class="form-control" type="date" name="estimated_date"></label>
+          <label>Modalidad
+            <select class="form-control" name="modality"><option>Remoto</option><option>Presencial</option><option>Híbrido</option></select>
+          </label>
+          <label>Prioridad
+            <select class="form-control" name="priority"><option>Normal</option><option>Alta</option><option>Urgente</option></select>
+          </label>
+          <label>Presupuesto estimado opcional<input class="form-control" name="estimated_budget"></label>
+          <label>Adjunto opcional<input class="form-control" type="file" name="attachment" accept=".pdf,.jpg,.jpeg,.png,.webp,.zip"></label>
+        </div>
+        <label>Descripción de la necesidad<textarea class="form-control" name="need_description" rows="5" required></textarea></label>
+        <label>Alcance inicial<textarea class="form-control" name="initial_scope" rows="4"></textarea></label>
+        <label>Observaciones<textarea class="form-control" name="observations" rows="4"></textarea></label>
+        <div class="consent-box">
+          <label><input type="checkbox" name="accepted_privacy" required> Acepto el uso de mis datos para evaluar y ejecutar la solicitud de servicio.</label>
+          <label><input type="checkbox" name="accepted_contact" required> Autorizo a AFCyber Solutions a contactarme por correo, teléfono o WhatsApp sobre esta solicitud.</label>
+          <label><input type="checkbox" name="accepted_e_signature" required> Acepto usar firma electrónica con token, OTP y registro de auditoría técnica cuando aplique.</label>
+          <label><input type="checkbox" name="confirmed_accuracy" required> Confirmo que la información enviada es correcta.</label>
+        </div>
+        <p class="muted legal-note">Este flujo no declara validez legal absoluta ni sustituye revisión jurídica para contratos de alto riesgo.</p>
+        <button class="btn btn-cyber w-100">Enviar solicitud</button>
+      </form>
+    </div>
+  </section>
+</main>
+{% endblock %}

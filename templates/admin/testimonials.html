@@ -6,7 +6,7 @@
   <input class="form-control" name="company" placeholder="Empresa">
   <input class="form-control" type="number" name="stars" min="1" max="5" value="5">
   <textarea class="form-control" name="comment" placeholder="Comentario" required></textarea>
-  <input class="form-control" type="file" name="photo" accept=".jpg,.jpeg,.png,.webp,.svg">
+  <input class="form-control" type="file" name="photo" accept=".jpg,.jpeg,.png,.webp">
   <label class="check"><input type="checkbox" name="is_active" checked> Activo</label>
   <button class="btn btn-primary">Crear testimonio</button>
 </form>
@@ -16,7 +16,7 @@
   <input class="form-control" name="company" value="{{ item.company or '' }}">
   <input class="form-control" type="number" name="stars" min="1" max="5" value="{{ item.stars }}">
   <textarea class="form-control" name="comment" required>{{ item.comment }}</textarea>
-  <input class="form-control" type="file" name="photo" accept=".jpg,.jpeg,.png,.webp,.svg">
+  <input class="form-control" type="file" name="photo" accept=".jpg,.jpeg,.png,.webp">
   <label class="check"><input type="checkbox" name="is_active" {% if item.is_active %}checked{% endif %}> Activo</label>
   <button class="btn btn-primary">Guardar</button>
   <button class="btn btn-outline-danger" formaction="{{ url_for('delete_testimonial', item_id=item.id) }}">Eliminar</button>

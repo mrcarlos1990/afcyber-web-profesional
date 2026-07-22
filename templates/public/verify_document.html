@@ -1,0 +1,28 @@
+{% extends "public/base.html" %}
+{% block content %}
+<main class="page-shell" id="contenido">
+  <section class="section">
+    <div class="container">
+      <article class="detail-panel reveal">
+        <span class="section-kicker">Verificación de documento</span>
+        <h1>{{ document.code }}</h1>
+        <div class="detail-grid">
+          <span><strong>Tipo</strong>{{ document.document_type }}</span>
+          <span><strong>Estado</strong>{{ document.status }}</span>
+          <span><strong>Fecha</strong>{{ document.created_at.strftime('%d/%m/%Y') }}</span>
+          <span><strong>Hash</strong>{{ document.final_sha256 or 'Pendiente' }}</span>
+        </div>
+        <h2>Firmantes registrados</h2>
+        <div class="audit-list">
+          {% for signature in signatures %}
+            <article><strong>{{ signature.signer_role }}</strong><span>{{ signature.signer_name }} · {{ signature.created_at.strftime('%d/%m/%Y %H:%M') }} UTC</span></article>
+          {% else %}
+            <p class="muted">Este documento aún no registra firmas.</p>
+          {% endfor %}
+        </div>
+        <p class="muted legal-note">Por privacidad, esta página no muestra datos personales sensibles ni el contenido completo del documento.</p>
+      </article>
+    </div>
+  </section>
+</main>
+{% endblock %}

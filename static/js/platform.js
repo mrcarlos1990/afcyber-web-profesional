@@ -1,9 +1,10 @@
 const nav = document.getElementById("mainNav");
 const topButton = document.getElementById("topButton");
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const waNumber = (window.AFCYBER && window.AFCYBER.whatsapp) || "18299198058";
 
 function waUrl(message) {
-  return `https://wa.me/${waNumber}?text=${encodeURIComponent(message || "Hola AFCyber SOLUTIONS, quiero informacion.")}`;
+  return `https://wa.me/${waNumber}?text=${encodeURIComponent(message || "Hola AFCyber Solutions, quiero información.")}`;
 }
 
 document.querySelectorAll(".js-wa").forEach((link) => {
@@ -12,7 +13,16 @@ document.querySelectorAll(".js-wa").forEach((link) => {
   link.rel = "noopener";
 });
 
-document.getElementById("year").textContent = new Date().getFullYear();
+const year = document.getElementById("year");
+if (year) year.textContent = new Date().getFullYear();
+
+const menu = document.getElementById("menu");
+const collapse = menu && window.bootstrap ? bootstrap.Collapse.getOrCreateInstance(menu, { toggle: false }) : null;
+document.querySelectorAll(".cyber-nav .nav-link").forEach((link) => {
+  link.addEventListener("click", () => {
+    if (window.innerWidth < 992 && collapse) collapse.hide();
+  });
+});
 
 window.addEventListener("scroll", () => {
   nav && nav.classList.toggle("nav-scrolled", window.scrollY > 24);
@@ -30,6 +40,17 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.15 });
 document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+
+const sections = [...document.querySelectorAll("header[id], section[id]")];
+const navLinks = [...document.querySelectorAll(".cyber-nav .nav-link")];
+const activeObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (!entry.isIntersecting) return;
+    const id = `#${entry.target.id}`;
+    navLinks.forEach((link) => link.classList.toggle("active", link.getAttribute("href") === id));
+  });
+}, { rootMargin: "-30% 0px -55% 0px", threshold: 0.01 });
+sections.forEach((section) => activeObserver.observe(section));
 
 const counterObserver = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
@@ -49,7 +70,7 @@ const counterObserver = new IntersectionObserver((entries) => {
 document.querySelectorAll("[data-counter]").forEach((el) => counterObserver.observe(el));
 
 const canvas = document.getElementById("networkCanvas");
-if (canvas) {
+if (canvas && !prefersReducedMotion) {
   const ctx = canvas.getContext("2d");
   let points = [];
   let w = 0;

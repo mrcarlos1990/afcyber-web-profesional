@@ -1,18 +1,18 @@
 {% extends "admin/base.html" %}
 {% block content %}
-<div class="admin-header"><h1>Configuracion general</h1><p>Identidad, colores, contacto, redes, SEO y visibilidad.</p></div>
+<div class="admin-header"><h1>Configuración general</h1><p>Identidad, colores, contacto, redes, SEO y visibilidad.</p></div>
 <form class="admin-card stacked-form" method="post" enctype="multipart/form-data">
   <h2>Identidad</h2>
   <div class="grid-2">
-    {% for field,label in [('company_name','Nombre empresa'),('slogan','Slogan'),('main_email','Correo'),('phone','Telefono'),('whatsapp','WhatsApp internacional'),('address','Direccion'),('business_hours','Horario')] %}
+    {% for field,label in [('company_name','Nombre empresa'),('slogan','Slogan'),('main_email','Correo'),('phone','Teléfono'),('whatsapp','WhatsApp internacional'),('address','Dirección'),('business_hours','Horario')] %}
       <label>{{ label }}<input class="form-control" name="{{ field }}" value="{{ settings|attr(field) or '' }}"></label>
     {% endfor %}
   </div>
-  <label>Descripcion corta<textarea class="form-control" name="short_description">{{ settings.short_description }}</textarea></label>
+  <label>Descripción corta<textarea class="form-control" name="short_description">{{ settings.short_description }}</textarea></label>
   <div class="grid-3">
-    <label>Logo<input class="form-control image-input" type="file" name="logo" accept=".jpg,.jpeg,.png,.webp,.svg"><img class="preview" src="{% if settings.logo %}{{ settings.logo|asset }}{% endif %}"></label>
-    <label>Favicon<input class="form-control image-input" type="file" name="favicon" accept=".jpg,.jpeg,.png,.webp,.svg"><img class="preview" src="{% if settings.favicon %}{{ settings.favicon|asset }}{% endif %}"></label>
-    <label>Open Graph<input class="form-control image-input" type="file" name="og_image" accept=".jpg,.jpeg,.png,.webp,.svg"><img class="preview" src="{% if settings.og_image %}{{ settings.og_image|asset }}{% endif %}"></label>
+    <label>Logo<input class="form-control image-input" type="file" name="logo" accept=".jpg,.jpeg,.png,.webp"><img class="preview" src="{% if settings.logo %}{{ settings.logo|asset }}{% endif %}"></label>
+    <label>Favicon<input class="form-control image-input" type="file" name="favicon" accept=".ico,.jpg,.jpeg,.png,.webp"><img class="preview" src="{% if settings.favicon %}{{ settings.favicon|asset }}{% endif %}"></label>
+    <label>Open Graph<input class="form-control image-input" type="file" name="og_image" accept=".jpg,.jpeg,.png,.webp"><img class="preview" src="{% if settings.og_image %}{{ settings.og_image|asset }}{% endif %}"></label>
   </div>
   <h2>Colores del sitio</h2>
   <div class="grid-5">
