@@ -1,0 +1,83 @@
+{% extends "public/base.html" %}
+{% block content %}
+<nav class="navbar navbar-expand-lg fixed-top cyber-nav nav-scrolled" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="{{ url_for('index') }}#inicio"><span class="logo-mark">AF</span><span>{{ settings.company_name }}</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menú"><span class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="menu">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('downloads') }}">Descargas</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('request_service') }}">Solicitar Servicio</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<main class="page-shell" id="contenido">
+  <section class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="section-kicker">Descargas</span>
+        <h1>Programas, manuales y documentación disponible.</h1>
+        <p class="muted">Solo se publican archivos activos, verificados y configurados desde el panel administrativo. AFCyber Solutions no muestra programas o manuales ficticios.</p>
+      </div>
+      <div class="download-tabs reveal" role="navigation" aria-label="Categorías de descargas">
+        <a class="{% if section == 'todo' %}active{% endif %}" href="{{ url_for('downloads') }}">Todo</a>
+        <a class="{% if section == 'programas' %}active{% endif %}" href="{{ url_for('downloads') }}/programas">Programas</a>
+        <a class="{% if section == 'manuales' %}active{% endif %}" href="{{ url_for('downloads') }}/manuales">Manuales</a>
+      </div>
+
+      {% if section in ['todo', 'programas'] %}
+      <div class="section-head compact reveal"><h2>Programas</h2></div>
+      <div class="download-grid">
+        {% for item in programs %}
+        <article class="download-card reveal">
+          {% if item.image %}<img src="{{ item.image|asset }}" alt="{{ item.name }}" loading="lazy">{% else %}<div class="download-icon"><i class="fa-solid fa-laptop-code"></i></div>{% endif %}
+          <div>
+            <span>{{ item.category }} · {{ item.version }}</span>
+            <h3>{{ item.name }}</h3>
+            <p>{{ item.short_description }}</p>
+            <small>{{ item.operating_system }} · {{ item.architecture }} · {{ item.file_size|filesize }} · SHA-256 registrado</small>
+            <div class="card-actions">
+              <a class="btn btn-cyber" href="{{ url_for('download_program', slug=item.slug) }}"><i class="fa-solid fa-download"></i>Descargar</a>
+              <a class="btn btn-glass" href="{{ url_for('program_detail', slug=item.slug) }}">Ver detalles</a>
+              <a class="btn btn-glass js-wa" href="#" data-message="Hola AFCyber Solutions, quiero solicitar licencia o soporte para {{ item.name }}.">Soporte</a>
+            </div>
+          </div>
+        </article>
+        {% else %}
+        <article class="download-empty reveal"><h3>Programas pendientes de publicación</h3><p>La estructura está lista, pero todavía no hay programas reales publicados desde el panel administrativo.</p></article>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% if section in ['todo', 'manuales'] %}
+      <div class="section-head compact reveal"><h2>Manuales y documentación</h2></div>
+      <div class="download-grid">
+        {% for item in manuals %}
+        <article class="download-card reveal">
+          <div class="download-icon"><i class="fa-solid fa-file-pdf"></i></div>
+          <div>
+            <span>{{ item.category }} · {{ item.version }}</span>
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.description }}</p>
+            <small>{{ item.file_format }} · {{ item.file_size|filesize }} · {{ item.download_count }} descargas</small>
+            <div class="card-actions">
+              <a class="btn btn-cyber" href="{{ url_for('download_manual', slug=item.slug) }}"><i class="fa-solid fa-download"></i>Descargar</a>
+              <a class="btn btn-glass" href="{{ url_for('manual_detail', slug=item.slug) }}">Ver</a>
+            </div>
+          </div>
+        </article>
+        {% else %}
+        <article class="download-empty reveal"><h3>Manuales pendientes de publicación</h3><p>Cuando existan PDFs reales autorizados, se publicarán aquí con versión, hash y conteo de descargas.</p></article>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </section>
+</main>
+
+<a class="wa-float js-wa" href="#" data-message="Hola AFCyber Solutions, quiero información sobre descargas." aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+<button class="top-button" id="topButton" type="button" aria-label="Volver arriba"><i class="fa-solid fa-arrow-up"></i></button>
+{% endblock %}

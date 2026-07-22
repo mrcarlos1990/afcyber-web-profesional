@@ -1,0 +1,46 @@
+{% extends "public/base.html" %}
+{% block content %}
+<main class="page-shell" id="contenido">
+  {% include "public/partials/flash.html" %}
+  <section class="section">
+    <div class="container">
+      <article class="detail-panel reveal">
+        <span class="section-kicker">Firma electrónica</span>
+        <h1>{{ document.title }}</h1>
+        <p class="muted">Documento {{ document.code }} · Estado: {{ document.status }}</p>
+        {% if expired %}
+          <div class="download-empty"><h2>Enlace no disponible</h2><p>El enlace venció o ya fue utilizado. Solicita un nuevo enlace a AFCyber Solutions.</p></div>
+        {% else %}
+          <div class="document-preview">
+            <h2>Contenido a firmar</h2>
+            <pre>{{ version.content if version else 'Documento no disponible.' }}</pre>
+          </div>
+          <div class="card-actions">
+            <a class="btn btn-glass" href="{{ url_for('signed_document_pdf', token=request.view_args.token) }}"><i class="fa-solid fa-file-pdf"></i>Descargar PDF</a>
+          </div>
+          {% if item.status == "firmado" %}
+            <div class="download-empty"><h2>Firma registrada</h2><p>La firma de {{ item.signer_name }} fue registrada. Puedes descargar la copia disponible del documento.</p></div>
+          {% elif item.status == "rechazado" %}
+            <div class="download-empty"><h2>Documento rechazado</h2><p>{{ item.reject_reason or 'No se indicó motivo.' }}</p></div>
+          {% else %}
+          <form class="contact-form service-form" method="post">
+            <h2>Firmar documento</h2>
+            <label>Nombre escrito como firma<input class="form-control" name="signature_text" value="{{ item.signer_name }}" required></label>
+            <label>Código OTP recibido por correo<input class="form-control" name="otp" inputmode="numeric" maxlength="6" required></label>
+            <div class="consent-box">
+              <label><input type="checkbox" name="consent" required> Acepto firmar electrónicamente este documento y entiendo que se registrará fecha, correo, rol, IP tratada como hash, navegador y hash del documento.</label>
+            </div>
+            <button class="btn btn-cyber w-100" name="action" value="sign">Firmar</button>
+          </form>
+          <form class="contact-form service-form" method="post">
+            <h2>Rechazar documento</h2>
+            <label>Motivo<textarea class="form-control" name="reject_reason" rows="3"></textarea></label>
+            <button class="btn btn-glass w-100" name="action" value="reject">Rechazar</button>
+          </form>
+          {% endif %}
+        {% endif %}
+      </article>
+    </div>
+  </section>
+</main>
+{% endblock %}

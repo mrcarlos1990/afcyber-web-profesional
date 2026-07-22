@@ -1,18 +1,17 @@
 {% extends "admin/base.html" %}
-{% block admin_content %}
-<section class="admin-card">
-  <div class="card-heading"><h1>Mensajes recibidos</h1></div>
-  <div class="message-filters">
-    <a class="{% if not selected_type %}active{% endif %}" href="{{ url_for('admin_messages') }}">Todos</a>
-    {% for key, channel in contact_channels.items() %}
-    <a class="{% if selected_type == key %}active{% endif %}" href="{{ url_for('admin_messages', type=key) }}">{{ channel.label }}</a>
-    {% endfor %}
-  </div>
-  <div class="table-responsive">
-    <table class="table admin-table">
-      <thead><tr><th>Estado</th><th>Tipo</th><th>Nombre</th><th>Telefono</th><th>Servicio</th><th>Fecha</th><th></th></tr></thead>
-      <tbody>{% for item in messages %}<tr><td>{{ 'Leido' if item.is_read else 'Nuevo' }}</td><td><span class="type-badge">{{ contact_channels.get(item.inquiry_type, {}).get('label', item.inquiry_type or 'Contacto') }}</span></td><td>{{ item.name }}</td><td>{{ item.phone }}</td><td>{{ item.requested_service }}</td><td>{{ item.created_at.strftime('%d/%m/%Y %H:%M') }}</td><td class="actions"><a href="{{ url_for('admin_message_detail', message_id=item.id) }}">Abrir</a><form method="post" action="{{ url_for('admin_message_delete', message_id=item.id) }}" onsubmit="return confirm('Eliminar mensaje?')"><input type="hidden" name="_csrf_token" value="{{ csrf_token() }}"><button type="submit">Eliminar</button></form></td></tr>{% endfor %}</tbody>
-    </table>
-  </div>
-</section>
+{% block content %}
+<div class="admin-header"><h1>Mensajes recibidos</h1><p>Solicitudes guardadas desde el formulario publico.</p></div>
+{% for item in items %}
+<article class="admin-card message-card {% if not item.is_read %}unread{% endif %}">
+  <div class="message-head"><strong>{{ item.name }}</strong><span>{{ item.created_at.strftime('%d/%m/%Y %H:%M') }}</span></div>
+  <p>{{ item.message }}</p>
+  <small>Empresa: {{ item.company or 'N/A' }} · Teléfono: {{ item.phone }} · Correo: {{ item.email or 'N/A' }} · Servicio: {{ item.requested_service or 'N/A' }}</small>
+  <form method="post" class="message-actions">
+    <button class="btn btn-outline-primary btn-sm" formaction="{{ url_for('read_message', item_id=item.id) }}">Marcar leido</button>
+    <button class="btn btn-outline-danger btn-sm" formaction="{{ url_for('delete_message', item_id=item.id) }}">Eliminar</button>
+  </form>
+</article>
+{% else %}
+<p>No hay mensajes.</p>
+{% endfor %}
 {% endblock %}

@@ -1,31 +1,20 @@
 const siteConfig = {
-  whatsappNumber: window.AF_SITE?.whatsapp || "18299198058",
-  analyticsId: window.AF_SITE?.analyticsId || "",
-  defaultWhatsappMessage: window.AF_SITE?.defaultMessage || "Hola AFCyber Solutions, quiero solicitar informacion sobre sus servicios."
-};
-
-const serviceMessages = {
-  "Sistema POS": "Hola AFCyber Solutions, me interesa una cotizacion para un Sistema POS.",
-  "Sistemas POS / ERP": "Hola AFCyber Solutions, me interesa una cotizacion para un Sistema POS.",
-  "Landing Page": "Hola AFCyber Solutions, necesito una Landing Page profesional.",
-  "Landing Pages y Webs": "Hola AFCyber Solutions, necesito una Landing Page profesional.",
-  "CCTV": "Hola AFCyber Solutions, deseo una cotizacion para camaras de seguridad.",
-  "CCTV y Control de Acceso": "Hola AFCyber Solutions, deseo una cotizacion para camaras de seguridad.",
-  "Desarrollo Web": "Hola AFCyber Solutions, necesito una pagina web profesional.",
-  "Software Empresarial": "Hola AFCyber Solutions, necesito desarrollo de software empresarial.",
-  "Aire Acondicionado": "Hola AFCyber Solutions, necesito servicio para aire acondicionado.",
-  "Aires Acondicionados": "Hola AFCyber Solutions, necesito servicio para aire acondicionado.",
-  "Soporte Tecnico": "Hola AFCyber Solutions, necesito soporte tecnico.",
-  "Mantenimiento de Computadoras": "Hola AFCyber Solutions, necesito mantenimiento de computadoras.",
-  "Instalacion de Software": "Hola AFCyber Solutions, necesito instalacion de software.",
-  "Ciberseguridad": "Hola AFCyber Solutions, quiero una cotizacion para ciberseguridad basica."
+  companyName: "AFCyber SOLUTIONS",
+  whatsappNumber: "18299198058",
+  email: "info@afcybersolutions.com.do",
+  location: "República Dominicana",
+  defaultWhatsappMessage: "Hola AFCyber SOLUTIONS, quiero solicitar información sobre sus servicios tecnológicos.",
+  socialLinks: {
+    facebook: "#",
+    instagram: "#",
+    tiktok: "#",
+    linkedin: "#"
+  }
 };
 
 document.addEventListener("DOMContentLoaded", () => {
   document.body.classList.add("loaded");
-
-  const year = document.getElementById("currentYear");
-  if (year) year.textContent = new Date().getFullYear();
+  document.getElementById("currentYear").textContent = new Date().getFullYear();
 
   initAos();
   initNavbar();
@@ -34,285 +23,131 @@ document.addEventListener("DOMContentLoaded", () => {
   initCounters();
   initBackToTop();
   initNetworkCanvas();
-  initInteractiveTimeline();
-  initHelpBot();
-  initServiceFilters();
-  initSmartServiceSelect();
-  initSmoothScroll();
-  initAnalyticsTracking();
-  initAdminShortcut();
 });
 
-function trackEvent(eventName, parameters = {}) {
-  if (typeof window.gtag !== "function") return;
-  window.gtag("event", eventName, {
-    page_path: window.location.pathname,
-    ...parameters
-  });
-}
-
-function initAnalyticsTracking() {
-  trackEvent("af_page_view", { page_title: document.title });
-
-  document.querySelectorAll('a[href="#contact-form"], a[href*="#contacto"], .nav-cta').forEach((link) => {
-    link.addEventListener("click", () => {
-      trackEvent("contact_click", {
-        link_text: (link.textContent || "contacto").trim().slice(0, 80)
-      });
-    });
-  });
-}
-
-function initAdminShortcut() {
-  document.addEventListener("keydown", (event) => {
-    // Admin shortcut: Ctrl + Alt + A
-    if (event.ctrlKey && event.altKey && event.key.toLowerCase() === "a") {
-      event.preventDefault();
-      window.location.href = "/admin/login";
-    }
-  });
-}
-
 function initAos() {
-  if (!window.AOS) return;
-  AOS.init({ duration: 760, easing: "ease-out-cubic", once: true, offset: 70 });
-}
-
-function getLinkHash(link) {
-  const href = link.getAttribute("href") || "";
-  if (!href.includes("#")) return "";
-  return `#${href.split("#").pop()}`;
+  if (window.AOS) {
+    AOS.init({
+      duration: 760,
+      easing: "ease-out-cubic",
+      once: true,
+      offset: 80
+    });
+  }
 }
 
 function initNavbar() {
   const nav = document.getElementById("mainNav");
+  const links = document.querySelectorAll(".premium-nav .nav-link");
   const menu = document.getElementById("navbarMenu");
-  const links = document.querySelectorAll(".nav-link, .navbar-brand");
-  const collapse = menu && window.bootstrap
-    ? bootstrap.Collapse.getOrCreateInstance(menu, { toggle: false })
-    : null;
+  const collapse = menu ? bootstrap.Collapse.getOrCreateInstance(menu, { toggle: false }) : null;
 
-  if (!nav) return;
+  const updateNav = () => {
+    nav.classList.toggle("nav-scrolled", window.scrollY > 30);
+  };
 
-  const updateNav = () => nav.classList.toggle("nav-scrolled", window.scrollY > 30);
   updateNav();
   window.addEventListener("scroll", updateNav, { passive: true });
 
   links.forEach((link) => {
     link.addEventListener("click", () => {
-      if (window.innerWidth < 1200 && collapse && menu.classList.contains("show")) {
-        setTimeout(() => collapse.hide(), 120);
-      }
-    });
-  });
-
-  const targets = Array.from(links)
-    .map((link) => getLinkHash(link))
-    .filter(Boolean)
-    .map((hash) => document.querySelector(hash))
-    .filter(Boolean);
-
-  if (!targets.length || !("IntersectionObserver" in window)) return;
-
-  const observer = new IntersectionObserver((entries) => {
-    const visible = entries
-      .filter((entry) => entry.isIntersecting)
-      .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-    if (!visible) return;
-    links.forEach((link) => link.classList.toggle("active", getLinkHash(link) === `#${visible.target.id}`));
-  }, { threshold: [0.18, 0.42, 0.66], rootMargin: "-18% 0px -56% 0px" });
-
-  targets.forEach((target) => observer.observe(target));
-}
-
-function initSmoothScroll() {
-  document.querySelectorAll('a[href*="#"]').forEach((anchor) => {
-    anchor.addEventListener("click", function handleAnchorClick(event) {
-      const targetId = getLinkHash(this);
-      if (!targetId || targetId === "#") return;
-      const targetElement = document.querySelector(targetId);
-      if (!targetElement) return;
-      event.preventDefault();
-      targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
-      history.replaceState(null, "", targetId);
+      links.forEach((item) => item.classList.remove("active"));
+      link.classList.add("active");
+      if (window.innerWidth < 992 && collapse) collapse.hide();
     });
   });
 }
 
 function buildWhatsappUrl(message) {
-  const normalizedMessage = String(message || siteConfig.defaultWhatsappMessage).trim();
-  const number = String(siteConfig.whatsappNumber || "").replace(/\D/g, "") || "18299198058";
-  return `https://wa.me/${number}?text=${encodeURIComponent(normalizedMessage)}`;
+  return `https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(message || siteConfig.defaultWhatsappMessage)}`;
 }
 
 function initWhatsappLinks() {
   document.querySelectorAll(".js-whatsapp").forEach((link) => {
     const service = link.dataset.service;
-    const message = link.dataset.message || serviceMessages[service] || (service
-      ? `Hola AFCyber Solutions, quiero informacion sobre: ${service}.`
+    const message = link.dataset.message || (service
+      ? `Hola AFCyber SOLUTIONS, quiero información sobre el servicio: ${service}.`
       : siteConfig.defaultWhatsappMessage);
 
     link.setAttribute("href", buildWhatsappUrl(message));
     link.setAttribute("target", "_blank");
     link.setAttribute("rel", "noopener");
-    link.addEventListener("click", () => {
-      trackEvent("whatsapp_click", {
-        service: service || link.dataset.message || "general",
-        link_text: (link.textContent || "WhatsApp").trim().slice(0, 80)
-      });
-    });
-  });
-}
-
-function initSmartServiceSelect() {
-  const select = document.querySelector('[name="requested_service"]');
-  const form = document.querySelector("#contacto .contact-form");
-  if (!select || !form) return;
-
-  select.addEventListener("change", () => {
-    const message = serviceMessages[select.value];
-    form.dataset.whatsappMessage = message || siteConfig.defaultWhatsappMessage;
   });
 }
 
 function initContactForm() {
-  const form = document.querySelector("#contacto .contact-form");
+  const form = document.getElementById("contactForm");
   if (!form) return;
 
-  const status = form.querySelector(".form-status");
-
-  form.querySelectorAll(".form-control").forEach((field) => {
-    field.addEventListener("blur", () => {
-      field.classList.toggle("is-valid", field.checkValidity() && field.value.trim() !== "");
-      field.classList.toggle("is-invalid", !field.checkValidity() && field.required);
-    });
-  });
-
   form.addEventListener("submit", (event) => {
-    form.classList.add("was-validated");
+    event.preventDefault();
+    const data = new FormData(form);
+    const name = String(data.get("name") || "").trim();
+    const phone = String(data.get("phone") || "").trim();
+    const email = String(data.get("email") || "").trim();
+    const message = String(data.get("message") || "").trim();
 
-    if (!form.checkValidity()) {
-      event.preventDefault();
-      if (status) {
-        status.textContent = "Revisa los campos marcados antes de enviar.";
-        status.className = "form-status show error";
-      }
-      form.reportValidity();
+    if (!name || !phone || !message) {
+      showFormNotice(form, "Completa nombre, teléfono y mensaje.", "error");
       return;
     }
 
-    const turnstileWidget = form.querySelector(".cf-turnstile");
-    const turnstileResponse = form.querySelector('[name="cf-turnstile-response"]');
-    if (turnstileWidget && turnstileResponse && !turnstileResponse.value) {
-      event.preventDefault();
-      if (status) {
-        status.textContent = "Confirma la verificacion de seguridad antes de enviar.";
-        status.className = "form-status show error";
-      }
-      return;
-    }
+    const whatsappText = [
+      "Hola AFCyber SOLUTIONS, quiero solicitar información.",
+      "",
+      `Nombre: ${name}`,
+      `Teléfono: ${phone}`,
+      email ? `Correo: ${email}` : "",
+      `Mensaje: ${message}`
+    ].filter(Boolean).join("\n");
 
-    if (status) {
-      status.textContent = "Solicitud lista. Enviando tus datos de forma segura...";
-      status.className = "form-status show success";
-    }
-
-    const service = form.querySelector('[name="requested_service"]')?.value || "No indicado";
-    const inquiryType = form.querySelector('[name="inquiry_type"]')?.value || "cotizacion";
-    trackEvent("quote_form_submit", { service, inquiry_type: inquiryType });
+    window.open(buildWhatsappUrl(whatsappText), "_blank", "noopener");
+    showFormNotice(form, "Tu mensaje se preparó en WhatsApp.", "success");
+    form.reset();
   });
 }
 
-function initInteractiveTimeline() {
-  const items = document.querySelectorAll(".process-step");
-  if (!items.length) return;
-  items.forEach((item) => {
-    item.addEventListener("mouseenter", () => {
-      items.forEach((entry) => entry.classList.remove("active"));
-      item.classList.add("active");
-    });
-    item.addEventListener("focusin", () => {
-      items.forEach((entry) => entry.classList.remove("active"));
-      item.classList.add("active");
-    });
-  });
-}
-
-function initHelpBot() {
-  const bot = document.getElementById("helpBot");
-  if (!bot) return;
-
-  const toggle = bot.querySelector(".help-bot-toggle");
-  const close = bot.querySelector(".help-bot-close");
-  const setOpen = (isOpen) => {
-    bot.classList.toggle("open", isOpen);
-    if (toggle) toggle.setAttribute("aria-expanded", String(isOpen));
-  };
-
-  if (toggle) toggle.addEventListener("click", () => setOpen(!bot.classList.contains("open")));
-  if (close) close.addEventListener("click", () => setOpen(false));
-}
-
-function initServiceFilters() {
-  const buttons = document.querySelectorAll(".filter-btn");
-  const items = document.querySelectorAll(".gallery-item");
-  if (!buttons.length || !items.length) return;
-
-  buttons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const filter = button.dataset.filter || "all";
-      buttons.forEach((entry) => entry.classList.toggle("active", entry === button));
-      items.forEach((item) => {
-        const visible = filter === "all" || item.dataset.category === filter;
-        item.classList.toggle("is-hidden", !visible);
-      });
-    });
-  });
+function showFormNotice(form, text, type) {
+  let notice = form.querySelector(".form-notice");
+  if (!notice) {
+    notice = document.createElement("div");
+    notice.className = "form-notice";
+    form.prepend(notice);
+  }
+  notice.textContent = text;
+  notice.style.marginBottom = "1rem";
+  notice.style.padding = ".85rem 1rem";
+  notice.style.borderRadius = "8px";
+  notice.style.fontWeight = "800";
+  notice.style.color = "#fff";
+  notice.style.background = type === "success" ? "rgba(16,185,129,.9)" : "rgba(239,68,68,.9)";
 }
 
 function initCounters() {
   const counters = document.querySelectorAll("[data-counter]");
   if (!counters.length) return;
 
-  const startCounter = (counter) => {
-    if (counter.dataset.counterAnimated === "true") return;
-    counter.dataset.counterAnimated = "true";
-    animateCounter(counter);
-  };
-
-  if (!("IntersectionObserver" in window)) {
-    counters.forEach(startCounter);
-    return;
-  }
-
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
-      startCounter(entry.target);
+      animateCounter(entry.target);
       observer.unobserve(entry.target);
     });
   }, { threshold: 0.55 });
 
-  counters.forEach((counter) => {
-    counter.textContent = "0";
-    observer.observe(counter);
-  });
+  counters.forEach((counter) => observer.observe(counter));
 }
 
 function animateCounter(element) {
   const target = Number(element.dataset.counter || "0");
-  const duration = 1800;
+  const duration = 1300;
   const start = performance.now();
 
   const tick = (now) => {
     const progress = Math.min((now - start) / duration, 1);
-    const easedProgress = 1 - Math.pow(1 - progress, 3);
-    element.textContent = String(Math.round(target * easedProgress));
-    if (progress < 1) {
-      requestAnimationFrame(tick);
-      return;
-    }
-    element.textContent = String(target);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    element.textContent = Math.round(target * eased);
+    if (progress < 1) requestAnimationFrame(tick);
   };
 
   requestAnimationFrame(tick);
@@ -321,25 +156,28 @@ function animateCounter(element) {
 function initBackToTop() {
   const button = document.getElementById("backToTop");
   if (!button) return;
-  window.addEventListener("scroll", () => button.classList.toggle("show", window.scrollY > 650), { passive: true });
-  button.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+
+  window.addEventListener("scroll", () => {
+    button.classList.toggle("show", window.scrollY > 600);
+  }, { passive: true });
+
+  button.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
 }
 
 function initNetworkCanvas() {
-  const hero = document.getElementById("inicio");
   const canvas = document.getElementById("networkCanvas");
-  if (!hero || !canvas) return;
+  if (!canvas) return;
 
   const ctx = canvas.getContext("2d");
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let points = [];
   let width = 0;
   let height = 0;
   let animationFrame = null;
-  let isHeroVisible = true;
 
   const resize = () => {
-    const ratio = Math.min(window.devicePixelRatio || 1, 2);
+    const ratio = window.devicePixelRatio || 1;
     width = canvas.offsetWidth;
     height = canvas.offsetHeight;
     canvas.width = width * ratio;
@@ -348,64 +186,36 @@ function initNetworkCanvas() {
     points = createPoints(width, height);
   };
 
-  const stopAnimation = () => {
-    if (!animationFrame) return;
-    cancelAnimationFrame(animationFrame);
-    animationFrame = null;
-  };
-
   const animate = () => {
     ctx.clearRect(0, 0, width, height);
-    drawNetwork(ctx, points);
-    movePoints(points, width, height);
-    animationFrame = requestAnimationFrame(animate);
-  };
-
-  const startAnimation = () => {
-    if (animationFrame || reduceMotion) return;
+    drawNetwork(ctx, points, width, height);
+    points.forEach((point) => {
+      point.x += point.vx;
+      point.y += point.vy;
+      if (point.x < 0 || point.x > width) point.vx *= -1;
+      if (point.y < 0 || point.y > height) point.vy *= -1;
+    });
     animationFrame = requestAnimationFrame(animate);
   };
 
   resize();
-  drawNetwork(ctx, points);
-  startAnimation();
-
-  if ("IntersectionObserver" in window) {
-    const observer = new IntersectionObserver((entries) => {
-      isHeroVisible = entries.some((entry) => entry.isIntersecting);
-      if (isHeroVisible) startAnimation();
-      else stopAnimation();
-    }, { threshold: 0.08 });
-    observer.observe(hero);
-  }
-
+  animate();
   window.addEventListener("resize", () => {
-    stopAnimation();
+    cancelAnimationFrame(animationFrame);
     resize();
-    drawNetwork(ctx, points);
-    if (isHeroVisible) startAnimation();
-  }, { passive: true });
+    animate();
+  });
 }
 
 function createPoints(width, height) {
-  const baseAmount = Math.min(82, Math.max(34, Math.floor(width / 18)));
-  const amount = width < 768 ? Math.round(baseAmount / 2) : baseAmount;
+  const amount = Math.min(78, Math.max(36, Math.floor(width / 18)));
   return Array.from({ length: amount }, () => ({
     x: Math.random() * width,
     y: Math.random() * height,
-    vx: (Math.random() - .5) * .22,
-    vy: (Math.random() - .5) * .22,
-    r: Math.random() * 1.6 + .8
+    vx: (Math.random() - 0.5) * 0.28,
+    vy: (Math.random() - 0.5) * 0.28,
+    r: Math.random() * 1.8 + 1
   }));
-}
-
-function movePoints(points, width, height) {
-  points.forEach((point) => {
-    point.x += point.vx;
-    point.y += point.vy;
-    if (point.x < 0 || point.x > width) point.vx *= -1;
-    if (point.y < 0 || point.y > height) point.vy *= -1;
-  });
 }
 
 function drawNetwork(ctx, points) {
@@ -413,18 +223,15 @@ function drawNetwork(ctx, points) {
   points.forEach((point, index) => {
     ctx.beginPath();
     ctx.arc(point.x, point.y, point.r, 0, Math.PI * 2);
-    ctx.fillStyle = "rgba(34, 211, 238, .76)";
-    ctx.shadowColor = "rgba(34, 211, 238, .72)";
-    ctx.shadowBlur = 8;
+    ctx.fillStyle = "rgba(46, 242, 255, .7)";
     ctx.fill();
-    ctx.shadowBlur = 0;
 
     for (let i = index + 1; i < points.length; i += 1) {
       const other = points[i];
       const distance = Math.hypot(point.x - other.x, point.y - other.y);
-      if (distance < 132) {
-        const opacity = 1 - distance / 132;
-        ctx.strokeStyle = `rgba(34, 211, 238, ${opacity * .18})`;
+      if (distance < 145) {
+        const opacity = 1 - distance / 145;
+        ctx.strokeStyle = `rgba(46, 242, 255, ${opacity * 0.16})`;
         ctx.beginPath();
         ctx.moveTo(point.x, point.y);
         ctx.lineTo(other.x, other.y);

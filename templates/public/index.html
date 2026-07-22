@@ -1,299 +1,312 @@
 {% extends "public/base.html" %}
 {% block content %}
-
-<header id="inicio" class="hero-section">
-  <canvas id="networkCanvas" aria-hidden="true"></canvas>
-  <div class="hero-grid" aria-hidden="true"></div>
-  <div class="container hero-container">
-    <div class="hero-copy" data-aos="fade-up">
-      <p class="hero-kicker">AFCYBER SOLUTIONS &middot; TECNOLOGIA &middot; SEGURIDAD &middot; SOPORTE</p>
-      <h1>Soluciones tecnologicas para negocios que quieren crecer</h1>
-      <p class="hero-lead">Desarrollo web, sistemas POS/ERP, ciberseguridad, CCTV, soporte tecnico, automatizacion y servicios tecnologicos para empresas y hogares.</p>
-      <div class="hero-actions">
-        <a class="btn btn-primary-premium js-whatsapp" href="#" data-message="Hola AFCyber Solutions, quiero solicitar una cotizacion para mi proyecto.">Solicitar Cotizacion <i class="fa-solid fa-arrow-right"></i></a>
-        <a class="btn btn-outline-premium" href="#servicios">Ver Servicios</a>
-      </div>
-      <div class="hero-proof" aria-label="Indicadores AFCyber">
-        <span><strong>+50</strong> Proyectos</span>
-        <span><strong>24/7</strong> Soporte</span>
-        <span><strong>100%</strong> Servicios personalizados</span>
-      </div>
+<nav class="navbar navbar-expand-lg fixed-top cyber-nav" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="#inicio">
+      {% if settings.logo %}<img src="{{ settings.logo|asset }}" alt="{{ settings.company_name }}">{% else %}<span class="logo-mark">AF</span>{% endif %}
+      <span>{{ settings.company_name }}</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu"><span class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="menu">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <li class="nav-item"><a class="nav-link" href="#servicios">Servicios</a></li>
+        <li class="nav-item"><a class="nav-link" href="#proceso">Proceso</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('downloads') }}">Descargas</a></li>
+        <li class="nav-item"><a class="nav-link" href="#portafolio">Portafolio</a></li>
+        <li class="nav-item"><a class="nav-link" href="#ceo">CEO</a></li>
+        <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
+        <li class="nav-item ms-lg-3"><a class="btn btn-cyber" href="{{ url_for('request_service') }}">Solicitar servicio</a></li>
+      </ul>
     </div>
+  </div>
+</nav>
 
-    <div class="hero-dashboard" data-aos="fade-up" data-aos-delay="140">
-      <div class="dashboard-top">
-        <span></span><span></span><span></span>
-        <strong>AFCYBER COMMAND CENTER</strong>
+<header id="inicio" class="hero-cyber" tabindex="-1">
+  {% if hero.animation_enabled %}<canvas id="networkCanvas"></canvas>{% endif %}
+  <div class="container position-relative" id="contenido">
+    <div class="row min-vh-100 align-items-center g-5">
+      <div class="col-lg-7 reveal">
+        <span class="eyebrow"><i class="fa-solid fa-shield-halved"></i>AFCyber Solutions · Tecnología · Seguridad · Soporte</span>
+        <h1>{{ hero.title }}</h1>
+        <h2>{{ hero.subtitle }}</h2>
+        <p>{{ hero.description }}</p>
+        <div class="hero-actions">
+          <a class="btn btn-cyber" href="{{ hero.primary_button_url }}">{{ hero.primary_button_text }}</a>
+          <a class="btn btn-glass" href="{{ url_for('downloads') }}"><i class="fa-solid fa-download"></i>Descargas</a>
+          <a class="btn btn-glass js-wa" href="#" data-message="{{ hero.secondary_button_message }}"><i class="fa-brands fa-whatsapp"></i>{{ hero.secondary_button_text }}</a>
+        </div>
+        <div class="hero-trust">
+          <span><i class="fa-solid fa-check"></i> Diagnóstico claro</span>
+          <span><i class="fa-solid fa-check"></i> Cotización por alcance</span>
+          <span><i class="fa-solid fa-check"></i> Soporte responsable</span>
+        </div>
       </div>
-      <div class="dashboard-status">
-        <span><i class="fa-solid fa-circle-check"></i> Online</span>
-        <span><i class="fa-solid fa-shield-halved"></i> Seguro</span>
-        <span><i class="fa-solid fa-satellite-dish"></i> Monitoreado</span>
-        <span><i class="fa-solid fa-rocket"></i> Listo para operar</span>
-      </div>
-      <div class="dashboard-body">
-        <article class="dashboard-card primary"><i class="fa-solid fa-layer-group"></i><span>Software Empresarial</span><strong>Sistemas a medida</strong></article>
-        <article class="dashboard-card"><i class="fa-solid fa-cash-register"></i><span>POS / ERP</span><strong>Ventas e inventario</strong></article>
-        <article class="dashboard-card"><i class="fa-solid fa-video"></i><span>CCTV y Seguridad</span><strong>Monitoreo remoto</strong></article>
-        <article class="dashboard-card"><i class="fa-solid fa-computer"></i><span>Soporte Tecnico</span><strong>Equipos y software</strong></article>
-        <article class="dashboard-card"><i class="fa-solid fa-gears"></i><span>Automatizacion</span><strong>Procesos claros</strong></article>
-        <article class="dashboard-card"><i class="fa-solid fa-shield-virus"></i><span>Ciberseguridad</span><strong>Accesos y datos</strong></article>
+      <div class="col-lg-5 reveal">
+        {% if hero.image %}
+          <img class="hero-image" src="{{ hero.image|asset }}" alt="{{ hero.title }}" loading="lazy">
+        {% else %}
+          <div class="command-center" aria-label="Servicios principales de AFCyber Solutions">
+            <div class="terminal-top"><span></span><span></span><span></span></div>
+            <div class="command-core">
+              <strong class="command-title">AFCyber Command Center</strong>
+              <div class="command-status">
+                <span><i class="fa-solid fa-circle-check"></i> Online</span>
+                <span><i class="fa-solid fa-shield-halved"></i> Seguro</span>
+                <span><i class="fa-solid fa-satellite-dish"></i> Monitoreable</span>
+                <span><i class="fa-solid fa-rocket"></i> Listo para operar</span>
+              </div>
+              <div class="command-grid">
+                <article><i class="fa-solid fa-layer-group"></i><strong>Software empresarial</strong><span>Sistemas a medida</span></article>
+                <article><i class="fa-solid fa-cash-register"></i><strong>POS / ERP</strong><span>Ventas e inventario</span></article>
+                <article><i class="fa-solid fa-video"></i><strong>CCTV y seguridad</strong><span>Acceso remoto</span></article>
+                <article><i class="fa-solid fa-headset"></i><strong>Soporte técnico</strong><span>Equipos y software</span></article>
+                <article><i class="fa-solid fa-gears"></i><strong>Automatización</strong><span>Procesos claros</span></article>
+                <article><i class="fa-solid fa-user-shield"></i><strong>Ciberseguridad</strong><span>Accesos y datos</span></article>
+              </div>
+            </div>
+          </div>
+        {% endif %}
       </div>
     </div>
   </div>
 </header>
 
-<main>
-  <section id="estadisticas" class="stats-section">
-    <div class="container">
-      <div class="stats-grid">
-        <article data-aos="fade-up"><i class="fa-solid fa-diagram-project"></i><strong>+<span data-counter="50">50</span></strong><span>Proyectos</span></article>
-        <article data-aos="fade-up" data-aos-delay="50"><i class="fa-solid fa-users"></i><strong>+<span data-counter="100">100</span></strong><span>Clientes</span></article>
-        <article data-aos="fade-up" data-aos-delay="100"><i class="fa-solid fa-headset"></i><strong>24/7</strong><span>Soporte</span></article>
-        <article data-aos="fade-up" data-aos-delay="150"><i class="fa-solid fa-star"></i><strong><span data-counter="99">99</span>%</strong><span>Satisfaccion</span></article>
+<section class="trust-strip" aria-label="Resumen de atención">
+  <div class="container">
+    <div class="trust-grid">
+      <article><i class="fa-solid fa-clipboard-check"></i><strong>Evaluación inicial</strong><span>Revisión de necesidad y alcance antes de cotizar.</span></article>
+      <article><i class="fa-solid fa-file-signature"></i><strong>Propuesta clara</strong><span>Servicios, entregables y tiempos explicados con claridad.</span></article>
+      <article><i class="fa-solid fa-screwdriver-wrench"></i><strong>Implementación guiada</strong><span>Instalación, configuración o desarrollo con seguimiento.</span></article>
+      <article><i class="fa-solid fa-comments"></i><strong>Comunicación directa</strong><span>Contacto por formulario, correo o WhatsApp.</span></article>
+    </div>
+  </div>
+</section>
+
+{% include "public/partials/flash.html" %}
+
+{% if settings.show_about %}
+<section id="nosotros" class="section">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-5 reveal">
+        <div class="visual-panel">
+          {% if about.image %}<img src="{{ about.image|asset }}" alt="Nosotros" loading="lazy">{% else %}<i class="fa-solid fa-building-shield"></i><span>AFCyber Solutions</span>{% endif %}
+        </div>
+      </div>
+      <div class="col-lg-7 reveal">
+        <span class="section-kicker">Sobre nosotros</span>
+        <h2>Tecnología, seguridad y diseño profesional para negocios modernos.</h2>
+        <p class="muted">{{ about.history }}</p>
+        <div class="info-grid">
+          <article><i class="fa-solid fa-bullseye"></i><h3>Misión</h3><p>{{ about.mission }}</p></article>
+          <article><i class="fa-solid fa-eye"></i><h3>Visión</h3><p>{{ about.vision }}</p></article>
+          <article><i class="fa-solid fa-gem"></i><h3>Valores</h3><p>{{ about.values }}</p></article>
+          <article><i class="fa-solid fa-briefcase"></i><h3>Experiencia</h3><p>{{ about.experience }}</p></article>
+        </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
+{% endif %}
 
-  <section id="servicios" class="section services-section">
-    <div class="container">
-      <div class="section-heading" data-aos="fade-up">
-        <span class="section-kicker">Servicios principales</span>
-        <h2>Servicios reales para resolver necesidades tecnicas y comerciales.</h2>
-        <p>Integramos desarrollo, seguridad, soporte, CCTV y climatizacion con una atencion clara, cercana y responsable.</p>
+{% if settings.show_ceo %}
+<section id="ceo" class="section ceo-section">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="section-kicker">CEO & Fundador</span>
+      <h2>Liderazgo técnico con visión de seguridad y crecimiento.</h2>
+    </div>
+    <div class="ceo-card reveal">
+      <div class="ceo-photo">
+        {% if ceo.photo %}<img src="{{ ceo.photo|asset }}" alt="{{ ceo.full_name }}" loading="lazy">{% else %}<div class="avatar-fallback">AF</div>{% endif %}
       </div>
-      <div class="services-grid">
-        <article class="premium-card service-card" id="software-empresarial" data-service="Software Empresarial" data-aos="fade-up"><div class="service-image"><img src="{{ url_for('static', filename='img/projects/business-automation.webp') }}" alt="Software empresarial" loading="lazy" decoding="async" onerror="this.closest('.service-image').classList.add('image-fallback'); this.remove();"></div><i class="fa-solid fa-code"></i><h3>Software Empresarial</h3><p>Desarrollo de sistemas a medida, dashboards, inventario, facturacion y gestion operativa.</p><a class="mini-whatsapp js-whatsapp" href="#" data-message="Hola AFCyber Solutions, me interesa una cotizacion para desarrollo de software empresarial.">Cotizar servicio</a></article>
-        <article class="premium-card service-card" id="sistemas-pos-erp" data-service="Sistema POS" data-aos="fade-up" data-aos-delay="50"><div class="service-image"><img src="{{ url_for('static', filename='img/projects/pos-dashboard.webp') }}" alt="Sistemas POS ERP" loading="lazy" decoding="async" onerror="this.closest('.service-image').classList.add('image-fallback'); this.remove();"></div><i class="fa-solid fa-cash-register"></i><h3>Sistemas POS / ERP</h3><p>Puntos de venta, control de caja, inventario, clientes, proveedores y reportes.</p><a class="mini-whatsapp js-whatsapp" href="#" data-message="Hola AFCyber Solutions, me interesa una cotizacion para un Sistema POS.">Cotizar servicio</a></article>
-        <article class="premium-card service-card" id="landing-pages-webs" data-service="Landing Page" data-aos="fade-up" data-aos-delay="100"><div class="service-image"><img src="{{ url_for('static', filename='img/projects/web-development.webp') }}" alt="Landing pages y desarrollo web" loading="lazy" decoding="async" onerror="this.closest('.service-image').classList.add('image-fallback'); this.remove();"></div><i class="fa-solid fa-globe"></i><h3>Landing Pages y Webs</h3><p>Paginas web profesionales para empresas, catalogos digitales y presencia online.</p><a class="mini-whatsapp js-whatsapp" href="#" data-message="Hola AFCyber Solutions, necesito una Landing Page profesional.">Cotizar servicio</a></article>
-        <article class="premium-card service-card" id="ciberseguridad" data-service="Ciberseguridad" data-aos="fade-up"><div class="service-image"><img src="{{ url_for('static', filename='img/projects/cybersecurity.webp') }}" alt="Ciberseguridad basica" loading="lazy" decoding="async" onerror="this.closest('.service-image').classList.add('image-fallback'); this.remove();"></div><i class="fa-solid fa-shield-virus"></i><h3>Ciberseguridad Basica</h3><p>Proteccion de equipos, buenas practicas, revision de vulnerabilidades, backups y seguridad de acceso.</p><a class="mini-whatsapp js-whatsapp" href="#" data-message="Hola AFCyber Solutions, quiero una cotizacion para ciberseguridad basica.">Cotizar servicio</a></article>
-        <article class="premium-card service-card" id="cctv-control-acceso" data-service="CCTV" data-aos="fade-up" data-aos-delay="50"><div class="service-image"><img src="{{ url_for('static', filename='img/projects/cctv-security.webp') }}" alt="CCTV y control de acceso" loading="lazy" decoding="async" onerror="this.closest('.service-image').classList.add('image-fallback'); this.remove();"></div><i class="fa-solid fa-video"></i><h3>CCTV y Control de Acceso</h3><p>Camaras IP, monitoreo remoto, grabacion, biometria y seguridad fisica.</p><a class="mini-whatsapp js-whatsapp" href="#" data-message="Hola AFCyber Solutions, deseo una cotizacion para camaras de seguridad.">Cotizar servicio</a></article>
-        <article class="premium-card service-card" id="aires-acondicionados" data-service="Aire Acondicionado" data-aos="fade-up" data-aos-delay="100"><div class="service-image"><img src="{{ url_for('static', filename='img/projects/air-conditioning.webp') }}" alt="Aires acondicionados" loading="lazy" decoding="async" onerror="this.closest('.service-image').classList.add('image-fallback'); this.remove();"></div><i class="fa-solid fa-wind"></i><h3>Aires Acondicionados</h3><p>Instalacion, mantenimiento preventivo, limpieza y soporte tecnico para climatizacion.</p><a class="mini-whatsapp js-whatsapp" href="#" data-message="Hola AFCyber Solutions, necesito servicio para aire acondicionado.">Cotizar servicio</a></article>
-        <article class="premium-card service-card" id="mantenimiento-computadoras" data-service="Soporte Tecnico" data-aos="fade-up"><div class="service-image"><img src="{{ url_for('static', filename='img/projects/computer-maintenance.webp') }}" alt="Mantenimiento de computadoras" loading="lazy" decoding="async" onerror="this.closest('.service-image').classList.add('image-fallback'); this.remove();"></div><i class="fa-solid fa-computer"></i><h3>Mantenimiento de Computadoras</h3><p>Formateo, limpieza, optimizacion, diagnostico, reparacion basica y mejora de rendimiento.</p><a class="mini-whatsapp js-whatsapp" href="#" data-message="Hola AFCyber Solutions, necesito mantenimiento para computadoras.">Cotizar servicio</a></article>
-        <article class="premium-card service-card" id="instalacion-software" data-service="Instalacion de Software" data-aos="fade-up" data-aos-delay="50"><div class="service-image"><img src="{{ url_for('static', filename='img/projects/software-installation.webp') }}" alt="Instalacion de software" loading="lazy" decoding="async" onerror="this.closest('.service-image').classList.add('image-fallback'); this.remove();"></div><i class="fa-solid fa-download"></i><h3>Instalacion de Software</h3><p>Instalacion de programas, configuracion de sistemas, drivers, antivirus y herramientas.</p><a class="mini-whatsapp js-whatsapp" href="#" data-message="Hola AFCyber Solutions, necesito instalacion de software.">Cotizar servicio</a></article>
+      <div class="ceo-content">
+        <span class="premium-line">{{ ceo.tagline }}</span>
+        <h3>{{ ceo.full_name }}</h3>
+        <strong>{{ ceo.role }}</strong>
+        <p>{{ ceo.bio }}</p>
+        <div class="ceo-actions">
+          {% if ceo.linkedin %}<a class="btn btn-glass" href="{{ ceo.linkedin }}" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>{% endif %}
+          <a class="btn btn-cyber js-wa" href="#" data-message="{{ ceo.whatsapp_message }}"><i class="fa-brands fa-whatsapp"></i> Contactar</a>
+          {% if ceo.cv_pdf %}<a class="btn btn-glass" href="{{ ceo.cv_pdf|asset }}" target="_blank" rel="noopener"><i class="fa-solid fa-file-arrow-down"></i> Descargar CV</a>{% endif %}
+        </div>
       </div>
     </div>
-  </section>
-
-  <section id="galeria-servicios" class="section service-gallery-section">
-    <div class="container">
-      <div class="section-heading" data-aos="fade-up">
-        <span class="section-kicker">Galeria de servicios</span>
-        <h2>Encuentra rapido la solucion que necesitas.</h2>
-      </div>
-      <div class="filter-tabs" data-aos="fade-up">
-        <button class="filter-btn active" type="button" data-filter="all">Todos</button>
-        <button class="filter-btn" type="button" data-filter="software">Software</button>
-        <button class="filter-btn" type="button" data-filter="web">Web</button>
-        <button class="filter-btn" type="button" data-filter="cctv">CCTV</button>
-        <button class="filter-btn" type="button" data-filter="soporte">Soporte Tecnico</button>
-        <button class="filter-btn" type="button" data-filter="aires">Aires Acondicionados</button>
-      </div>
-      <div class="gallery-grid" data-aos="fade-up">
-        <article class="gallery-item" data-category="software"><i class="fa-solid fa-cash-register"></i><h3>Sistema POS</h3><p>Ventas, caja, productos y reportes.</p></article>
-        <article class="gallery-item" data-category="software"><i class="fa-solid fa-chart-pie"></i><h3>Dashboards</h3><p>Indicadores claros para tomar decisiones.</p></article>
-        <article class="gallery-item" data-category="web"><i class="fa-solid fa-window-maximize"></i><h3>Landing Page</h3><p>Pagina enfocada en captar clientes.</p></article>
-        <article class="gallery-item" data-category="cctv"><i class="fa-solid fa-camera"></i><h3>Camaras IP</h3><p>Seguridad fisica con acceso remoto.</p></article>
-        <article class="gallery-item" data-category="soporte"><i class="fa-solid fa-screwdriver-wrench"></i><h3>Mantenimiento PC</h3><p>Diagnostico, limpieza y optimizacion.</p></article>
-        <article class="gallery-item" data-category="aires"><i class="fa-solid fa-fan"></i><h3>Climatizacion</h3><p>Limpieza e instalacion profesional.</p></article>
-      </div>
+    <div class="ceo-stats reveal">
+      <article><i class="fa-solid fa-laptop-code"></i><span>Desarrollo web y sistemas</span></article>
+      <article><i class="fa-solid fa-network-wired"></i><span>Redes, CCTV y soporte</span></article>
+      <article><i class="fa-solid fa-shield-halved"></i><span>Ciberseguridad básica</span></article>
+      <article><i class="fa-solid fa-gears"></i><span>Automatización de procesos</span></article>
     </div>
-  </section>
-
-  <section id="soluciones" class="section process-section">
-    <div class="container">
-      <div class="section-heading narrow" data-aos="fade-up">
-        <span class="section-kicker">Proceso de trabajo</span>
-        <h2>Un proceso claro para entregar soluciones sin complicarte.</h2>
-      </div>
-      <div class="process-grid">
-        <article class="process-step active" data-aos="fade-up"><span>01</span><h3>Diagnostico</h3><p>Escuchamos tu necesidad y evaluamos la mejor solucion.</p></article>
-        <article class="process-step" data-aos="fade-up" data-aos-delay="60"><span>02</span><h3>Propuesta</h3><p>Preparamos una propuesta clara, tecnica y comercial.</p></article>
-        <article class="process-step" data-aos="fade-up" data-aos-delay="120"><span>03</span><h3>Implementacion</h3><p>Instalamos, configuramos o desarrollamos la solucion.</p></article>
-        <article class="process-step" data-aos="fade-up" data-aos-delay="180"><span>04</span><h3>Soporte</h3><p>Damos seguimiento, mantenimiento y asistencia.</p></article>
-      </div>
+    <div class="row g-4 mt-3">
+      <div class="col-lg-4 reveal"><div class="mini-card"><h3>Sobre el CEO</h3><p>{{ ceo.bio }}</p></div></div>
+      <div class="col-lg-4 reveal"><div class="mini-card"><h3>Timeline de experiencia</h3>{% for line in ceo.experience|lines %}<p><i class="fa-solid fa-circle-check"></i>{{ line }}</p>{% endfor %}</div></div>
+      <div class="col-lg-4 reveal"><div class="mini-card skill-cloud"><h3>Tecnologías dominadas</h3>{% for skill in ceo.skills|lines %}<span>{{ skill }}</span>{% endfor %}</div></div>
     </div>
-  </section>
+  </div>
+</section>
+{% endif %}
 
-  <section id="casos-exito" class="section success-section">
-    <div class="container">
-      <div class="section-heading" data-aos="fade-up">
-        <span class="section-kicker">Casos de exito</span>
-        <h2>Resultados practicos para negocios reales.</h2>
-      </div>
-      <div class="success-grid">
-        <article class="success-card" data-aos="fade-up"><span>Caso 01</span><h3>Negocio Comercial</h3><p><strong>Problema:</strong> Control manual de ventas.</p><p><strong>Solucion:</strong> Sistema POS AFCyber.</p><p><strong>Resultado:</strong> Mayor control y reportes en tiempo real.</p></article>
-        <article class="success-card" data-aos="fade-up" data-aos-delay="80"><span>Caso 02</span><h3>Empresa de Servicios</h3><p><strong>Problema:</strong> Ausencia de presencia digital.</p><p><strong>Solucion:</strong> Landing Page Corporativa.</p><p><strong>Resultado:</strong> Captacion de nuevos clientes.</p></article>
-        <article class="success-card" data-aos="fade-up" data-aos-delay="160"><span>Caso 03</span><h3>Negocio con CCTV</h3><p><strong>Problema:</strong> Monitoreo limitado.</p><p><strong>Solucion:</strong> Sistema de videovigilancia.</p><p><strong>Resultado:</strong> Supervision remota 24/7.</p></article>
-      </div>
-    </div>
-  </section>
-
-  <section id="proyectos" class="section portfolio-section">
-    <div class="container">
-      <div class="section-heading" data-aos="fade-up">
-        <span class="section-kicker">Portafolio profesional</span>
-        <h2>Casos de servicio presentados con claridad profesional.</h2>
-        <p>Proyectos y servicios mostrados como soluciones reales, sin apariencia de flyers.</p>
-      </div>
-      <div class="portfolio-grid">
-        {% for project in projects[:4] %}
-        <article class="project-card" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 60 }}">
-          <div class="project-image skeleton-media">
-            <img src="{{ url_for('static', filename=project.image) }}" alt="{{ project.name }}" loading="lazy" decoding="async" onload="this.closest('.project-image').classList.remove('skeleton-media')" onerror="this.closest('.project-image').classList.add('image-fallback'); this.remove();">
-            <span>{{ project.category }}</span>
-          </div>
-          <div class="project-content">
-            <h3>{{ project.name }}</h3>
-            <p>{{ project.description }}</p>
-            <div class="project-tech">{% for tech in project.technologies.split(',') %}<span>{{ tech.strip() }}</span>{% endfor %}</div>
-            <div class="project-result"><strong>Resultado</strong><p>{{ project.challenge_solution }}</p></div>
-            <a class="project-link js-whatsapp" href="#" data-service="{{ project.name }}">Ver Proyecto <i class="fa-solid fa-arrow-right-long"></i></a>
-          </div>
+{% if settings.show_services %}
+<section id="servicios" class="section section-deep">
+  <div class="container">
+    <div class="section-head text-center reveal"><span class="section-kicker">Servicios principales</span><h2>Servicios reales para resolver necesidades técnicas y comerciales.</h2><p class="muted">Desarrollo, seguridad, soporte, CCTV y automatización con atención clara, cercana y responsable.</p></div>
+    <div class="row g-4">
+      {% for service in services %}
+      <div class="col-md-6 col-xl-4 reveal">
+        <article class="service-card">
+          {% if service.image %}<img src="{{ service.image|asset }}" alt="{{ service.name }}" loading="lazy">{% else %}<i class="{{ service.icon }}"></i>{% endif %}
+          <h3>{{ service.name }}</h3>
+          <p>{{ service.description }}</p>
+          {% if service.price %}<strong class="price">{{ service.price }}</strong>{% endif %}
+          <a class="js-wa" href="#" data-message="Hola AFCyber Solutions, quiero información sobre {{ service.name }}.">Cotizar servicio</a>
         </article>
-        {% endfor %}
-        <article class="project-card service-project" data-aos="fade-up" data-aos-delay="240"><div class="project-image skeleton-media"><img src="{{ url_for('static', filename='img/projects/air-conditioning.webp') }}" alt="Aires acondicionados" loading="lazy" decoding="async" onload="this.closest('.project-image').classList.remove('skeleton-media')" onerror="this.closest('.project-image').classList.add('image-fallback','project-icon-fallback'); this.remove();"><span>Climatizacion</span></div><div class="project-content"><h3>Aires Acondicionados</h3><p>Instalacion, limpieza y mantenimiento preventivo para equipos de climatizacion.</p><div class="project-tech"><span>Instalacion</span><span>Limpieza</span><span>Mantenimiento</span><span>Diagnostico</span></div><div class="project-result"><strong>Resultado</strong><p>Equipos con mejor rendimiento, limpieza y soporte confiable.</p></div><a class="project-link js-whatsapp" href="#" data-service="Aires Acondicionados">Ver Servicio <i class="fa-solid fa-arrow-right-long"></i></a></div></article>
-        <article class="project-card service-project" data-aos="fade-up" data-aos-delay="300"><div class="project-image skeleton-media"><img src="{{ url_for('static', filename='img/projects/computer-maintenance.webp') }}" alt="Mantenimiento de computadoras" loading="lazy" decoding="async" onload="this.closest('.project-image').classList.remove('skeleton-media')" onerror="this.closest('.project-image').classList.add('image-fallback','project-icon-fallback'); this.remove();"><span>Soporte Tecnico</span></div><div class="project-content"><h3>Mantenimiento de Computadoras</h3><p>Formateo, limpieza, optimizacion, diagnostico y reparacion basica.</p><div class="project-tech"><span>Formateo</span><span>Optimizacion</span><span>Limpieza</span><span>Drivers</span></div><div class="project-result"><strong>Resultado</strong><p>Computadoras mas estables y listas para trabajar.</p></div><a class="project-link js-whatsapp" href="#" data-service="Mantenimiento de Computadoras">Ver Servicio <i class="fa-solid fa-arrow-right-long"></i></a></div></article>
-        <article class="project-card service-project" data-aos="fade-up" data-aos-delay="360"><div class="project-image skeleton-media"><img src="{{ url_for('static', filename='img/projects/software-installation.webp') }}" alt="Instalacion de software" loading="lazy" decoding="async" onload="this.closest('.project-image').classList.remove('skeleton-media')" onerror="this.closest('.project-image').classList.add('image-fallback','project-icon-fallback'); this.remove();"><span>Software</span></div><div class="project-content"><h3>Instalacion de Software</h3><p>Instalacion de programas, antivirus, drivers y herramientas de trabajo.</p><div class="project-tech"><span>Programas</span><span>Antivirus</span><span>Drivers</span><span>Configuracion</span></div><div class="project-result"><strong>Resultado</strong><p>Equipos configurados con las herramientas necesarias.</p></div><a class="project-link js-whatsapp" href="#" data-service="Instalacion de Software">Ver Servicio <i class="fa-solid fa-arrow-right-long"></i></a></div></article>
       </div>
+      {% endfor %}
     </div>
-  </section>
+  </div>
+</section>
+{% endif %}
 
-  <section id="nosotros" class="section ceo-section">
-    <div class="container">
-      <div class="ceo-layout" data-aos="fade-up">
-        <div class="ceo-photo skeleton-media">
-          <img src="{{ url_for('static', filename=ceo.photo or 'img/projects/amauri-feliz-ceo.webp') }}" alt="Ing. Amauri Feliz" loading="lazy" decoding="async" onload="this.closest('.ceo-photo').classList.remove('skeleton-media')" onerror="this.closest('.ceo-photo').classList.add('image-fallback'); this.remove();">
+<section id="proceso" class="section">
+  <div class="container">
+    <div class="section-head text-center reveal">
+      <span class="section-kicker">Proceso de trabajo</span>
+      <h2>Un proceso claro para entregar soluciones sin complicarte.</h2>
+    </div>
+    <div class="process-grid">
+      <article class="reveal"><span>01</span><h3>Diagnóstico</h3><p>Escuchamos la necesidad y revisamos el contexto técnico o comercial.</p></article>
+      <article class="reveal"><span>02</span><h3>Propuesta</h3><p>Preparamos una cotización con alcance, entregables y próximos pasos.</p></article>
+      <article class="reveal"><span>03</span><h3>Implementación</h3><p>Instalamos, configuramos o desarrollamos la solución acordada.</p></article>
+      <article class="reveal"><span>04</span><h3>Soporte</h3><p>Damos seguimiento y orientación para mantener la operación estable.</p></article>
+    </div>
+  </div>
+</section>
+
+{% if settings.show_plans %}
+<section id="planes" class="section">
+  <div class="container">
+    <div class="section-head text-center reveal"><span class="section-kicker">Planes y precios</span><h2>Paquetes flexibles para iniciar o escalar.</h2></div>
+    <div class="row g-4">
+      {% for plan in plans %}
+      <div class="col-lg-4 reveal">
+        <article class="plan-card {% if plan.is_featured %}featured{% endif %}">
+          <span>{{ "Destacado" if plan.is_featured else "Plan" }}</span>
+          <h3>{{ plan.name }}</h3>
+          <strong>{{ plan.price }}</strong>
+          <p>{{ plan.description }}</p>
+          <ul>{% for feature in plan.features|lines %}<li>{{ feature }}</li>{% endfor %}</ul>
+          <a href="#" class="btn {% if plan.is_featured %}btn-cyber{% else %}btn-glass-dark{% endif %} js-wa" data-message="Hola AFCyber Solutions, quiero cotizar el {{ plan.name }}.">{{ plan.button_text }}</a>
+        </article>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if settings.show_portfolio %}
+<section id="portafolio" class="section section-deep">
+  <div class="container">
+    <div class="section-head text-center reveal"><span class="section-kicker">Portafolio</span><h2>Proyectos y servicios presentados con claridad profesional.</h2><p class="muted">Solo se muestra un enlace externo cuando existe un destino real configurado desde el panel.</p></div>
+    <div class="portfolio-grid">
+      {% for project in projects %}
+      <article class="project-card reveal">
+        {% if project.image %}<img src="{{ project.image|asset }}" alt="{{ project.name }}" loading="lazy">{% else %}<div class="project-placeholder"><i class="fa-solid fa-code"></i></div>{% endif %}
+        <div><span>{{ project.category }}</span><h3>{{ project.name }}</h3><p>{{ project.description }}</p><small>{{ project.technologies }}</small>{% if project.link %}<a href="{{ project.link }}" target="_blank" rel="noopener">Ver proyecto</a>{% endif %}</div>
+      </article>
+      {% else %}
+      <article class="project-card reveal portfolio-empty">
+        <div class="project-placeholder"><i class="fa-solid fa-folder-open"></i></div>
+        <div><span>Portafolio</span><h3>Casos pendientes de verificación</h3><p>Para mantener una comunicación responsable, esta sección solo mostrará proyectos reales con evidencia visual o enlace configurado desde el panel administrativo.</p></div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if settings.show_testimonials %}
+<section class="section">
+  <div class="container">
+    <div class="section-head text-center reveal"><span class="section-kicker">Testimonios</span><h2>Opiniones verificadas de clientes.</h2><p class="muted">Esta sección solo muestra testimonios con nombre, empresa y autorización de publicación.</p></div>
+    <div class="row g-4">
+      {% for item in testimonials %}
+      <div class="col-md-4 reveal"><article class="testimonial-card">{% if item.photo %}<img src="{{ item.photo|asset }}" alt="{{ item.client_name }}">{% endif %}<div class="stars">{{ "★" * item.stars }}</div><p>“{{ item.comment }}”</p><strong>{{ item.client_name }}</strong><span>{{ item.company }}</span></article></div>
+      {% else %}
+      <div class="col-12 reveal">
+        <article class="testimonial-card testimonial-empty">
+          <h3>Testimonios pendientes de verificación</h3>
+          <p>Para proteger la credibilidad del negocio, AFCyber Solutions no publica reseñas genéricas ni nombres inventados. Cuando existan testimonios autorizados, podrán activarse desde el panel administrativo.</p>
+        </article>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if settings.show_faq %}
+<section class="section section-deep">
+  <div class="container">
+    <div class="section-head text-center reveal"><span class="section-kicker">FAQ</span><h2>Preguntas frecuentes</h2></div>
+    <div class="accordion cyber-accordion reveal" id="faq">
+      {% for faq in faqs %}
+      <div class="accordion-item">
+        <h3 class="accordion-header"><button class="accordion-button {% if not loop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#faq{{ faq.id }}">{{ faq.question }}</button></h3>
+        <div id="faq{{ faq.id }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}" data-bs-parent="#faq"><div class="accordion-body">{{ faq.answer }}</div></div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if settings.show_contact %}
+<section id="contacto" class="section contact-section">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-5 reveal">
+        <span class="section-kicker">Contacto</span>
+        <h2>Hablemos de tu próxima solución tecnológica.</h2>
+        <p class="muted">{{ settings.short_description }}</p>
+        <div class="contact-list">
+          <a class="js-wa" href="#" data-message="Hola AFCyber Solutions, quiero solicitar una cotización."><i class="fa-brands fa-whatsapp"></i>{{ settings.phone }}</a>
+          <a href="mailto:{{ settings.main_email }}"><i class="fa-solid fa-envelope"></i>{{ settings.main_email }}</a>
+          <span><i class="fa-solid fa-location-dot"></i>{{ settings.address }}</span>
+          <span><i class="fa-solid fa-clock"></i>{{ settings.business_hours }}</span>
         </div>
-        <div class="ceo-copy">
-          <span class="section-kicker">CEO / Fundador</span>
-          <h2>Ing. Amauri Feliz</h2>
-          <p class="role">CEO & Fundador de AFCyber Solutions</p>
-          <p>Ingeniero en Ciberseguridad y fundador de AFCyber Solutions.</p>
-          <p>Especializado en desarrollo de software empresarial, sistemas POS/ERP, desarrollo web, ciberseguridad, automatizacion empresarial, CCTV, infraestructura tecnologica y soluciones digitales para empresas de la Republica Dominicana.</p>
-          <p>Mi objetivo es ayudar a negocios y organizaciones a crecer mediante tecnologia segura, eficiente y adaptada a sus necesidades reales.</p>
-          <div class="ceo-metrics">
-            <div><i class="fa-solid fa-diagram-project"></i><strong>+50</strong><span>Proyectos Realizados</span></div>
-            <div><i class="fa-solid fa-users"></i><strong>+20</strong><span>Clientes Atendidos</span></div>
-            <div><i class="fa-solid fa-star"></i><strong>99%</strong><span>Satisfaccion</span></div>
-            <div><i class="fa-solid fa-headset"></i><strong>24/7</strong><span>Soporte</span></div>
-          </div>
-          <div class="badge-row ceo-specialties"><span>Ciberseguridad</span><span>Desarrollo Full Stack</span><span>Sistemas POS / ERP</span><span>Automatizacion Empresarial</span><span>Infraestructura TI</span><span>CCTV y Control de Acceso</span><span>Desarrollo Web</span><span>Consultoria Tecnologica</span></div>
-          <blockquote>La tecnologia debe resolver problemas reales, proteger tu operacion y ayudarte a crecer.</blockquote>
-          <div class="ceo-actions"><a class="btn btn-primary-premium js-whatsapp" href="#" data-message="Hola AFCyber Solutions, quiero solicitar una cotizacion.">Solicitar Cotizacion</a><a class="btn btn-outline-premium js-whatsapp" href="#" data-message="Hola Ing. Amauri Feliz, deseo conversar sobre una solucion tecnologica.">Contactar CEO</a><a class="btn btn-ghost-premium" href="#proyectos">Ver Portafolio</a></div>
-        </div>
+        <div class="socials">{% for social in social_links %}<a href="{{ social.url }}" target="_blank" rel="noopener" aria-label="{{ social.name }}"><i class="{{ social.icon }}"></i></a>{% endfor %}</div>
       </div>
-    </div>
-  </section>
-
-  <section id="elegir" class="section why-section">
-    <div class="container">
-      <div class="section-heading" data-aos="fade-up"><span class="section-kicker">Por que elegir AFCyber Solutions</span><h2>Atencion tecnica confiable, clara y orientada a resultados.</h2></div>
-      <div class="why-grid">
-        <article class="premium-card" data-aos="fade-up"><i class="fa-solid fa-user-check"></i><h3>Atencion personalizada</h3><p>Evaluamos cada caso para recomendar una solucion ajustada a tu necesidad.</p></article>
-        <article class="premium-card" data-aos="fade-up" data-aos-delay="50"><i class="fa-solid fa-screwdriver-wrench"></i><h3>Soluciones a medida</h3><p>Desarrollamos, instalamos o configuramos segun tu operacion real.</p></article>
-        <article class="premium-card" data-aos="fade-up" data-aos-delay="100"><i class="fa-solid fa-headset"></i><h3>Soporte especializado</h3><p>Comunicacion directa, seguimiento y orientacion antes y despues del servicio.</p></article>
-        <article class="premium-card" data-aos="fade-up"><i class="fa-solid fa-shield-halved"></i><h3>Seguridad informatica</h3><p>Aplicamos buenas practicas para proteger equipos, accesos y datos.</p></article>
-        <article class="premium-card" data-aos="fade-up" data-aos-delay="50"><i class="fa-solid fa-helmet-safety"></i><h3>Implementacion profesional</h3><p>Trabajamos con orden, claridad y responsabilidad en cada entrega.</p></article>
-        <article class="premium-card" data-aos="fade-up" data-aos-delay="100"><i class="fa-solid fa-microchip"></i><h3>Tecnologia actualizada</h3><p>Usamos herramientas modernas y soluciones preparadas para crecer.</p></article>
-        <article class="premium-card" data-aos="fade-up"><i class="fa-solid fa-handshake-angle"></i><h3>Acompanamiento continuo</h3><p>Damos seguimiento para mantener la solucion estable y util.</p></article>
-        <article class="premium-card" data-aos="fade-up" data-aos-delay="50"><i class="fa-solid fa-award"></i><h3>Compromiso con la calidad</h3><p>Priorizamos entregas claras, funcionales y orientadas a resultados.</p></article>
-      </div>
-    </div>
-  </section>
-
-  <section id="casos-ceo" class="section success-section">
-    <div class="container">
-      <div class="section-heading" data-aos="fade-up"><span class="section-kicker">Casos de Exito</span><h2>Proyectos que muestran soluciones aplicadas a negocios reales.</h2></div>
-      <div class="portfolio-grid">
-        <article class="project-card" data-aos="fade-up"><div class="project-image skeleton-media"><img src="{{ url_for('static', filename='img/projects/web-development.webp') }}" alt="Ronald Barber Shop" loading="lazy" decoding="async" onload="this.closest('.project-image').classList.remove('skeleton-media')" onerror="this.closest('.project-image').classList.add('image-fallback'); this.remove();"><span>Landing Page Profesional</span></div><div class="project-content"><h3>Ronald Barber Shop</h3><p>Presencia web moderna para presentar servicios, marca y canales de contacto.</p><a class="project-link js-whatsapp" href="#" data-service="Landing Page">Ver Proyecto <i class="fa-solid fa-arrow-right-long"></i></a></div></article>
-        <article class="project-card" data-aos="fade-up" data-aos-delay="60"><div class="project-image skeleton-media"><img src="{{ url_for('static', filename='img/projects/pos-dashboard.webp') }}" alt="AFCyber MultiNegocios" loading="lazy" decoding="async" onload="this.closest('.project-image').classList.remove('skeleton-media')" onerror="this.closest('.project-image').classList.add('image-fallback'); this.remove();"><span>Sistema POS Empresarial</span></div><div class="project-content"><h3>AFCyber MultiNegocios</h3><p>Control de ventas, caja, inventario, clientes y reportes para operaciones comerciales.</p><a class="project-link js-whatsapp" href="#" data-service="Sistema POS">Ver Proyecto <i class="fa-solid fa-arrow-right-long"></i></a></div></article>
-        <article class="project-card" data-aos="fade-up" data-aos-delay="120"><div class="project-image skeleton-media"><img src="{{ url_for('static', filename='img/projects/cctv-security.webp') }}" alt="Implementacion CCTV" loading="lazy" decoding="async" onload="this.closest('.project-image').classList.remove('skeleton-media')" onerror="this.closest('.project-image').classList.add('image-fallback'); this.remove();"><span>Monitoreo y Seguridad</span></div><div class="project-content"><h3>Implementacion CCTV</h3><p>Videovigilancia con monitoreo remoto para mejorar supervision y seguridad fisica.</p><a class="project-link js-whatsapp" href="#" data-service="CCTV">Ver Proyecto <i class="fa-solid fa-arrow-right-long"></i></a></div></article>
-        <article class="project-card" data-aos="fade-up" data-aos-delay="180"><div class="project-image skeleton-media"><img src="{{ url_for('static', filename='img/projects/business-automation.webp') }}" alt="Automatizacion Empresarial" loading="lazy" decoding="async" onload="this.closest('.project-image').classList.remove('skeleton-media')" onerror="this.closest('.project-image').classList.add('image-fallback'); this.remove();"><span>Optimizacion de Procesos</span></div><div class="project-content"><h3>Automatizacion Empresarial</h3><p>Mejora de procesos internos mediante herramientas digitales y flujos mas eficientes.</p><a class="project-link js-whatsapp" href="#" data-service="Software Empresarial">Ver Proyecto <i class="fa-solid fa-arrow-right-long"></i></a></div></article>
-      </div>
-    </div>
-  </section>
-
-  <section id="seguridad-confianza" class="section trust-security-section">
-    <div class="container">
-      <div class="section-heading" data-aos="fade-up">
-        <span class="section-kicker">Confianza corporativa</span>
-        <h2>&iquest;Por que confiar en AFCyber Solutions?</h2>
-      </div>
-      <div class="why-grid">
-        <article class="premium-card" data-aos="fade-up"><i class="fa-solid fa-lock"></i><h3>Comunicacion Segura</h3><p>Preparado para operar bajo HTTPS, cabeceras de seguridad y buenas practicas.</p></article>
-        <article class="premium-card" data-aos="fade-up" data-aos-delay="50"><i class="fa-solid fa-user-shield"></i><h3>Proteccion de Datos</h3><p>Validacion, sanitizacion y cuidado de la informacion recibida por formularios.</p></article>
-        <article class="premium-card" data-aos="fade-up" data-aos-delay="100"><i class="fa-solid fa-briefcase"></i><h3>Atencion Profesional</h3><p>Procesos claros, comunicacion ordenada y seguimiento responsable.</p></article>
-        <article class="premium-card" data-aos="fade-up"><i class="fa-solid fa-headset"></i><h3>Soporte Especializado</h3><p>Acompanamiento cercano para resolver dudas, incidencias y mejoras.</p></article>
-        <article class="premium-card" data-aos="fade-up" data-aos-delay="50"><i class="fa-solid fa-building-shield"></i><h3>Soluciones Empresariales</h3><p>Servicios pensados para negocios, empresas y operaciones reales.</p></article>
-        <article class="premium-card" data-aos="fade-up" data-aos-delay="100"><i class="fa-solid fa-shield-halved"></i><h3>Seguridad Informatica</h3><p>Buenas practicas para proteger equipos, accesos y datos importantes.</p></article>
-        <article class="premium-card" data-aos="fade-up"><i class="fa-solid fa-microchip"></i><h3>Tecnologia Actualizada</h3><p>Herramientas modernas, configuraciones limpias y soluciones escalables.</p></article>
-        <article class="premium-card" data-aos="fade-up" data-aos-delay="50"><i class="fa-solid fa-award"></i><h3>Compromiso con la Calidad</h3><p>Cada proyecto se entrega con enfoque en utilidad, estabilidad y confianza.</p></article>
-      </div>
-    </div>
-  </section>
-
-  <section id="testimonios" class="section testimonials-section">
-    <div class="container">
-      <div class="section-heading" data-aos="fade-up"><span class="section-kicker">Testimonios</span><h2>Clientes que valoran claridad, respuesta y buen servicio.</h2></div>
-      <div class="testimonials-grid">
-        <article class="testimonial-card" data-aos="fade-up"><div class="stars">★★★★★</div><p>Nos ayudaron a organizar ventas e inventario con un sistema mas claro para el negocio.</p><strong>Gerencia Operativa</strong><span>Sistema POS / ERP</span></article>
-        <article class="testimonial-card" data-aos="fade-up" data-aos-delay="60"><div class="stars">★★★★★</div><p>La instalacion de camaras quedo ordenada y con acceso remoto funcionando correctamente.</p><strong>Negocio Comercial</strong><span>CCTV y Seguridad</span></article>
-        <article class="testimonial-card" data-aos="fade-up" data-aos-delay="120"><div class="stars">★★★★★</div><p>Recibimos soporte rapido para computadoras y configuracion de herramientas de trabajo.</p><strong>Cliente Profesional</strong><span>Soporte Tecnico</span></article>
-      </div>
-    </div>
-  </section>
-
-  <section id="faq" class="section faq-section">
-    <div class="container">
-      <div class="section-heading narrow" data-aos="fade-up"><span class="section-kicker">FAQ</span><h2>Preguntas frecuentes</h2></div>
-      <div class="accordion premium-accordion" id="faqAccordion" data-aos="fade-up">
-        <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">¿Desarrollan sistemas a medida?</button></h3><div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion"><div class="accordion-body">Si. Creamos sistemas, dashboards, controles de inventario, facturacion y soluciones segun tu operacion.</div></div></div>
-        <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">¿Instalan camaras de seguridad?</button></h3><div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body">Si. Instalamos camaras IP, grabacion, monitoreo remoto y soluciones de control de acceso.</div></div></div>
-        <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">¿Dan mantenimiento a computadoras?</button></h3><div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body">Si. Realizamos diagnostico, formateo, limpieza, optimizacion e instalacion de drivers y programas.</div></div></div>
-        <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">¿Instalan software?</button></h3><div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body">Si. Instalamos programas, antivirus, drivers, herramientas de trabajo y configuraciones basicas.</div></div></div>
-        <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">¿Trabajan a domicilio o para empresas?</button></h3><div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body">Si. Atendemos empresas, negocios y hogares segun disponibilidad, ubicacion y tipo de servicio.</div></div></div>
-        <div class="accordion-item"><h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6">¿Como solicito una cotizacion?</button></h3><div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body">Puedes completar el formulario de contacto o escribir directamente por WhatsApp al 829-919-8058.</div></div></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="contacto" class="section contact-section">
-    <div class="container">
-      <div class="contact-layout">
-        <div class="contact-copy" data-aos="fade-right">
-          <span class="section-kicker">Contacto / CTA final</span>
-          <h2>Cuentanos que necesitas y te ayudamos</h2>
-          <p>Ya sea un sistema, una pagina web, camaras, soporte tecnico o mantenimiento, podemos orientarte y ofrecerte una solucion clara.</p>
-          <div class="contact-actions"><a class="btn btn-primary-premium" href="#contact-form">Solicitar Cotizacion</a><a class="btn btn-outline-premium js-whatsapp" href="#" data-message="Hola AFCyber Solutions, quiero orientacion para un servicio tecnologico.">Escribir por WhatsApp</a></div>
-          <div class="contact-data"><span><i class="fa-brands fa-whatsapp"></i> WhatsApp: 829-919-8058</span><span><i class="fa-solid fa-envelope"></i> Email: info@afcybersolutions.com.do</span><span><i class="fa-solid fa-location-dot"></i> San Cristobal, Republica Dominicana</span></div>
-          <div class="map-shell" data-aos="fade-up">
-            <iframe title="Mapa de San Cristobal, Republica Dominicana" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=San%20Cristobal%2C%20Republica%20Dominicana&output=embed"></iframe>
-          </div>
-        </div>
-        <form id="contact-form" class="contact-form premium-quote-form" method="post" data-aos="fade-left">
-          <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-          <h3>Formulario de cotizacion</h3>
-          <p class="form-intro">Completa los datos y te responderemos con una orientacion clara.</p>
-          <div class="form-status" role="status" aria-live="polite"></div>
-          <div class="form-grid">
-            <label>Nombre completo<input class="form-control" name="name" autocomplete="name" required></label>
-            <label>Empresa<input class="form-control" name="company" autocomplete="organization"></label>
-            <label>Telefono<input class="form-control" name="phone" autocomplete="tel" required></label>
-            <label>Correo<input class="form-control" type="email" name="email" autocomplete="email"></label>
-            <label class="full">Departamento / tipo de solicitud<select class="form-control" name="inquiry_type" required><option value="cotizacion">Cotizacion</option><option value="ventas">Ventas</option><option value="soporte">Soporte</option><option value="licencias">Licencias</option><option value="contacto">Informacion General</option><option value="ingeniero">Direccion Ejecutiva</option></select></label>
-            <label class="full">Servicio requerido<select class="form-control" name="requested_service" required><option value="">Selecciona un servicio</option><option>Sistema POS</option><option>Desarrollo Web</option><option>Landing Page</option><option>CCTV</option><option>Ciberseguridad</option><option>Aire Acondicionado</option><option>Soporte Tecnico</option><option>Instalacion de Software</option></select></label>
-            <label>Presupuesto estimado<select class="form-control" name="estimated_budget"><option value="">Selecciona un rango</option><option>Menos de RD$10,000</option><option>RD$10,000 - RD$25,000</option><option>RD$25,000 - RD$50,000</option><option>Mas de RD$50,000</option><option>Necesito orientacion</option></select></label>
-            <label>Fecha tentativa<input class="form-control" type="date" name="tentative_date"></label>
-            <label class="full">Descripcion detallada<textarea class="form-control" name="message" rows="5" required placeholder="Describe tu necesidad, ubicacion, cantidad de usuarios/equipos o alcance del servicio."></textarea></label>
-            {% if turnstile_site_key %}
-            <div class="full turnstile-wrap"><div class="cf-turnstile" data-sitekey="{{ turnstile_site_key }}"></div></div>
-            {% endif %}
-            <button class="btn btn-primary-premium full" type="submit">Enviar solicitud</button>
+      <div class="col-lg-7 reveal">
+        <form class="contact-form" method="post" action="{{ url_for('contact') }}">
+          <div class="row g-3">
+            <div class="col-md-6"><input class="form-control" name="name" placeholder="Nombre" aria-label="Nombre" autocomplete="name" required></div>
+            <div class="col-md-6"><input class="form-control" name="company" placeholder="Empresa" aria-label="Empresa" autocomplete="organization"></div>
+            <div class="col-md-6"><input class="form-control" name="phone" placeholder="Teléfono" aria-label="Teléfono" autocomplete="tel" required></div>
+            <div class="col-md-6"><input class="form-control" type="email" name="email" placeholder="Correo" aria-label="Correo" autocomplete="email"></div>
+            <div class="col-12"><input class="form-control" name="requested_service" placeholder="Servicio solicitado" aria-label="Servicio solicitado"></div>
+            <div class="col-12"><textarea class="form-control" name="message" rows="5" placeholder="Mensaje" aria-label="Mensaje" required></textarea></div>
+            <div class="col-12"><button class="btn btn-cyber w-100">Enviar solicitud</button></div>
           </div>
         </form>
       </div>
     </div>
-  </section>
-</main>
+  </div>
+</section>
+{% endif %}
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div><a class="footer-brand" href="#inicio"><span class="logo-mark">AF</span>{{ settings.company_name }}</a><p>{{ settings.short_description }}</p></div>
+      <div><h3>Contacto</h3><a href="mailto:{{ settings.main_email }}">{{ settings.main_email }}</a><a class="js-wa" href="#" data-message="Hola AFCyber Solutions.">WhatsApp: {{ settings.phone }}</a><span>{{ settings.address }}</span></div>
+      <div><h3>Redes</h3>{% for social in social_links %}<a href="{{ social.url }}" target="_blank" rel="noopener">{{ social.name }}</a>{% endfor %}</div>
+    </div>
+    <div class="footer-bottom"><span>© <span id="year"></span> {{ settings.company_name }}. {{ settings.copyright_text }}</span><span>{{ settings.footer_text }}</span></div>
+  </div>
+</footer>
+
+<a class="wa-float js-wa" href="#" data-message="Hola AFCyber Solutions, quiero información sobre sus servicios." aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+<button class="top-button" id="topButton" type="button" aria-label="Volver arriba"><i class="fa-solid fa-arrow-up"></i></button>
 {% endblock %}
