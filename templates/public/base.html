@@ -3,22 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ settings.meta_title }}</title>
-  <meta name="description" content="{{ settings.meta_description }}">
+  <title>{{ page_title|default(settings.meta_title, true) }}</title>
+  <meta name="description" content="{{ page_description|default(settings.meta_description, true) }}">
   <meta name="keywords" content="{{ settings.meta_keywords }}">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="{{ settings.background_color }}">
   {% if settings.google_search_console %}<meta name="google-site-verification" content="{{ settings.google_search_console }}">{% endif %}
-  <link rel="canonical" href="{{ request.url_root.rstrip('/') }}/">
-  <meta property="og:title" content="{{ settings.meta_title }}">
-  <meta property="og:description" content="{{ settings.meta_description }}">
+  <link rel="canonical" href="{{ page_canonical|default(request.base_url, true) }}">
+  <meta property="og:title" content="{{ page_title|default(settings.meta_title, true) }}">
+  <meta property="og:description" content="{{ page_description|default(settings.meta_description, true) }}">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="{{ request.url_root.rstrip('/') }}/">
+  <meta property="og:url" content="{{ page_canonical|default(request.base_url, true) }}">
   <meta property="og:site_name" content="{{ settings.company_name }}">
   {% if settings.og_image %}<meta property="og:image" content="{{ settings.og_image|asset }}">{% endif %}
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="{{ settings.meta_title }}">
-  <meta name="twitter:description" content="{{ settings.meta_description }}">
+  <meta name="twitter:title" content="{{ page_title|default(settings.meta_title, true) }}">
+  <meta name="twitter:description" content="{{ page_description|default(settings.meta_description, true) }}">
   {% if settings.og_image %}<meta name="twitter:image" content="{{ settings.og_image|asset }}">{% endif %}
   {% if settings.favicon %}<link rel="icon" href="{{ settings.favicon|asset }}">{% else %}<link rel="icon" href="{{ url_for('static', filename='img/og-afcyber.svg') }}" type="image/svg+xml">{% endif %}
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
@@ -27,6 +27,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
   <link href="{{ url_for('static', filename='css/platform.css') }}" rel="stylesheet">
   <link href="{{ url_for('static', filename='css/home.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/corporate.css') }}" rel="stylesheet">
   <style>
     :root {
       --primary: {{ settings.primary_color }};
@@ -46,7 +47,7 @@
       "@type": "LocalBusiness",
       "name": {{ settings.company_name|tojson }},
       "description": {{ settings.meta_description|tojson }},
-      "email": {{ settings.main_email|tojson }},
+      "email": {{ corporate.contacts[0].email|tojson }},
       "telephone": {{ settings.phone|tojson }},
       "address": {{ settings.address|tojson }},
       "url": {{ (request.url_root.rstrip('/') ~ '/')|tojson }}

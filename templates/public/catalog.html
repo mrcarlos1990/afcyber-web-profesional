@@ -1,6 +1,6 @@
 {% extends "public/base.html" %}{% block content %}{% include "public/partials/nav.html" %}
 
-<main id="inicio" class="catalog-main">
+<main id="contenido" class="catalog-main">
 <div class="container">
 <a href="{{ url_for('index') }}" class="back-link">← Volver al inicio</a>
 <h1>{{ catalog_title }}</h1></div>{% if catalog == "services" %}<section id="servicios" class="section section-deep">
@@ -58,86 +58,6 @@
       </article>
 
       {% endfor %}
-    </div>
-  </div>
-</section>
-{% endif %}{% if catalog == "about" %}<section id="nosotros" class="section">
-  <div class="container">
-    <div class="row align-items-center g-5">
-      <div class="col-lg-5 reveal">
-        <div class="visual-panel">
-          {% if about.image %}<img src="{{ about.image|asset }}" alt="Nosotros" loading="lazy">{% else %}<i class="fa-solid fa-building-shield"></i><span>AFCyber SOLUTIONS</span>{% endif %}
-        </div>
-      </div>
-      <div class="col-lg-7 reveal">
-        <span class="section-kicker">Sobre nosotros</span>
-        <h2>Tecnologia, seguridad y diseno premium para negocios modernos.</h2>
-        <p class="muted">{{ about.history }}</p>
-        <div class="info-grid">
-          <article><i class="fa-solid fa-bullseye"></i>
-<h3>Mision</h3>
-<p>{{ about.mission }}</p></article>
-
-          <article><i class="fa-solid fa-eye"></i>
-<h3>Vision</h3>
-<p>{{ about.vision }}</p></article>
-
-          <article><i class="fa-solid fa-gem"></i>
-<h3>Valores</h3>
-<p>{{ about.values }}</p></article>
-
-          <article><i class="fa-solid fa-briefcase"></i>
-<h3>Experiencia</h3>
-<p>{{ about.experience }}</p></article>
-
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-{% endif %}{% if catalog == "about" %}<section id="ceo" class="section ceo-section">
-  <div class="container">
-    <div class="section-head reveal">
-      <span class="section-kicker">CEO & Founder</span>
-      <h2>Liderazgo tecnologico con vision de seguridad y crecimiento.</h2>
-    </div>
-    <div class="ceo-card reveal">
-      <div class="ceo-photo">
-        {% if ceo.photo %}<img src="{{ ceo.photo|asset }}" alt="{{ ceo.full_name }}" loading="lazy">{% else %}<div class="avatar-fallback">AF</div>{% endif %}
-      </div>
-      <div class="ceo-content">
-        <span class="premium-line">{{ ceo.tagline }}</span>
-        <h3>{{ ceo.full_name }}</h3>
-        <strong>{{ ceo.role }}</strong>
-        <p>{{ ceo.bio }}</p>
-        <div class="ceo-actions">
-          {% if ceo.linkedin %}<a class="btn btn-glass" href="{{ ceo.linkedin }}" target="_blank"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>{% endif %}
-          <a class="btn btn-cyber js-wa" href="#" data-message="{{ ceo.whatsapp_message }}"><i class="fa-brands fa-whatsapp"></i> Contactar</a>
-          {% if ceo.cv_pdf %}<a class="btn btn-glass" href="{{ ceo.cv_pdf|asset }}" target="_blank"><i class="fa-solid fa-file-arrow-down"></i> Descargar CV</a>{% endif %}
-        </div>
-      </div>
-    </div>
-    <div class="ceo-stats reveal">
-      <article><strong data-counter="{{ ceo.projects_count }}">0</strong><span>Proyectos realizados</span></article>
-
-      <article><strong data-counter="{{ ceo.clients_count }}">0</strong><span>Clientes atendidos</span></article>
-
-      <article><strong data-counter="{{ ceo.systems_count }}">0</strong><span>Sistemas desarrollados</span></article>
-
-      <article><strong data-counter="{{ ceo.experience_years }}">0</strong><span>Anios de experiencia tecnologica</span></article>
-
-    </div>
-    <div class="row g-4 mt-3">
-      <div class="col-lg-4 reveal">
-<div class="mini-card">
-<h3>Sobre el CEO</h3>
-<p>{{ ceo.bio }}</p></div></div>
-      <div class="col-lg-4 reveal">
-<div class="mini-card">
-<h3>Timeline de experiencia</h3>{% for line in ceo.experience|lines %}<p><i class="fa-solid fa-circle-check"></i>{{ line }}</p>{% endfor %}</div></div>
-      <div class="col-lg-4 reveal">
-<div class="mini-card skill-cloud">
-<h3>Tecnologias dominadas</h3>{% for skill in ceo.skills|lines %}<span>{{ skill }}</span>{% endfor %}</div></div>
     </div>
   </div>
 </section>

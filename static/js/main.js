@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function initAos() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if (window.AOS) {
+    document.body.classList.add('motion-ready');
     AOS.init({
       duration: 420,
       easing: "ease-out-cubic",
@@ -87,6 +88,7 @@ function initContactForm() {
     const phone = String(data.get("phone") || "").trim();
     const email = String(data.get("email") || "").trim();
     const service = String(data.get("requested_service") || "").trim();
+    const company = String(data.get("company") || "").trim();
     const message = String(data.get("message") || "").trim();
 
     if (!name || !phone || !message) {
@@ -99,6 +101,7 @@ function initContactForm() {
       "",
       `Nombre: ${name}`,
       `Teléfono: ${phone}`,
+      company ? `Empresa: ${company}` : "",
       email ? `Correo: ${email}` : "",
       service ? `Servicio: ${service}` : "",
       `Mensaje: ${message}`

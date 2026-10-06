@@ -20,36 +20,31 @@
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <link href="static/css/style.css" rel="stylesheet">
 <link href="static/css/home.css" rel="stylesheet">
+<link href="/static/css/corporate.css" rel="stylesheet">
 </head>
 <body class="compact-site catalog-page">
-<nav class="navbar navbar-expand-lg fixed-top premium-nav" id="mainNav">
-    <div class="container">
-      <a class="navbar-brand" href="index.html#inicio" aria-label="AFCyber SOLUTIONS">
-        <img class="brand-logo" src="static/img/brand.webp" alt="AFCyber Solutions" width="48" height="48">
-        <span class="brand-text">AFCyber <strong>SOLUTIONS</strong></span>
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Abrir menú">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarMenu">
-        <ul class="navbar-nav ms-auto align-items-lg-center">
-<li class="nav-item">
-<a class="nav-link" href="index.html#inicio">Inicio</a></li>
-<li class="nav-item">
-<a class="nav-link" href="index.html#servicios">Servicios</a></li>
-<li class="nav-item">
-<a class="nav-link" href="servicios.html#planes">Soluciones</a></li>
-<li class="nav-item">
-<a class="nav-link" href="portafolio.html">Portafolio</a></li>
-<li class="nav-item">
-<a class="nav-link" href="index.html#nosotros">Nosotros</a></li>
-<li class="nav-item">
-<a class="nav-link" href="index.html#contacto">Contacto</a></li>
-<li class="nav-item ms-lg-3">
-<a class="btn nav-cta" href="index.html#contacto">Solicitar cotización</a></li></ul>
-      </div>
+<!-- corporate:nav:start -->
+<nav class="navbar navbar-expand-lg fixed-top premium-nav" id="mainNav" aria-label="Navegación principal">
+  <div class="container">
+    <a class="navbar-brand" href="/" aria-label="AFCyber Solutions — Inicio">
+      <img src="/static/img/brand.webp" alt="AFCyber Solutions" width="44" height="44">
+      <span>AFCyber Solutions</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Abrir menú"><span class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="navbarMenu">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <li class="nav-item"><a class="nav-link" href="/#inicio">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link" href="/servicios">Servicios</a></li>
+        <li class="nav-item"><a class="nav-link" href="/servicios#planes">Soluciones</a></li>
+        <li class="nav-item"><a class="nav-link" href="/portafolio">Portafolio</a></li>
+        <li class="nav-item"><a class="nav-link" href="/nosotros">Nosotros</a></li>
+        <li class="nav-item"><a class="nav-link" href="/contacto">Contacto</a></li>
+        <li class="nav-item ms-lg-3"><a class="btn nav-cta" href="/#contacto">Solicitar cotización</a></li>
+      </ul>
     </div>
-  </nav>
+  </div>
+</nav>
+<!-- corporate:nav:end -->
 
 <main id="inicio" class="catalog-main">
 <div class="container">
@@ -109,41 +104,59 @@
     </section>
 </main>
 
-<footer class="footer">
-    <div class="container">
-      <div class="row g-4">
-        <div class="col-lg-4">
-          <a class="footer-brand" href="index.html#inicio"><span class="logo-mark">AF</span><span>AFCyber SOLUTIONS</span></a>
-          <p>Servicios tecnológicos premium para empresas y emprendedores.</p>
-          <p class="signature">Diseñada por el Ing. Amauri Feliz Valenzuela</p>
-        </div>
-        <div class="col-lg-2 col-6">
-          <h3>Enlaces</h3>
-          <a href="index.html#nosotros">Nosotros</a>
-          <a href="index.html#servicios">Servicios</a>
-          <a href="servicios.html#planes">Planes</a>
-          <a href="index.html#portafolio">Portafolio</a>
-        </div>
-        <div class="col-lg-3 col-6">
-          <h3>Servicios</h3>
-          <a href="index.html#servicios">Páginas web</a>
-          <a href="index.html#servicios">Sistemas POS</a>
-          <a href="index.html#servicios">Soporte técnico</a>
-          <a href="index.html#servicios">Redes y seguridad</a>
-        </div>
-        <div class="col-lg-3">
-          <h3>Contacto</h3>
-          <a class="js-whatsapp" href="#" data-message="Hola AFCyber SOLUTIONS, necesito información.">WhatsApp: 829-919-8058</a>
-          <a href="mailto:info@afcybersolutions.com.do">info@afcybersolutions.com.do</a>
-          <span>afcybersolutions.com.do</span>
-        </div>
+<!-- corporate:footer:start -->
+<footer class="footer corporate-footer">
+  <div class="container">
+    <div class="corporate-footer-grid">
+      <div>
+        <a class="footer-brand" href="/">
+          <img class="brand-logo" src="/static/img/brand.webp" alt="AFCyber Solutions" width="48" height="48" loading="lazy">
+          <span>AFCyber Solutions</span>
+        </a>
+        <p>Soluciones tecnológicas, software, seguridad y soporte para empresas y negocios.</p>
+        
       </div>
-      <div class="footer-bottom">
-        <span>© <span id="currentYear"></span> AFCyber SOLUTIONS. Todos los derechos reservados.</span>
-        <span>Desarrollado por AFCyber SOLUTIONS</span>
+      <nav aria-label="Enlaces de empresa">
+        <h3>Empresa</h3>
+        <a href="/nosotros">Nosotros</a>
+        <a href="/nosotros#mision-y-vision">Misión y visión</a>
+        <a href="/politica-de-calidad">Política de Calidad</a>
+        <a href="/portafolio">Portafolio</a>
+        <a href="/contacto">Contacto</a>
+      </nav>
+      <nav aria-label="Enlaces de servicios">
+        <h3>Servicios</h3>
+        
+        <a href="/servicios">Software empresarial</a>
+        
+        <a href="/servicios">Desarrollo web</a>
+        
+        <a href="/servicios">Ciberseguridad</a>
+        
+        <a href="/servicios">CCTV</a>
+        
+        <a href="/servicios">Soporte técnico</a>
+        
+        <a href="/servicios">Otros servicios</a>
+        
+      </nav>
+      <div>
+        <h3>Contacto</h3>
+        <a href="mailto:info@afcybersolutions.com.do">info@afcybersolutions.com.do</a><a href="mailto:ventas@afcybersolutions.com.do">ventas@afcybersolutions.com.do</a><a href="mailto:soporte@afcybersolutions.com.do">soporte@afcybersolutions.com.do</a>
+        <a class="js-whatsapp" href="#" data-message="Hola AFCyber Solutions, quiero solicitar información.">WhatsApp: 829-919-8058</a>
+        <a class="footer-all-contacts" href="/contacto">Ver todos los contactos →</a>
       </div>
     </div>
-  </footer>
+    <div class="corporate-legal-links">
+      <a href="/privacy-policy">Política de Privacidad</a><a href="/terms-and-conditions">Términos y Condiciones</a>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="currentYear"></span> AFCyber Solutions. Todos los derechos reservados.</span>
+      <span>Desarrollado por AFCyber Solutions</span>
+    </div>
+  </div>
+</footer>
+<!-- corporate:footer:end -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script src="static/js/main.js"></script>

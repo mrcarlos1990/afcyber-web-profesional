@@ -2,6 +2,8 @@
   "name": "AFCyber Solutions",
   "domain": "afcybersolutions.com.do",
   "summary": "Soluciones tecnológicas, software, seguridad y soporte para empresas y negocios.",
+  "metrics_verified": false,
+  "verified_testimonial_ids": [],
   "identity_intro": "Tecnología, seguridad e innovación al servicio de nuestros clientes.",
   "who": [
     "AFCyber Solutions es una empresa de soluciones tecnológicas orientada al desarrollo de software, ciberseguridad, infraestructura tecnológica, soporte técnico, desarrollo web, videovigilancia, control de acceso y otros servicios destinados a apoyar la transformación y operación tecnológica de empresas, negocios y profesionales.",
@@ -36,5 +38,8 @@
     {"id": "licencias", "name": "Licencias", "short_name": "Licencias", "email": "licencias@afcybersolutions.com.do", "icon": "key", "description": "Consultas sobre licencias de software y productos."},
     {"id": "direccion", "name": "Dirección / Contacto profesional", "short_name": "Dirección", "email": "a.felizv@afcybersolutions.com.do", "icon": "user-tie", "description": "Contacto profesional con la dirección de AFCyber Solutions."}
   ],
-  "legal_links": []
+  "legal_links": [
+    {"name": "Política de Privacidad", "document": "privacy-policy", "url": "https://afcybersolutions.com.do/privacy-policy"},
+    {"name": "Términos y Condiciones", "document": "terms-and-conditions", "url": "https://afcybersolutions.com.do/terms-and-conditions"}
+  ]
 }

@@ -1,0 +1,7 @@
+{% extends "public/base.html" %}
+{% block content %}
+{% include "public/partials/nav.html" %}
+<div id="contenido" tabindex="-1">{% include "public/legal/" ~ legal_document ~ ".html" %}</div>
+{% include "public/partials/footer.html" %}
+{% include "public/partials/floating.html" %}
+{% endblock %}

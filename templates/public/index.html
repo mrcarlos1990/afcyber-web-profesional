@@ -33,19 +33,15 @@
       </div>
     </div>
   </div>
-</header>{% if settings.show_ceo and false %}<div class="container metrics-strip">
-<div class="ceo-stats reveal">
-      <article><strong>{{ ceo.projects_count }}</strong><span>Proyectos realizados</span></article>
+</header>
+{% if settings.show_ceo and corporate.metrics_verified %}<div class="container metrics-strip"><div class="ceo-stats">
+<article><strong>{{ ceo.projects_count }}</strong><span>Proyectos realizados</span></article>
+<article><strong>{{ ceo.clients_count }}</strong><span>Clientes atendidos</span></article>
+<article><strong>{{ ceo.systems_count }}</strong><span>Sistemas desarrollados</span></article>
+<article><strong>{{ ceo.experience_years }}</strong><span>Años de experiencia</span></article>
+</div></div>{% else %}<div class="compact-strip"><div class="container"><span>Software empresarial</span><span>Seguridad tecnológica</span><span>Atención personalizada</span><span>Soporte profesional</span></div></div>{% endif %}
 
-      <article><strong>{{ ceo.clients_count }}</strong><span>Clientes atendidos</span></article>
-
-      <article><strong>{{ ceo.systems_count }}</strong><span>Sistemas desarrollados</span></article>
-
-      <article><strong>{{ ceo.experience_years }}</strong><span>Años de experiencia</span></article>
-
-    </div></div>{% endif %}
-
-{% include "public/partials/flash.html" %}<main id="contenido" tabindex="-1">
+{% include "public/partials/flash.html" %}<main id="contenido">
 
 
 
@@ -123,6 +119,7 @@
 
 {% endif %}
 
+{% include "public/partials/identity.html" %}
 <section class="section why-section" id="confianza">
 <div class="container">
 <div class="section-heading section-head"><span class="section-kicker">Nuestro compromiso</span>
@@ -148,17 +145,18 @@
 <div class="container">
 <div class="founder-layout">
 <div id="ceo">{% if settings.show_ceo and ceo.photo %}<img class="founder-brand founder-photo" src="{{ ceo.photo|asset }}" alt="{{ ceo.full_name }}" width="320" height="320" loading="lazy">{% else %}<img class="founder-brand" src="{{ url_for('static', filename='img/brand.webp') }}" alt="AFCyber Solutions" width="320" height="320" loading="lazy">{% endif %}</div>
-<div><span class="section-kicker">Sobre AFCyber</span>
-<h2>Tecnología con respaldo profesional</h2>{% if settings.show_about %}<p>{{ about.history|truncate(240) }}</p>{% endif %}{% if settings.show_ceo %}<h3>{{ ceo.full_name }}</h3>
+<div><span class="section-kicker">Dirección y liderazgo</span>
+<h2>Tecnología con respaldo profesional</h2>{% if settings.show_ceo %}<h3>{{ ceo.full_name }}</h3>
 <p class="founder-role">{{ ceo.role }}</p>{% endif %}<a class="btn btn-glass" href="{{ url_for('public_catalog', catalog='about') }}">Conocer AFCyber</a></div></div></div></section>
 {% endif %}
-{% if settings.show_testimonials and testimonials %}
+{% set approved_testimonials = testimonials %}
+{% if settings.show_testimonials and approved_testimonials %}
 <section class="section">
   <div class="container">
     <div class="section-head text-center reveal"><span class="section-kicker">Testimonios</span>
 <h2>Confianza construida con resultados.</h2></div>
     <div class="row g-4">
-      {% for item in testimonials[:3] %}
+      {% for item in approved_testimonials[:3] %}
       <div class="col-md-4 reveal">
 <article class="testimonial-card">{% if item.photo %}<img src="{{ item.photo|asset }}" alt="{{ item.client_name }}" loading="lazy" width="62" height="62">{% endif %}<div class="stars">{{ "★" * item.stars }}</div>
 <p>“{{ item.comment }}”</p><strong>{{ item.client_name }}</strong><span>{{ item.company }}</span></article>
@@ -170,12 +168,33 @@
 
 {% endif %}
 
-{% if settings.show_faq %}
-<section class="section section-deep">
+
+
+{% if settings.show_contact %}
+<section id="contacto" class="section contact-section">
   <div class="container">
-    <div class="section-head text-center reveal"><span class="section-kicker">FAQ</span>
-<h2>Preguntas frecuentes</h2></div>
-    <div class="accordion cyber-accordion reveal" id="faq">
+    <div class="row g-5">
+      <div class="col-lg-5 reveal">
+        <span class="section-kicker">Contacto</span>
+        <h2>¿Listo para llevar tu negocio al siguiente nivel?</h2>
+        <p class="muted">{{ corporate.summary }}</p>
+        <div class="hero-actions">
+<a class="btn btn-cyber" href="#quoteForm">Solicitar cotización</a>
+<a class="btn btn-glass js-wa" href="#">Hablar por WhatsApp</a></div>
+<div class="contact-list">
+          <a class="js-wa" href="#" data-message="Hola AFCyber SOLUTIONS, quiero solicitar una cotizacion."><i class="fa-brands fa-whatsapp"></i>{{ settings.phone }}</a>
+          <a href="mailto:{{ corporate.contacts[0].email }}"><i class="fa-solid fa-envelope"></i>{{ corporate.contacts[0].email }}</a>
+          <span><i class="fa-solid fa-location-dot"></i>{{ settings.address }}</span>
+          <span><i class="fa-solid fa-clock"></i>{{ settings.business_hours }}</span>
+        </div>
+        <div class="socials">{% for social in social_links if social.url and social.url != '#' %}<a href="{{ social.url }}" target="_blank" aria-label="{{ social.name }}"><i class="{{ social.icon }}"></i></a>{% endfor %}</div>
+      </div>
+      <div class="col-lg-7 reveal">
+        {% include "public/partials/quote-form.html" %}
+      </div>
+    </div>
+{% set department_compact = true %}{% include "public/partials/departments.html" %}
+{% if settings.show_faq %}<details class="home-faq"><summary>Preguntas frecuentes</summary><div class="accordion cyber-accordion reveal" id="faq">
       {% for faq in faqs %}{% if loop.index == 4 %}<details class="faq-more">
 <summary>Ver todas las preguntas frecuentes</summary>{% endif %}
       <div class="accordion-item">
@@ -186,60 +205,8 @@
       </div>
       {% endfor %}{% if faqs|length > 3 %}</details>
 {% endif %}
-    </div>
-  </div>
-</section>
-
-{% endif %}
-
-{% if settings.show_contact %}
-<section id="contacto" class="section contact-section">
-  <div class="container">
-    <div class="row g-5">
-      <div class="col-lg-5 reveal">
-        <span class="section-kicker">Contacto</span>
-        <h2>¿Listo para llevar tu negocio al siguiente nivel?</h2>
-        <p class="muted">{{ settings.short_description }}</p>
-        <div class="hero-actions">
-<a class="btn btn-cyber" href="#quoteForm">Solicitar cotización</a>
-<a class="btn btn-glass js-wa" href="#">Hablar por WhatsApp</a></div>
-<div class="contact-list">
-          <a class="js-wa" href="#" data-message="Hola AFCyber SOLUTIONS, quiero solicitar una cotizacion."><i class="fa-brands fa-whatsapp"></i>{{ settings.phone }}</a>
-          <a href="mailto:{{ settings.main_email }}"><i class="fa-solid fa-envelope"></i>{{ settings.main_email }}</a>
-          <span><i class="fa-solid fa-location-dot"></i>{{ settings.address }}</span>
-          <span><i class="fa-solid fa-clock"></i>{{ settings.business_hours }}</span>
-        </div>
-        <div class="socials">{% for social in social_links if social.url and social.url != '#' %}<a href="{{ social.url }}" target="_blank" rel="noopener" aria-label="{{ social.name }}"><i class="{{ social.icon }}"></i></a>{% endfor %}</div>
-      </div>
-      <div class="col-lg-7 reveal">
-        <form id="quoteForm" class="contact-form" method="post" action="{{ url_for('contact') }}">
-          <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
-<div class="row g-3">
-            <div class="col-md-6">
-<label>Nombre<input class="form-control" autocomplete="name" name="name" placeholder="Nombre" required></label></div>
-
-            <div class="col-md-6">
-<label>WhatsApp / Teléfono<input class="form-control" type="tel" autocomplete="tel" name="phone" placeholder="Telefono" required></label></div>
-
-            <div class="col-12">
-<label>Servicio<input class="form-control" name="requested_service" placeholder="Servicio solicitado"></label></div>
-            <div class="col-12">
-<label>Cuéntanos qué necesitas<textarea class="form-control" name="message" rows="3" placeholder="Mensaje" required></textarea></label></div>
-            <div class="col-12">
-<details>
-<summary>Agregar empresa o correo (opcional)</summary>
-<div class="row g-3">            <div class="col-md-6 optional-field">
-<label>Empresa<input class="form-control" name="company" placeholder="Empresa"></label></div>            <div class="col-md-6 optional-field">
-<label>Correo<input class="form-control" type="email" name="email" placeholder="Correo"></label></div></div></details>
-</div>
-<div class="col-12">
-<button class="btn btn-cyber w-100">Enviar mensaje</button></div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</section>
+    </div></details>{% endif %}
+</div></section>
 
 {% endif %}
 

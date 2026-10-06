@@ -1,3 +1,4 @@
+import json
 import os
 import re
 import secrets
@@ -101,6 +102,7 @@ from models import (
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent
+CORPORATE = json.loads((BASE_DIR / "static/data/company.json").read_text(encoding="utf-8"))
 UPLOAD_FOLDER = BASE_DIR / "static" / "uploads"
 PRIVATE_STORAGE_ROOT_ENV = os.getenv("PRIVATE_STORAGE_ROOT", "").strip()
 PRIVATE_STORAGE = Path(PRIVATE_STORAGE_ROOT_ENV).expanduser() if PRIVATE_STORAGE_ROOT_ENV else BASE_DIR / "storage"
@@ -1325,20 +1327,50 @@ def update_known_default_content():
 def register_routes(app):
     @app.context_processor
     def inject_globals():
-        return {"settings": get_settings(), "hero": get_hero()}
+        return {"settings": get_settings(), "hero": get_hero(), "corporate": CORPORATE, "static_site": False}
 
     @app.get("/servicios", defaults={"catalog": "services"})
     @app.get("/portafolio", defaults={"catalog": "portfolio"})
     @app.get("/nosotros", defaults={"catalog": "about"})
     def public_catalog(catalog):
+        if catalog == "about":
+            return render_template(
+                "public/about.html", about=get_about(), ceo=get_ceo(),
+                page_title="Nosotros | AFCyber Solutions", page_description=CORPORATE["identity_intro"],
+                social_links=get_public_social_links(),
+            )
         return render_template(
             "public/catalog.html", catalog=catalog,
             catalog_title={"services": "Servicios y soluciones", "portfolio": "Portafolio completo", "about": "Conocer AFCyber"}[catalog],
             about=get_about(), ceo=get_ceo(),
             services=Service.query.filter_by(is_active=True).order_by(Service.position, Service.id).all(),
             plans=Plan.query.filter_by(is_active=True).order_by(Plan.position, Plan.id).all(),
-            projects=PortfolioProject.query.filter_by(is_active=True).order_by(PortfolioProject.created_at.desc()).all(),
-            social_links=SocialLink.query.filter_by(is_active=True).order_by(SocialLink.position, SocialLink.id).all(),
+            projects=get_public_projects(),
+            social_links=get_public_social_links(),
+        )
+
+    @app.get("/contacto")
+    def contact_page():
+        return render_template(
+            "public/contact.html", page_title="Contacto | AFCyber Solutions",
+            page_description="Contactos oficiales de información, ventas, cotizaciones, soporte, licencias y dirección de AFCyber Solutions.",
+            social_links=get_public_social_links(),
+        )
+
+    @app.get("/politica-de-calidad")
+    def quality_policy():
+        return render_template(
+            "public/quality.html", page_title="Política de Calidad | AFCyber Solutions", page_description=CORPORATE["identity_intro"],
+            social_links=get_public_social_links(),
+        )
+
+    @app.get("/privacy-policy", defaults={"document": "privacy-policy"})
+    @app.get("/terms-and-conditions", defaults={"document": "terms-and-conditions"})
+    def legal_document(document):
+        legal = next(item for item in CORPORATE["legal_links"] if item["document"] == document)
+        return render_template(
+            "public/legal.html", legal_document=document, page_title=legal["name"] + " | AFCyber Solutions", page_canonical=legal["url"],
+            social_links=get_public_social_links(),
         )
 
     @app.get("/")
@@ -1370,7 +1402,7 @@ def register_routes(app):
     @app.get("/sitemap.xml")
     def sitemap_xml():
         base_url = request.url_root.rstrip("/")
-        urls = [base_url + "/", base_url + "/descargas", base_url + "/solicitar-servicio"]
+        urls = [base_url + path for path in ["/", "/descargas", "/solicitar-servicio", "/servicios", "/portafolio", "/nosotros", "/contacto", "/politica-de-calidad", "/privacy-policy", "/terms-and-conditions"]]
         body = "\n".join(f"  <url><loc>{url}</loc></url>" for url in urls)
         xml = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{body}\n</urlset>'
         return Response(xml, mimetype="application/xml")
