@@ -1,265 +1,195 @@
 {% extends "public/base.html" %}
 {% block content %}
-<nav class="navbar navbar-expand-lg fixed-top cyber-nav" id="mainNav">
-  <div class="container">
-    <a class="navbar-brand" href="#inicio">
-      {% if settings.logo %}<img src="{{ settings.logo|asset }}" alt="{{ settings.company_name }}">{% else %}<span class="logo-mark">AF</span>{% endif %}
-      <span>{{ settings.company_name }}</span>
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu"><span class="navbar-toggler-icon"></span></button>
-    <div class="collapse navbar-collapse" id="menu">
-      <ul class="navbar-nav ms-auto align-items-lg-center">
-        <li class="nav-item"><a class="nav-link" href="#servicios">Servicios</a></li>
-        <li class="nav-item"><a class="nav-link" href="#proceso">Proceso</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('downloads') }}">Descargas</a></li>
-        <li class="nav-item"><a class="nav-link" href="#portafolio">Portafolio</a></li>
-        <li class="nav-item"><a class="nav-link" href="#ceo">CEO</a></li>
-        <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
-        <li class="nav-item ms-lg-3"><a class="btn btn-cyber" href="{{ url_for('request_service') }}">Solicitar servicio</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
+{% include "public/partials/nav.html" %}
 
-<header id="inicio" class="hero-cyber" tabindex="-1">
-  {% if hero.animation_enabled %}<canvas id="networkCanvas"></canvas>{% endif %}
-  <div class="container position-relative" id="contenido">
-    <div class="row min-vh-100 align-items-center g-5">
+
+<header id="inicio" class="hero-cyber">
+
+  <div class="container position-relative">
+    <div class="row hero-row align-items-center g-5">
       <div class="col-lg-7 reveal">
-        <span class="eyebrow"><i class="fa-solid fa-shield-halved"></i>AFCyber Solutions · Tecnología · Seguridad · Soporte</span>
-        <h1>{{ hero.title }}</h1>
-        <h2>{{ hero.subtitle }}</h2>
-        <p>{{ hero.description }}</p>
+        <span class="eyebrow"><i class="fa-solid fa-shield-halved"></i>{{ settings.slogan }}</span>
+        <h1>Soluciones tecnológicas para hacer crecer tu negocio</h1>
+
+        <p>Software empresarial, sistemas POS, desarrollo web, ciberseguridad, CCTV y soporte tecnológico para empresas y negocios.</p>
         <div class="hero-actions">
-          <a class="btn btn-cyber" href="{{ hero.primary_button_url }}">{{ hero.primary_button_text }}</a>
-          <a class="btn btn-glass" href="{{ url_for('downloads') }}"><i class="fa-solid fa-download"></i>Descargas</a>
-          <a class="btn btn-glass js-wa" href="#" data-message="{{ hero.secondary_button_message }}"><i class="fa-brands fa-whatsapp"></i>{{ hero.secondary_button_text }}</a>
-        </div>
-        <div class="hero-trust">
-          <span><i class="fa-solid fa-check"></i> Diagnóstico claro</span>
-          <span><i class="fa-solid fa-check"></i> Cotización por alcance</span>
-          <span><i class="fa-solid fa-check"></i> Soporte responsable</span>
-        </div>
+<a class="btn btn-cyber" href="#contacto">Solicitar cotización</a>
+<a class="btn btn-glass" href="#servicios">Ver servicios →</a></div>
       </div>
       <div class="col-lg-5 reveal">
         {% if hero.image %}
-          <img class="hero-image" src="{{ hero.image|asset }}" alt="{{ hero.title }}" loading="lazy">
+          <img class="hero-image" src="{{ hero.image|asset }}" alt="{{ hero.title }}" fetchpriority="high">
         {% else %}
-          <div class="command-center" aria-label="Servicios principales de AFCyber Solutions">
+          <div class="hero-terminal">
             <div class="terminal-top"><span></span><span></span><span></span></div>
-            <div class="command-core">
-              <strong class="command-title">AFCyber Command Center</strong>
-              <div class="command-status">
-                <span><i class="fa-solid fa-circle-check"></i> Online</span>
-                <span><i class="fa-solid fa-shield-halved"></i> Seguro</span>
-                <span><i class="fa-solid fa-satellite-dish"></i> Monitoreable</span>
-                <span><i class="fa-solid fa-rocket"></i> Listo para operar</span>
-              </div>
-              <div class="command-grid">
-                <article><i class="fa-solid fa-layer-group"></i><strong>Software empresarial</strong><span>Sistemas a medida</span></article>
-                <article><i class="fa-solid fa-cash-register"></i><strong>POS / ERP</strong><span>Ventas e inventario</span></article>
-                <article><i class="fa-solid fa-video"></i><strong>CCTV y seguridad</strong><span>Acceso remoto</span></article>
-                <article><i class="fa-solid fa-headset"></i><strong>Soporte técnico</strong><span>Equipos y software</span></article>
-                <article><i class="fa-solid fa-gears"></i><strong>Automatización</strong><span>Procesos claros</span></article>
-                <article><i class="fa-solid fa-user-shield"></i><strong>Ciberseguridad</strong><span>Accesos y datos</span></article>
-              </div>
+            <div class="terminal-core">
+              <div class="orbit-core"><i class="fa-solid fa-microchip"></i></div>
+              <div class="terminal-row"><span>Cyber Shield</span><strong>ACTIVE</strong></div>
+              <div class="terminal-row"><span>Support Layer</span><strong>READY</strong></div>
+              <div class="terminal-row"><span>Business Systems</span><strong>ONLINE</strong></div>
             </div>
           </div>
         {% endif %}
       </div>
     </div>
   </div>
-</header>
+</header>{% if settings.show_ceo and false %}<div class="container metrics-strip">
+<div class="ceo-stats reveal">
+      <article><strong>{{ ceo.projects_count }}</strong><span>Proyectos realizados</span></article>
 
-<section class="trust-strip" aria-label="Resumen de atención">
-  <div class="container">
-    <div class="trust-grid">
-      <article><i class="fa-solid fa-clipboard-check"></i><strong>Evaluación inicial</strong><span>Revisión de necesidad y alcance antes de cotizar.</span></article>
-      <article><i class="fa-solid fa-file-signature"></i><strong>Propuesta clara</strong><span>Servicios, entregables y tiempos explicados con claridad.</span></article>
-      <article><i class="fa-solid fa-screwdriver-wrench"></i><strong>Implementación guiada</strong><span>Instalación, configuración o desarrollo con seguimiento.</span></article>
-      <article><i class="fa-solid fa-comments"></i><strong>Comunicación directa</strong><span>Contacto por formulario, correo o WhatsApp.</span></article>
-    </div>
-  </div>
-</section>
+      <article><strong>{{ ceo.clients_count }}</strong><span>Clientes atendidos</span></article>
 
-{% include "public/partials/flash.html" %}
+      <article><strong>{{ ceo.systems_count }}</strong><span>Sistemas desarrollados</span></article>
 
-{% if settings.show_about %}
-<section id="nosotros" class="section">
-  <div class="container">
-    <div class="row align-items-center g-5">
-      <div class="col-lg-5 reveal">
-        <div class="visual-panel">
-          {% if about.image %}<img src="{{ about.image|asset }}" alt="Nosotros" loading="lazy">{% else %}<i class="fa-solid fa-building-shield"></i><span>AFCyber Solutions</span>{% endif %}
-        </div>
-      </div>
-      <div class="col-lg-7 reveal">
-        <span class="section-kicker">Sobre nosotros</span>
-        <h2>Tecnología, seguridad y diseño profesional para negocios modernos.</h2>
-        <p class="muted">{{ about.history }}</p>
-        <div class="info-grid">
-          <article><i class="fa-solid fa-bullseye"></i><h3>Misión</h3><p>{{ about.mission }}</p></article>
-          <article><i class="fa-solid fa-eye"></i><h3>Visión</h3><p>{{ about.vision }}</p></article>
-          <article><i class="fa-solid fa-gem"></i><h3>Valores</h3><p>{{ about.values }}</p></article>
-          <article><i class="fa-solid fa-briefcase"></i><h3>Experiencia</h3><p>{{ about.experience }}</p></article>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-{% endif %}
+      <article><strong>{{ ceo.experience_years }}</strong><span>Años de experiencia</span></article>
 
-{% if settings.show_ceo %}
-<section id="ceo" class="section ceo-section">
-  <div class="container">
-    <div class="section-head reveal">
-      <span class="section-kicker">CEO & Fundador</span>
-      <h2>Liderazgo técnico con visión de seguridad y crecimiento.</h2>
-    </div>
-    <div class="ceo-card reveal">
-      <div class="ceo-photo">
-        {% if ceo.photo %}<img src="{{ ceo.photo|asset }}" alt="{{ ceo.full_name }}" loading="lazy">{% else %}<div class="avatar-fallback">AF</div>{% endif %}
-      </div>
-      <div class="ceo-content">
-        <span class="premium-line">{{ ceo.tagline }}</span>
-        <h3>{{ ceo.full_name }}</h3>
-        <strong>{{ ceo.role }}</strong>
-        <p>{{ ceo.bio }}</p>
-        <div class="ceo-actions">
-          {% if ceo.linkedin %}<a class="btn btn-glass" href="{{ ceo.linkedin }}" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>{% endif %}
-          <a class="btn btn-cyber js-wa" href="#" data-message="{{ ceo.whatsapp_message }}"><i class="fa-brands fa-whatsapp"></i> Contactar</a>
-          {% if ceo.cv_pdf %}<a class="btn btn-glass" href="{{ ceo.cv_pdf|asset }}" target="_blank" rel="noopener"><i class="fa-solid fa-file-arrow-down"></i> Descargar CV</a>{% endif %}
-        </div>
-      </div>
-    </div>
-    <div class="ceo-stats reveal">
-      <article><i class="fa-solid fa-laptop-code"></i><span>Desarrollo web y sistemas</span></article>
-      <article><i class="fa-solid fa-network-wired"></i><span>Redes, CCTV y soporte</span></article>
-      <article><i class="fa-solid fa-shield-halved"></i><span>Ciberseguridad básica</span></article>
-      <article><i class="fa-solid fa-gears"></i><span>Automatización de procesos</span></article>
-    </div>
-    <div class="row g-4 mt-3">
-      <div class="col-lg-4 reveal"><div class="mini-card"><h3>Sobre el CEO</h3><p>{{ ceo.bio }}</p></div></div>
-      <div class="col-lg-4 reveal"><div class="mini-card"><h3>Timeline de experiencia</h3>{% for line in ceo.experience|lines %}<p><i class="fa-solid fa-circle-check"></i>{{ line }}</p>{% endfor %}</div></div>
-      <div class="col-lg-4 reveal"><div class="mini-card skill-cloud"><h3>Tecnologías dominadas</h3>{% for skill in ceo.skills|lines %}<span>{{ skill }}</span>{% endfor %}</div></div>
-    </div>
-  </div>
-</section>
-{% endif %}
+    </div></div>{% endif %}
+
+{% include "public/partials/flash.html" %}<main id="contenido" tabindex="-1">
+
+
 
 {% if settings.show_services %}
+<span id="planes" class="anchor-alias" aria-hidden="true"></span>
 <section id="servicios" class="section section-deep">
-  <div class="container">
-    <div class="section-head text-center reveal"><span class="section-kicker">Servicios principales</span><h2>Servicios reales para resolver necesidades técnicas y comerciales.</h2><p class="muted">Desarrollo, seguridad, soporte, CCTV y automatización con atención clara, cercana y responsable.</p></div>
-    <div class="row g-4">
-      {% for service in services %}
-      <div class="col-md-6 col-xl-4 reveal">
-        <article class="service-card">
-          {% if service.image %}<img src="{{ service.image|asset }}" alt="{{ service.name }}" loading="lazy">{% else %}<i class="{{ service.icon }}"></i>{% endif %}
-          <h3>{{ service.name }}</h3>
-          <p>{{ service.description }}</p>
-          {% if service.price %}<strong class="price">{{ service.price }}</strong>{% endif %}
-          <a class="js-wa" href="#" data-message="Hola AFCyber Solutions, quiero información sobre {{ service.name }}.">Cotizar servicio</a>
-        </article>
-      </div>
-      {% endfor %}
-    </div>
-  </div>
-</section>
+<div class="container">
+<div class="section-head"><span class="section-kicker">Servicios</span>
+<h2>Soluciones para tu negocio</h2>
+<p>Tecnología práctica para mejorar tu operación y tu presencia digital.</p></div>
+<div class="row g-3">
+<div class="col-md-6 col-lg-4">
+<article class="service-card"><i class="fa-solid fa-cash-register" aria-hidden="true"></i>
+<h3>Software & POS</h3>
+<p>Sistemas empresariales, ventas, inventario y facturación.</p>
+<a href="{{ url_for('public_catalog', catalog='services') }}">Ver más <span aria-hidden="true">↗</span></a></article>
+</div>
+<div class="col-md-6 col-lg-4">
+<article class="service-card"><i class="fa-solid fa-laptop-code" aria-hidden="true"></i>
+<h3>Desarrollo Web</h3>
+<p>Sitios corporativos y soluciones digitales modernas.</p>
+<a href="{{ url_for('public_catalog', catalog='services') }}">Ver más <span aria-hidden="true">↗</span></a></article>
+</div>
+<div class="col-md-6 col-lg-4">
+<article class="service-card"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+<h3>Ciberseguridad</h3>
+<p>Protección y seguridad de la información.</p>
+<a href="{{ url_for('public_catalog', catalog='services') }}">Ver más <span aria-hidden="true">↗</span></a></article>
+</div>
+<div class="col-md-6 col-lg-4">
+<article class="service-card"><i class="fa-solid fa-video" aria-hidden="true"></i>
+<h3>CCTV & Control de Acceso</h3>
+<p>Videovigilancia y soluciones de seguridad.</p>
+<a href="{{ url_for('public_catalog', catalog='services') }}">Ver más <span aria-hidden="true">↗</span></a></article>
+</div>
+<div class="col-md-6 col-lg-4">
+<article class="service-card"><i class="fa-solid fa-headset" aria-hidden="true"></i>
+<h3>Soporte Técnico</h3>
+<p>Computadoras, software y mantenimiento tecnológico.</p>
+<a href="{{ url_for('public_catalog', catalog='services') }}">Ver más <span aria-hidden="true">↗</span></a></article>
+</div>
+<div class="col-md-6 col-lg-4">
+<article class="service-card"><i class="fa-solid fa-snowflake" aria-hidden="true"></i>
+<h3>Climatización</h3>
+<p>Instalación y mantenimiento de aire acondicionado.</p>
+<a href="{{ url_for('public_catalog', catalog='services') }}">Ver más <span aria-hidden="true">↗</span></a></article>
+</div></div>
+<div class="section-link">
+<a href="{{ url_for('public_catalog', catalog='services') }}">Ver todos los servicios →</a></div></div></section>
+
 {% endif %}
 
-<section id="proceso" class="section">
-  <div class="container">
-    <div class="section-head text-center reveal">
-      <span class="section-kicker">Proceso de trabajo</span>
-      <h2>Un proceso claro para entregar soluciones sin complicarte.</h2>
-    </div>
-    <div class="process-grid">
-      <article class="reveal"><span>01</span><h3>Diagnóstico</h3><p>Escuchamos la necesidad y revisamos el contexto técnico o comercial.</p></article>
-      <article class="reveal"><span>02</span><h3>Propuesta</h3><p>Preparamos una cotización con alcance, entregables y próximos pasos.</p></article>
-      <article class="reveal"><span>03</span><h3>Implementación</h3><p>Instalamos, configuramos o desarrollamos la solución acordada.</p></article>
-      <article class="reveal"><span>04</span><h3>Soporte</h3><p>Damos seguimiento y orientación para mantener la operación estable.</p></article>
-    </div>
-  </div>
-</section>
 
-{% if settings.show_plans %}
-<section id="planes" class="section">
-  <div class="container">
-    <div class="section-head text-center reveal"><span class="section-kicker">Planes y precios</span><h2>Paquetes flexibles para iniciar o escalar.</h2></div>
-    <div class="row g-4">
-      {% for plan in plans %}
-      <div class="col-lg-4 reveal">
-        <article class="plan-card {% if plan.is_featured %}featured{% endif %}">
-          <span>{{ "Destacado" if plan.is_featured else "Plan" }}</span>
-          <h3>{{ plan.name }}</h3>
-          <strong>{{ plan.price }}</strong>
-          <p>{{ plan.description }}</p>
-          <ul>{% for feature in plan.features|lines %}<li>{{ feature }}</li>{% endfor %}</ul>
-          <a href="#" class="btn {% if plan.is_featured %}btn-cyber{% else %}btn-glass-dark{% endif %} js-wa" data-message="Hola AFCyber Solutions, quiero cotizar el {{ plan.name }}.">{{ plan.button_text }}</a>
-        </article>
-      </div>
-      {% endfor %}
-    </div>
-  </div>
-</section>
-{% endif %}
 
-{% if settings.show_portfolio %}
+{% if settings.show_portfolio and projects %}
 <section id="portafolio" class="section section-deep">
   <div class="container">
-    <div class="section-head text-center reveal"><span class="section-kicker">Portafolio</span><h2>Proyectos y servicios presentados con claridad profesional.</h2><p class="muted">Solo se muestra un enlace externo cuando existe un destino real configurado desde el panel.</p></div>
+    <div class="section-head text-center reveal"><span class="section-kicker">Portafolio</span>
+<h2>Proyectos destacados</h2></div>
     <div class="portfolio-grid">
-      {% for project in projects %}
+      {% for project in projects[:3] %}
       <article class="project-card reveal">
-        {% if project.image %}<img src="{{ project.image|asset }}" alt="{{ project.name }}" loading="lazy">{% else %}<div class="project-placeholder"><i class="fa-solid fa-code"></i></div>{% endif %}
-        <div><span>{{ project.category }}</span><h3>{{ project.name }}</h3><p>{{ project.description }}</p><small>{{ project.technologies }}</small>{% if project.link %}<a href="{{ project.link }}" target="_blank" rel="noopener">Ver proyecto</a>{% endif %}</div>
+        {% include "public/partials/project-image.html" %}
+        <div><span>{{ project.category }}</span>
+<h3>{{ project.name }}</h3>
+<p>{{ project.description|truncate(110) }}</p><small>{{ project.technologies }}</small>{% if project.link %}<a href="{{ project.link }}" target="_blank" rel="noopener">Ver proyecto</a>{% else %}<a href="{{ url_for('public_catalog', catalog='portfolio') }}#project-{{ project.id }}">Ver proyecto</a>{% endif %}</div>
       </article>
-      {% else %}
-      <article class="project-card reveal portfolio-empty">
-        <div class="project-placeholder"><i class="fa-solid fa-folder-open"></i></div>
-        <div><span>Portafolio</span><h3>Casos pendientes de verificación</h3><p>Para mantener una comunicación responsable, esta sección solo mostrará proyectos reales con evidencia visual o enlace configurado desde el panel administrativo.</p></div>
-      </article>
+
       {% endfor %}
     </div>
+<div class="section-link">
+<a href="{{ url_for('public_catalog', catalog='portfolio') }}">Ver portafolio completo →</a></div>
   </div>
 </section>
+
 {% endif %}
 
-{% if settings.show_testimonials %}
+<section class="section why-section" id="confianza">
+<div class="container">
+<div class="section-heading section-head"><span class="section-kicker">Nuestro compromiso</span>
+<h2>¿Por qué AFCyber Solutions?</h2></div>
+<div class="trust-grid">
+<article><i class="fa-solid fa-sliders" aria-hidden="true"></i>
+<h3>Soluciones a medida</h3>
+<p>Tecnología ajustada a los procesos de tu negocio.</p></article>
+
+<article><i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+<h3>Seguridad</h3>
+<p>Buenas prácticas para proteger información y operación.</p></article>
+
+<article><i class="fa-solid fa-handshake" aria-hidden="true"></i>
+<h3>Atención personalizada</h3>
+<p>Comunicación directa y propuestas claras.</p></article>
+
+<article><i class="fa-solid fa-headset" aria-hidden="true"></i>
+<h3>Soporte continuo</h3>
+<p>Acompañamiento durante y después del proyecto.</p></article>
+</div></div></section>
+{% if settings.show_about or settings.show_ceo %}<section id="nosotros" class="section founder-section">
+<div class="container">
+<div class="founder-layout">
+<div id="ceo">{% if settings.show_ceo and ceo.photo %}<img class="founder-brand founder-photo" src="{{ ceo.photo|asset }}" alt="{{ ceo.full_name }}" width="320" height="320" loading="lazy">{% else %}<img class="founder-brand" src="{{ url_for('static', filename='img/brand.webp') }}" alt="AFCyber Solutions" width="320" height="320" loading="lazy">{% endif %}</div>
+<div><span class="section-kicker">Sobre AFCyber</span>
+<h2>Tecnología con respaldo profesional</h2>{% if settings.show_about %}<p>{{ about.history|truncate(240) }}</p>{% endif %}{% if settings.show_ceo %}<h3>{{ ceo.full_name }}</h3>
+<p class="founder-role">{{ ceo.role }}</p>{% endif %}<a class="btn btn-glass" href="{{ url_for('public_catalog', catalog='about') }}">Conocer AFCyber</a></div></div></div></section>
+{% endif %}
+{% if settings.show_testimonials and testimonials %}
 <section class="section">
   <div class="container">
-    <div class="section-head text-center reveal"><span class="section-kicker">Testimonios</span><h2>Opiniones verificadas de clientes.</h2><p class="muted">Esta sección solo muestra testimonios con nombre, empresa y autorización de publicación.</p></div>
+    <div class="section-head text-center reveal"><span class="section-kicker">Testimonios</span>
+<h2>Confianza construida con resultados.</h2></div>
     <div class="row g-4">
-      {% for item in testimonials %}
-      <div class="col-md-4 reveal"><article class="testimonial-card">{% if item.photo %}<img src="{{ item.photo|asset }}" alt="{{ item.client_name }}">{% endif %}<div class="stars">{{ "★" * item.stars }}</div><p>“{{ item.comment }}”</p><strong>{{ item.client_name }}</strong><span>{{ item.company }}</span></article></div>
-      {% else %}
-      <div class="col-12 reveal">
-        <article class="testimonial-card testimonial-empty">
-          <h3>Testimonios pendientes de verificación</h3>
-          <p>Para proteger la credibilidad del negocio, AFCyber Solutions no publica reseñas genéricas ni nombres inventados. Cuando existan testimonios autorizados, podrán activarse desde el panel administrativo.</p>
-        </article>
-      </div>
+      {% for item in testimonials[:3] %}
+      <div class="col-md-4 reveal">
+<article class="testimonial-card">{% if item.photo %}<img src="{{ item.photo|asset }}" alt="{{ item.client_name }}" loading="lazy" width="62" height="62">{% endif %}<div class="stars">{{ "★" * item.stars }}</div>
+<p>“{{ item.comment }}”</p><strong>{{ item.client_name }}</strong><span>{{ item.company }}</span></article>
+</div>
       {% endfor %}
     </div>
   </div>
 </section>
+
 {% endif %}
 
 {% if settings.show_faq %}
 <section class="section section-deep">
   <div class="container">
-    <div class="section-head text-center reveal"><span class="section-kicker">FAQ</span><h2>Preguntas frecuentes</h2></div>
+    <div class="section-head text-center reveal"><span class="section-kicker">FAQ</span>
+<h2>Preguntas frecuentes</h2></div>
     <div class="accordion cyber-accordion reveal" id="faq">
-      {% for faq in faqs %}
+      {% for faq in faqs %}{% if loop.index == 4 %}<details class="faq-more">
+<summary>Ver todas las preguntas frecuentes</summary>{% endif %}
       <div class="accordion-item">
-        <h3 class="accordion-header"><button class="accordion-button {% if not loop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#faq{{ faq.id }}">{{ faq.question }}</button></h3>
-        <div id="faq{{ faq.id }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}" data-bs-parent="#faq"><div class="accordion-body">{{ faq.answer }}</div></div>
+        <h3 class="accordion-header">
+<button class="accordion-button {% if not loop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#faq{{ faq.id }}" aria-controls="faq{{ faq.id }}" aria-expanded="{{ 'true' if loop.first else 'false' }}">{{ faq.question }}</button></h3>
+        <div id="faq{{ faq.id }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}" data-bs-parent="#faq">
+<div class="accordion-body">{{ faq.answer }}</div></div>
       </div>
-      {% endfor %}
+      {% endfor %}{% if faqs|length > 3 %}</details>
+{% endif %}
     </div>
   </div>
 </section>
+
 {% endif %}
 
 {% if settings.show_contact %}
@@ -268,45 +198,56 @@
     <div class="row g-5">
       <div class="col-lg-5 reveal">
         <span class="section-kicker">Contacto</span>
-        <h2>Hablemos de tu próxima solución tecnológica.</h2>
+        <h2>¿Listo para llevar tu negocio al siguiente nivel?</h2>
         <p class="muted">{{ settings.short_description }}</p>
-        <div class="contact-list">
-          <a class="js-wa" href="#" data-message="Hola AFCyber Solutions, quiero solicitar una cotización."><i class="fa-brands fa-whatsapp"></i>{{ settings.phone }}</a>
+        <div class="hero-actions">
+<a class="btn btn-cyber" href="#quoteForm">Solicitar cotización</a>
+<a class="btn btn-glass js-wa" href="#">Hablar por WhatsApp</a></div>
+<div class="contact-list">
+          <a class="js-wa" href="#" data-message="Hola AFCyber SOLUTIONS, quiero solicitar una cotizacion."><i class="fa-brands fa-whatsapp"></i>{{ settings.phone }}</a>
           <a href="mailto:{{ settings.main_email }}"><i class="fa-solid fa-envelope"></i>{{ settings.main_email }}</a>
           <span><i class="fa-solid fa-location-dot"></i>{{ settings.address }}</span>
           <span><i class="fa-solid fa-clock"></i>{{ settings.business_hours }}</span>
         </div>
-        <div class="socials">{% for social in social_links %}<a href="{{ social.url }}" target="_blank" rel="noopener" aria-label="{{ social.name }}"><i class="{{ social.icon }}"></i></a>{% endfor %}</div>
+        <div class="socials">{% for social in social_links if social.url and social.url != '#' %}<a href="{{ social.url }}" target="_blank" rel="noopener" aria-label="{{ social.name }}"><i class="{{ social.icon }}"></i></a>{% endfor %}</div>
       </div>
       <div class="col-lg-7 reveal">
-        <form class="contact-form" method="post" action="{{ url_for('contact') }}">
-          <div class="row g-3">
-            <div class="col-md-6"><input class="form-control" name="name" placeholder="Nombre" aria-label="Nombre" autocomplete="name" required></div>
-            <div class="col-md-6"><input class="form-control" name="company" placeholder="Empresa" aria-label="Empresa" autocomplete="organization"></div>
-            <div class="col-md-6"><input class="form-control" name="phone" placeholder="Teléfono" aria-label="Teléfono" autocomplete="tel" required></div>
-            <div class="col-md-6"><input class="form-control" type="email" name="email" placeholder="Correo" aria-label="Correo" autocomplete="email"></div>
-            <div class="col-12"><input class="form-control" name="requested_service" placeholder="Servicio solicitado" aria-label="Servicio solicitado"></div>
-            <div class="col-12"><textarea class="form-control" name="message" rows="5" placeholder="Mensaje" aria-label="Mensaje" required></textarea></div>
-            <div class="col-12"><button class="btn btn-cyber w-100">Enviar solicitud</button></div>
+        <form id="quoteForm" class="contact-form" method="post" action="{{ url_for('contact') }}">
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+<div class="row g-3">
+            <div class="col-md-6">
+<label>Nombre<input class="form-control" autocomplete="name" name="name" placeholder="Nombre" required></label></div>
+
+            <div class="col-md-6">
+<label>WhatsApp / Teléfono<input class="form-control" type="tel" autocomplete="tel" name="phone" placeholder="Telefono" required></label></div>
+
+            <div class="col-12">
+<label>Servicio<input class="form-control" name="requested_service" placeholder="Servicio solicitado"></label></div>
+            <div class="col-12">
+<label>Cuéntanos qué necesitas<textarea class="form-control" name="message" rows="3" placeholder="Mensaje" required></textarea></label></div>
+            <div class="col-12">
+<details>
+<summary>Agregar empresa o correo (opcional)</summary>
+<div class="row g-3">            <div class="col-md-6 optional-field">
+<label>Empresa<input class="form-control" name="company" placeholder="Empresa"></label></div>            <div class="col-md-6 optional-field">
+<label>Correo<input class="form-control" type="email" name="email" placeholder="Correo"></label></div></div></details>
+</div>
+<div class="col-12">
+<button class="btn btn-cyber w-100">Enviar mensaje</button></div>
           </div>
         </form>
       </div>
     </div>
   </div>
 </section>
+
 {% endif %}
 
-<footer class="footer">
-  <div class="container">
-    <div class="footer-grid">
-      <div><a class="footer-brand" href="#inicio"><span class="logo-mark">AF</span>{{ settings.company_name }}</a><p>{{ settings.short_description }}</p></div>
-      <div><h3>Contacto</h3><a href="mailto:{{ settings.main_email }}">{{ settings.main_email }}</a><a class="js-wa" href="#" data-message="Hola AFCyber Solutions.">WhatsApp: {{ settings.phone }}</a><span>{{ settings.address }}</span></div>
-      <div><h3>Redes</h3>{% for social in social_links %}<a href="{{ social.url }}" target="_blank" rel="noopener">{{ social.name }}</a>{% endfor %}</div>
-    </div>
-    <div class="footer-bottom"><span>© <span id="year"></span> {{ settings.company_name }}. {{ settings.copyright_text }}</span><span>{{ settings.footer_text }}</span></div>
-  </div>
-</footer>
+</main>
 
-<a class="wa-float js-wa" href="#" data-message="Hola AFCyber Solutions, quiero información sobre sus servicios." aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
-<button class="top-button" id="topButton" type="button" aria-label="Volver arriba"><i class="fa-solid fa-arrow-up"></i></button>
+{% include "public/partials/footer.html" %}
+
+
+<a aria-label="Hablar por WhatsApp" class="wa-float js-wa" href="#" data-message="Hola AFCyber SOLUTIONS, quiero informacion."><i class="fa-brands fa-whatsapp"></i></a>
+<button class="top-button" id="topButton" aria-label="Volver arriba"><i class="fa-solid fa-arrow-up"></i></button>
 {% endblock %}

@@ -48,3 +48,4 @@ venv/
 .codex-tmp/
 .pytest_cache/
 .coverage
+.verification/

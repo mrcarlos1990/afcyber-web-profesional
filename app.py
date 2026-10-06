@@ -1327,6 +1327,20 @@ def register_routes(app):
     def inject_globals():
         return {"settings": get_settings(), "hero": get_hero()}
 
+    @app.get("/servicios", defaults={"catalog": "services"})
+    @app.get("/portafolio", defaults={"catalog": "portfolio"})
+    @app.get("/nosotros", defaults={"catalog": "about"})
+    def public_catalog(catalog):
+        return render_template(
+            "public/catalog.html", catalog=catalog,
+            catalog_title={"services": "Servicios y soluciones", "portfolio": "Portafolio completo", "about": "Conocer AFCyber"}[catalog],
+            about=get_about(), ceo=get_ceo(),
+            services=Service.query.filter_by(is_active=True).order_by(Service.position, Service.id).all(),
+            plans=Plan.query.filter_by(is_active=True).order_by(Plan.position, Plan.id).all(),
+            projects=PortfolioProject.query.filter_by(is_active=True).order_by(PortfolioProject.created_at.desc()).all(),
+            social_links=SocialLink.query.filter_by(is_active=True).order_by(SocialLink.position, SocialLink.id).all(),
+        )
+
     @app.get("/")
     def index():
         settings = get_settings()

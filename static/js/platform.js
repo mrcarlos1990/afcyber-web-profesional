@@ -18,7 +18,7 @@ if (year) year.textContent = new Date().getFullYear();
 
 const menu = document.getElementById("menu");
 const collapse = menu && window.bootstrap ? bootstrap.Collapse.getOrCreateInstance(menu, { toggle: false }) : null;
-document.querySelectorAll(".cyber-nav .nav-link").forEach((link) => {
+document.querySelectorAll(".cyber-nav .nav-link, .cyber-nav .btn").forEach((link) => {
   link.addEventListener("click", () => {
     if (window.innerWidth < 992 && collapse) collapse.hide();
   });
@@ -47,7 +47,10 @@ const activeObserver = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
     if (!entry.isIntersecting) return;
     const id = `#${entry.target.id}`;
-    navLinks.forEach((link) => link.classList.toggle("active", link.getAttribute("href") === id));
+    navLinks.forEach((link) => {
+      const destination = new URL(link.href, location.href);
+      link.classList.toggle("active", destination.pathname === location.pathname && destination.hash === id);
+    });
   });
 }, { rootMargin: "-30% 0px -55% 0px", threshold: 0.01 });
 sections.forEach((section) => activeObserver.observe(section));

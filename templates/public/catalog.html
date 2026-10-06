@@ -1,0 +1,147 @@
+{% extends "public/base.html" %}{% block content %}{% include "public/partials/nav.html" %}
+
+<main id="inicio" class="catalog-main">
+<div class="container">
+<a href="{{ url_for('index') }}" class="back-link">← Volver al inicio</a>
+<h1>{{ catalog_title }}</h1></div>{% if catalog == "services" %}<section id="servicios" class="section section-deep">
+  <div class="container">
+    <div class="section-head text-center reveal"><span class="section-kicker">Servicios</span>
+<h2>Soluciones profesionales listas para impulsar tu empresa.</h2></div>
+    <div class="row g-4">
+      {% for service in services %}
+      <div class="col-md-6 col-xl-4 reveal">
+        <article class="service-card">
+          {% if service.image %}<img src="{{ service.image|asset }}" alt="{{ service.name }}" loading="lazy">{% else %}<i class="{{ service.icon }}"></i>{% endif %}
+          <h3>{{ service.name }}</h3>
+          <p>{{ service.description }}</p>
+          {% if service.price %}<strong class="price">{{ service.price }}</strong>{% endif %}
+          <a class="js-wa" href="#" data-message="Hola AFCyber SOLUTIONS, quiero informacion sobre {{ service.name }}.">Solicitar por WhatsApp</a>
+        </article>
+
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}{% if catalog == "services" %}<section id="planes" class="section">
+  <div class="container">
+    <div class="section-head text-center reveal"><span class="section-kicker">Planes y precios</span>
+<h2>Paquetes flexibles para iniciar o escalar.</h2></div>
+    <div class="row g-4">
+      {% for plan in plans %}
+      <div class="col-lg-4 reveal">
+        <article class="plan-card {% if plan.is_featured %}featured{% endif %}">
+          <span>{{ "Destacado" if plan.is_featured else "Plan" }}</span>
+          <h3>{{ plan.name }}</h3>
+          <strong>{{ plan.price }}</strong>
+          <p>{{ plan.description }}</p>
+          <ul>{% for feature in plan.features|lines %}<li>{{ feature }}</li>{% endfor %}</ul>
+          <a href="#" class="btn {% if plan.is_featured %}btn-cyber{% else %}btn-glass-dark{% endif %} js-wa" data-message="Hola AFCyber SOLUTIONS, quiero cotizar el {{ plan.name }}.">{{ plan.button_text }}</a>
+        </article>
+
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}{% if catalog == "portfolio" %}<section id="portafolio" class="section section-deep">
+  <div class="container">
+    <div class="section-head text-center reveal"><span class="section-kicker">Portafolio</span>
+<h2>Proyectos con enfoque visual, funcional y empresarial.</h2></div>
+    <div class="portfolio-grid">
+      {% for project in projects %}
+      <article class="project-card reveal" id="project-{{ project.id }}">
+        {% include "public/partials/project-image.html" %}
+        <div><span>{{ project.category }}</span>
+<h3>{{ project.name }}</h3>
+<p>{{ project.description }}</p><small>{{ project.technologies }}</small>{% if project.link %}<a href="{{ project.link }}" target="_blank">Ver proyecto</a>{% endif %}</div>
+      </article>
+
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}{% if catalog == "about" %}<section id="nosotros" class="section">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-5 reveal">
+        <div class="visual-panel">
+          {% if about.image %}<img src="{{ about.image|asset }}" alt="Nosotros" loading="lazy">{% else %}<i class="fa-solid fa-building-shield"></i><span>AFCyber SOLUTIONS</span>{% endif %}
+        </div>
+      </div>
+      <div class="col-lg-7 reveal">
+        <span class="section-kicker">Sobre nosotros</span>
+        <h2>Tecnologia, seguridad y diseno premium para negocios modernos.</h2>
+        <p class="muted">{{ about.history }}</p>
+        <div class="info-grid">
+          <article><i class="fa-solid fa-bullseye"></i>
+<h3>Mision</h3>
+<p>{{ about.mission }}</p></article>
+
+          <article><i class="fa-solid fa-eye"></i>
+<h3>Vision</h3>
+<p>{{ about.vision }}</p></article>
+
+          <article><i class="fa-solid fa-gem"></i>
+<h3>Valores</h3>
+<p>{{ about.values }}</p></article>
+
+          <article><i class="fa-solid fa-briefcase"></i>
+<h3>Experiencia</h3>
+<p>{{ about.experience }}</p></article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}{% if catalog == "about" %}<section id="ceo" class="section ceo-section">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="section-kicker">CEO & Founder</span>
+      <h2>Liderazgo tecnologico con vision de seguridad y crecimiento.</h2>
+    </div>
+    <div class="ceo-card reveal">
+      <div class="ceo-photo">
+        {% if ceo.photo %}<img src="{{ ceo.photo|asset }}" alt="{{ ceo.full_name }}" loading="lazy">{% else %}<div class="avatar-fallback">AF</div>{% endif %}
+      </div>
+      <div class="ceo-content">
+        <span class="premium-line">{{ ceo.tagline }}</span>
+        <h3>{{ ceo.full_name }}</h3>
+        <strong>{{ ceo.role }}</strong>
+        <p>{{ ceo.bio }}</p>
+        <div class="ceo-actions">
+          {% if ceo.linkedin %}<a class="btn btn-glass" href="{{ ceo.linkedin }}" target="_blank"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>{% endif %}
+          <a class="btn btn-cyber js-wa" href="#" data-message="{{ ceo.whatsapp_message }}"><i class="fa-brands fa-whatsapp"></i> Contactar</a>
+          {% if ceo.cv_pdf %}<a class="btn btn-glass" href="{{ ceo.cv_pdf|asset }}" target="_blank"><i class="fa-solid fa-file-arrow-down"></i> Descargar CV</a>{% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="ceo-stats reveal">
+      <article><strong data-counter="{{ ceo.projects_count }}">0</strong><span>Proyectos realizados</span></article>
+
+      <article><strong data-counter="{{ ceo.clients_count }}">0</strong><span>Clientes atendidos</span></article>
+
+      <article><strong data-counter="{{ ceo.systems_count }}">0</strong><span>Sistemas desarrollados</span></article>
+
+      <article><strong data-counter="{{ ceo.experience_years }}">0</strong><span>Anios de experiencia tecnologica</span></article>
+
+    </div>
+    <div class="row g-4 mt-3">
+      <div class="col-lg-4 reveal">
+<div class="mini-card">
+<h3>Sobre el CEO</h3>
+<p>{{ ceo.bio }}</p></div></div>
+      <div class="col-lg-4 reveal">
+<div class="mini-card">
+<h3>Timeline de experiencia</h3>{% for line in ceo.experience|lines %}<p><i class="fa-solid fa-circle-check"></i>{{ line }}</p>{% endfor %}</div></div>
+      <div class="col-lg-4 reveal">
+<div class="mini-card skill-cloud">
+<h3>Tecnologias dominadas</h3>{% for skill in ceo.skills|lines %}<span>{{ skill }}</span>{% endfor %}</div></div>
+    </div>
+  </div>
+</section>
+{% endif %}</main>
+
+{% include "public/partials/footer.html" %}
+{% endblock %}

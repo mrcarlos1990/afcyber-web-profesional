@@ -1,0 +1,25 @@
+{% set department_compact = department_compact|default(false) %}
+<div class="departments{% if department_compact %} departments-compact{% endif %}">
+  <h{{ '3' if department_compact else '2' }} id="departamentos">Contacta con el departamento correcto</h{{ '3' if department_compact else '2' }}>
+  <div class="department-grid">
+    {% for department in corporate.contacts[:5] if department_compact %}
+    <a class="department-card" href="mailto:{{ department.email }}">
+      <i class="fa-solid fa-{{ department.icon }}" aria-hidden="true"></i>
+      <span class="department-content"><strong>{{ department.short_name }}</strong><span>{{ department.email }}</span></span>
+    </a>
+    {% endfor %}
+    {% if not department_compact %}
+      {% for department in corporate.contacts %}
+      <article class="department-card" id="{{ department.id }}">
+        <i class="fa-solid fa-{{ department.icon }}" aria-hidden="true"></i>
+        <div class="department-content">
+          <h3>{{ department.name }}</h3>
+          <p>{{ department.description }}</p>
+          <a href="mailto:{{ department.email }}">{{ department.email }}</a>
+        </div>
+      </article>
+      {% endfor %}
+    {% endif %}
+  </div>
+  {% if department_compact %}<a class="corporate-link" href="{{ url_for('contact_page') }}">Ver todos los contactos →</a>{% endif %}
+</div>

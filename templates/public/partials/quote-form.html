@@ -1,0 +1,16 @@
+<form class="contact-form" id="{{ 'contactForm' if static_site else 'quoteForm' }}"{% if not static_site %} method="post" action="{{ url_for('contact') }}"{% endif %}>
+  {% if not static_site %}<input type="hidden" name="_csrf_token" value="{{ csrf_token }}">{% endif %}
+  <div class="row g-3">
+    <div class="col-md-6"><label>Nombre<input class="form-control" name="name" autocomplete="name" required></label></div>
+    <div class="col-md-6"><label>WhatsApp / Teléfono<input class="form-control" type="tel" name="phone" autocomplete="tel" required></label></div>
+    <div class="col-12"><label>Servicio<input class="form-control" name="requested_service" placeholder="¿Qué servicio necesitas?"></label></div>
+    <div class="col-12"><label>Cuéntanos qué necesitas<textarea class="form-control" name="message" rows="3" required></textarea></label></div>
+    <div class="col-12">
+      <details><summary>Agregar empresa o correo (opcional)</summary><div class="row g-3">
+        <div class="col-md-6"><label>Empresa<input class="form-control" name="company" autocomplete="organization"></label></div>
+        <div class="col-md-6"><label>Correo<input class="form-control" type="email" name="email" autocomplete="email"></label></div>
+      </div></details>
+    </div>
+    <div class="col-12"><button class="btn {{ 'btn-primary-premium' if static_site else 'btn-cyber' }} w-100" type="submit">{{ 'Enviar por WhatsApp' if static_site else 'Enviar solicitud' }}</button></div>
+  </div>
+</form>

@@ -1,0 +1,37 @@
+{% extends "public/base.html" %}
+{% block content %}
+{% include "public/partials/nav.html" %}
+<main id="inicio" class="catalog-main corporate-page">
+  <section class="section corporate-intro">
+    <div class="container">
+      <a class="back-link" href="{{ url_for('index') }}">← Volver al inicio</a>
+      <span class="section-kicker">Canales oficiales</span>
+      <h1>Contacto</h1>
+      <p class="corporate-lead">Encuentra el canal adecuado para tu consulta, proyecto o solicitud de soporte.</p>
+      {% include "public/partials/departments.html" %}
+    </div>
+  </section>
+  <section id="contacto" class="section contact-section">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-5">
+          <span class="section-kicker">Hablemos de tu proyecto</span>
+          <h2>Solicita una cotización</h2>
+          <p class="muted">Cuéntanos qué necesitas para orientar tu solicitud.</p>
+          <div class="contact-list">
+            <a class="{{ 'js-whatsapp' if static_site else 'js-wa' }}" href="#" data-message="Hola AFCyber Solutions, quiero solicitar una cotización."><i class="fa-brands fa-whatsapp" aria-hidden="true"></i>{{ settings.phone }}</a>
+            <span><i class="fa-solid fa-location-dot" aria-hidden="true"></i>{{ settings.address }}</span>
+            {% if settings.business_hours %}<span><i class="fa-solid fa-clock" aria-hidden="true"></i>{{ settings.business_hours }}</span>{% endif %}
+          </div>
+          <div class="institutional-data"><span>{{ corporate.name }}</span><a href="https://{{ corporate.domain }}">{{ corporate.domain }}</a></div>
+        </div>
+        <div class="col-lg-7">
+          {% include "public/partials/quote-form.html" %}
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+{% include "public/partials/footer.html" %}
+{% include "public/partials/floating.html" %}
+{% endblock %}

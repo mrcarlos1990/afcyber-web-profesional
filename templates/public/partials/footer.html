@@ -1,0 +1,21 @@
+<footer class="footer">
+<div class="container footer-shortcuts">
+<a href="{{ url_for('public_catalog', catalog='services') }}">Servicios y soluciones</a>
+<a href="{{ url_for('public_catalog', catalog='portfolio') }}">Portafolio</a>
+<a href="{{ url_for('public_catalog', catalog='about') }}">Nosotros</a>
+<a href="{{ url_for('index') }}#contacto">Contacto</a></div>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+<a class="footer-brand" href="{{ url_for('index') }}#inicio"><img src="{{ url_for('static', filename='img/brand.webp') }}" alt="AFCyber Solutions" width="44" height="44">{{ settings.company_name }}</a>
+<p>{{ settings.short_description }}</p></div>
+      <div>
+<h3>Contacto</h3>
+<a href="mailto:{{ settings.main_email }}">{{ settings.main_email }}</a>
+<a class="js-wa" href="#" data-message="Hola AFCyber SOLUTIONS.">WhatsApp: {{ settings.phone }}</a><span>{{ settings.address }}</span></div>
+      <div>
+<h3>Redes</h3>{% for social in social_links if social.url and social.url != '#' %}<a href="{{ social.url }}" target="_blank">{{ social.name }}</a>{% endfor %}</div>
+    </div>
+    <div class="footer-bottom"><span>© <span id="year"></span> {{ settings.company_name }}. {{ settings.copyright_text }}</span><span>{{ settings.footer_text }}</span></div>
+  </div>
+</footer>

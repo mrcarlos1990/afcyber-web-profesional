@@ -26,21 +26,22 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function initAos() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if (window.AOS) {
     AOS.init({
-      duration: 760,
+      duration: 420,
       easing: "ease-out-cubic",
       once: true,
-      offset: 80
+      offset: 36
     });
   }
 }
 
 function initNavbar() {
   const nav = document.getElementById("mainNav");
-  const links = document.querySelectorAll(".premium-nav .nav-link");
+  const links = document.querySelectorAll(".premium-nav .nav-link, .premium-nav .nav-cta");
   const menu = document.getElementById("navbarMenu");
-  const collapse = menu ? bootstrap.Collapse.getOrCreateInstance(menu, { toggle: false }) : null;
+  const collapse = menu && window.bootstrap ? bootstrap.Collapse.getOrCreateInstance(menu, { toggle: false }) : null;
 
   const updateNav = () => {
     nav.classList.toggle("nav-scrolled", window.scrollY > 30);
@@ -85,6 +86,7 @@ function initContactForm() {
     const name = String(data.get("name") || "").trim();
     const phone = String(data.get("phone") || "").trim();
     const email = String(data.get("email") || "").trim();
+    const service = String(data.get("requested_service") || "").trim();
     const message = String(data.get("message") || "").trim();
 
     if (!name || !phone || !message) {
@@ -98,6 +100,7 @@ function initContactForm() {
       `Nombre: ${name}`,
       `Teléfono: ${phone}`,
       email ? `Correo: ${email}` : "",
+      service ? `Servicio: ${service}` : "",
       `Mensaje: ${message}`
     ].filter(Boolean).join("\n");
 
@@ -140,6 +143,10 @@ function initCounters() {
 
 function animateCounter(element) {
   const target = Number(element.dataset.counter || "0");
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    element.textContent = target;
+    return;
+  }
   const duration = 1300;
   const start = performance.now();
 
@@ -167,6 +174,7 @@ function initBackToTop() {
 }
 
 function initNetworkCanvas() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const canvas = document.getElementById("networkCanvas");
   if (!canvas) return;
 

@@ -1,0 +1,9 @@
+{% if project.image %}
+  <img src="{{ project.image|asset }}" alt="{{ project.name }}" loading="lazy">
+{% elif project.name == 'BarberShop' %}
+  <img src="{{ url_for('static', filename='img/barber.webp') }}" alt="Presentación del sistema de barbería AFCyber" width="467" height="700" loading="lazy">
+{% elif project.name == 'Sistema POS' %}
+  <img src="{{ url_for('static', filename='img/pos.webp') }}" alt="Presentación del sistema POS AFCyber" width="525" height="700" loading="lazy">
+{% else %}
+  <div class="project-placeholder" aria-hidden="true"><i class="fa-solid fa-code"></i></div>
+{% endif %}
