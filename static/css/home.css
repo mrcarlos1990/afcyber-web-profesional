@@ -14,6 +14,7 @@
 .compact-site .brand-logo { width:48px; height:48px; object-fit:contain; }
 .compact-site .navbar-brand img { width:44px; height:44px; }
 .compact-site .nav-link { font-size:.85rem; font-weight:600; padding:10px 9px; }
+.compact-site .navbar-nav .nav-link.active { color:#68dfff; }
 .compact-site .btn { padding:11px 18px; font-weight:650; font-size:.9rem; min-height:44px; box-shadow:none; }
 .compact-site .nav-cta { background:var(--primary); color:#fff; }
 .compact-site .hero-section,.compact-site .hero-cyber { min-height:0; }
@@ -30,6 +31,12 @@
 .compact-site .terminal-row { min-width:0; gap:24px; padding:12px; }
 .compact-site .terminal-core .orbit-core { margin-bottom:8px; width:80px; height:80px; }
 .compact-site .hero-image { min-height:0; height:310px; object-fit:cover; }
+.hero-brand-panel { min-height:280px; padding:24px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; border-radius:16px; background:radial-gradient(ellipse at center,#1777ff20,transparent 70%); }
+.hero-brand-panel img { width:224px; height:224px; object-fit:contain; }
+.hero-brand-panel span { font-size:.85rem; color:var(--muted); }
+.home-main .trust-grid article { min-height:0; padding:18px 0 0; border:0; border-top:1px solid #ffffff20; border-radius:0; background:transparent; box-shadow:none; }
+.home-main .trust-grid i { margin-bottom:12px; }
+.home-main .founder-brand { width:240px; height:240px; }
 .compact-strip { border-block:1px solid #ffffff14; background:#091425; }
 .compact-strip .container { display:flex; flex-wrap:wrap; justify-content:space-between; gap:16px; padding-block:20px; font-size:.85rem; color:#b3c3d7; }
 .metrics-strip .ceo-stats { margin:0; padding:20px 0; grid-template-columns:repeat(4,1fr); }
@@ -103,6 +110,9 @@
   .compact-site .footer-grid { grid-template-columns:2fr 1fr 1fr; }
 }
 @media(max-width:767px) {
+  .hero-brand-panel { min-height:0; padding:12px; flex-direction:row; gap:18px; }
+  .hero-brand-panel img { width:104px; height:104px; }
+  .home-main .founder-brand { width:180px; height:180px; }
   .compact-site .row.g-5 { --bs-gutter-x:24px; --bs-gutter-y:28px; }
   .compact-site .section { padding:44px 0; }
   .compact-site .portfolio-grid { grid-template-columns:1fr; }

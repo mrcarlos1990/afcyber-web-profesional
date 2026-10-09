@@ -20,7 +20,13 @@ const menu = document.getElementById("menu");
 const collapse = menu && window.bootstrap ? bootstrap.Collapse.getOrCreateInstance(menu, { toggle: false }) : null;
 document.querySelectorAll(".cyber-nav .nav-link, .cyber-nav .btn").forEach((link) => {
   link.addEventListener("click", () => {
-    if (window.innerWidth < 992 && collapse) collapse.hide();
+    if (window.innerWidth < 992 && collapse) {
+      if (menu.classList.contains("collapsing")) {
+        menu.addEventListener("shown.bs.collapse", () => collapse.hide(), { once: true });
+      } else {
+        collapse.hide();
+      }
+    }
   });
 });
 

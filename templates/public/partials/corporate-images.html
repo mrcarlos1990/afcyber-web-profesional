@@ -1,0 +1,17 @@
+{% macro image(name, alt, width=1200, height=675, class_name='corporate-image', sizes='(max-width: 767px) calc(100vw - 32px), (max-width: 1199px) 45vw, 540px', eager=false, portrait=false) -%}
+<img class="{{ class_name }}" src="{{ url_for('static', filename='images/corporativas/' ~ name ~ '.webp') }}"
+     srcset="{{ url_for('static', filename='images/corporativas/' ~ name ~ '-' ~ (320 if portrait else 640) ~ '.webp') }} {{ 320 if portrait else 640 }}w, {{ url_for('static', filename='images/corporativas/' ~ name ~ '-' ~ (640 if portrait else 960) ~ '.webp') }} {{ 640 if portrait else 960 }}w, {{ url_for('static', filename='images/corporativas/' ~ name ~ '.webp') }} {{ width }}w"
+     sizes="{{ sizes }}" width="{{ width }}" height="{{ height }}" alt="{{ alt }}" decoding="async" {% if eager %}fetchpriority="high"{% else %}loading="lazy"{% endif %}>
+{%- endmacro %}
+
+{% macro service_image(service) -%}
+{% set name=service.name|lower %}
+{% if 'cloud' in name or 'nube' in name %}{{ image('servicio-cloud', 'Ilustración conceptual de computación en la nube, servidores y dispositivos conectados') }}
+{% elif 'cctv' in name or 'videovigil' in name %}{{ image('servicio-cctv', 'Ilustración de sistemas empresariales de videovigilancia') }}
+{% elif 'control de acceso' in name %}{{ image('servicio-control-acceso', 'Ilustración de control de acceso empresarial') }}
+{% elif 'ciber' in name %}{{ image('servicio-ciberseguridad', 'Ilustración de un centro de operaciones de ciberseguridad') }}
+{% elif 'redes' in name or 'servidores' in name %}{{ image('servicio-redes', 'Ilustración de infraestructura de redes y servidores') }}
+{% elif 'soporte' in name or 'mantenimiento' in name or 'computadoras' in name %}{{ image('servicio-soporte', 'Ilustración de mantenimiento y soporte tecnológico') }}
+{% elif 'software' in name or 'pos' in name or 'erp' in name or 'automatiz' in name %}{{ image('servicio-software', 'Ilustración del desarrollo de aplicaciones empresariales') }}
+{% elif service.image %}<img src="{{ service.image|asset }}" alt="{{ service.name }}" loading="lazy" decoding="async">{% else %}<i class="{{ service.icon }}" aria-hidden="true"></i>{% endif %}
+{%- endmacro %}

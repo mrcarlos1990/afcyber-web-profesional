@@ -1,4 +1,4 @@
-{% extends "public/base.html" %}{% block content %}{% include "public/partials/nav.html" %}
+{% extends "public/base.html" %}{% from 'public/partials/corporate-images.html' import image, service_image %}{% block content %}{% include "public/partials/nav.html" %}
 
 <main id="contenido" class="catalog-main">
 <div class="container">
@@ -11,7 +11,7 @@
       {% for service in services %}
       <div class="col-md-6 col-xl-4 reveal">
         <article class="service-card">
-          {% if service.image %}<img src="{{ service.image|asset }}" alt="{{ service.name }}" loading="lazy">{% else %}<i class="{{ service.icon }}"></i>{% endif %}
+          {{ service_image(service) }}
           <h3>{{ service.name }}</h3>
           <p>{{ service.description }}</p>
           {% if service.price %}<strong class="price">{{ service.price }}</strong>{% endif %}
@@ -27,6 +27,7 @@
   <div class="container">
     <div class="section-head text-center reveal"><span class="section-kicker">Planes y precios</span>
 <h2>Paquetes flexibles para iniciar o escalar.</h2></div>
+    <figure class="corporate-products-visual">{{ image('productos-software-afcyber', 'Ilustración de soluciones de software empresarial en varios dispositivos', width=1600, height=900, sizes='(max-width: 767px) calc(100vw - 32px), 760px') }}</figure>
     <div class="row g-4">
       {% for plan in plans %}
       <div class="col-lg-4 reveal">

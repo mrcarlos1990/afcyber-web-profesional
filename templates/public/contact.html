@@ -1,4 +1,5 @@
 {% extends "public/base.html" %}
+{% from 'public/partials/corporate-images.html' import image %}
 {% block content %}
 {% include "public/partials/nav.html" %}
 <main id="contenido" class="catalog-main corporate-page">
@@ -7,6 +8,7 @@
       <a class="back-link" href="{{ url_for('index') }}">← Volver al inicio</a>
       <span class="section-kicker">Canales oficiales</span>
       <h1>Contacto</h1>
+      <figure class="corporate-page-visual">{{ image('contacto-afcyber', 'Ilustración de atención y contacto con AFCyber Solutions', width=1200, height=676, sizes='(max-width: 767px) calc(100vw - 32px), 760px') }}</figure>
       <p class="corporate-lead">Encuentra el canal adecuado para tu consulta, proyecto o solicitud de soporte.</p>
       {% include "public/partials/departments.html" %}
     </div>

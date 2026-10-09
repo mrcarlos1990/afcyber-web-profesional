@@ -3,7 +3,7 @@ services:
     name: afcyber-solutions-platform
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
+    startCommand: flask db upgrade && gunicorn app:app
     disk:
       name: afcyber-private-storage
       mountPath: /var/data/afcyber-storage

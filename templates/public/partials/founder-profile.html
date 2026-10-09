@@ -1,16 +1,13 @@
+{% from 'public/partials/corporate-images.html' import image %}
 {% if settings.show_ceo %}
 <section id="ceo" class="section founder-section">
   <div class="container">
     <div class="founder-layout">
-      {% if ceo.photo %}
-      <img class="founder-brand founder-photo" src="{{ ceo.photo|asset }}" alt="{{ ceo.full_name }}" width="280" height="280" loading="lazy">
-      {% else %}
-      <img class="founder-brand" src="{{ url_for('static', filename='img/brand.webp') }}" alt="Identidad AFCyber Solutions" width="280" height="280" loading="lazy">
-      {% endif %}
+      {{ image('ceo-amauri-institucional', 'Amauri Feliz Valenzuela, fundador y CEO de AFCyber Solutions', width=1000, height=1250, class_name='corporate-portrait', portrait=true, sizes='(max-width: 767px) 220px, 320px') }}
       <div>
         <span class="section-kicker">Dirección y liderazgo</span>
-        <h2>{{ ceo.full_name }}</h2>
-        <p class="founder-role">{{ ceo.role }}</p>
+        <h2>Amauri Feliz Valenzuela</h2>
+        <p class="founder-role">Fundador y CEO · AFCyber Solutions</p>
         {% if ceo.bio %}<p>{{ ceo.bio }}</p>{% endif %}
         <a class="corporate-link" href="mailto:{{ corporate.contacts[5].email }}">{{ corporate.contacts[5].email }}</a>
         <div class="hero-actions">

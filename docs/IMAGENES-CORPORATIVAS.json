@@ -1,0 +1,394 @@
+[
+  {
+    "name": "hero-afcyber",
+    "source": "Imagenes wed/Centro de ciberseguridad futurista nocturno.png",
+    "source_width": 1672,
+    "source_height": 941,
+    "source_bytes": 2029455,
+    "source_sha256": "7e58acf7409b71e94d2bf7267a93a515cc831b20abd1a431ea95ac6e3e536752",
+    "variants": [
+      {
+        "file": "static/images/corporativas/hero-afcyber-640.webp",
+        "width": 640,
+        "height": 360,
+        "bytes": 44982
+      },
+      {
+        "file": "static/images/corporativas/hero-afcyber-960.webp",
+        "width": 960,
+        "height": 540,
+        "bytes": 85752
+      },
+      {
+        "file": "static/images/corporativas/hero-afcyber.webp",
+        "width": 1672,
+        "height": 941,
+        "bytes": 191330
+      }
+    ]
+  },
+  {
+    "name": "servicio-cloud",
+    "source": "Imagenes wed/Infraestructura global en la nube.png",
+    "source_width": 1672,
+    "source_height": 941,
+    "source_bytes": 2130248,
+    "source_sha256": "ca4ea73c73adf0ee3f35032da13a996971bfb8e977613ede0186e51889d84402",
+    "variants": [
+      {
+        "file": "static/images/corporativas/servicio-cloud-640.webp",
+        "width": 640,
+        "height": 360,
+        "bytes": 60270
+      },
+      {
+        "file": "static/images/corporativas/servicio-cloud-960.webp",
+        "width": 960,
+        "height": 540,
+        "bytes": 110180
+      },
+      {
+        "file": "static/images/corporativas/servicio-cloud.webp",
+        "width": 1200,
+        "height": 675,
+        "bytes": 153672
+      }
+    ]
+  },
+  {
+    "name": "ceo-amauri-tecnologia",
+    "source": "Imagenes wed/WhatsApp Image 2026-10-08 at 20.41.33 (1).jpeg",
+    "source_width": 1122,
+    "source_height": 1402,
+    "source_bytes": 152764,
+    "source_sha256": "881a583169ff589fecf4f21a2c0e8004405c28ba22bbdb3f03f4605560973a7c",
+    "variants": [
+      {
+        "file": "static/images/corporativas/ceo-amauri-tecnologia-320.webp",
+        "width": 320,
+        "height": 400,
+        "bytes": 16350
+      },
+      {
+        "file": "static/images/corporativas/ceo-amauri-tecnologia-640.webp",
+        "width": 640,
+        "height": 800,
+        "bytes": 42540
+      },
+      {
+        "file": "static/images/corporativas/ceo-amauri-tecnologia.webp",
+        "width": 1000,
+        "height": 1250,
+        "bytes": 81892
+      }
+    ]
+  },
+  {
+    "name": "ceo-amauri-institucional",
+    "source": "Imagenes wed/WhatsApp Image 2026-10-08 at 20.41.33.jpeg",
+    "source_width": 1122,
+    "source_height": 1402,
+    "source_bytes": 117356,
+    "source_sha256": "88c6ae2675d34ada544d7a89a3fa80e8092cad19c9e033f02a976cdbda5c5299",
+    "variants": [
+      {
+        "file": "static/images/corporativas/ceo-amauri-institucional-320.webp",
+        "width": 320,
+        "height": 400,
+        "bytes": 9128
+      },
+      {
+        "file": "static/images/corporativas/ceo-amauri-institucional-640.webp",
+        "width": 640,
+        "height": 800,
+        "bytes": 27240
+      },
+      {
+        "file": "static/images/corporativas/ceo-amauri-institucional.webp",
+        "width": 1000,
+        "height": 1250,
+        "bytes": 59624
+      }
+    ]
+  },
+  {
+    "name": "servicio-ciberseguridad",
+    "source": "Imagenes wed/WhatsApp Image 2026-10-08 at 20.41.33 (2).jpeg",
+    "source_width": 1600,
+    "source_height": 900,
+    "source_bytes": 284585,
+    "source_sha256": "992c8148c16716da7a73e53596cdb04bdce9bf9b32b36a59b83261e47e8c1c3b",
+    "variants": [
+      {
+        "file": "static/images/corporativas/servicio-ciberseguridad-640.webp",
+        "width": 640,
+        "height": 360,
+        "bytes": 60130
+      },
+      {
+        "file": "static/images/corporativas/servicio-ciberseguridad-960.webp",
+        "width": 960,
+        "height": 540,
+        "bytes": 108690
+      },
+      {
+        "file": "static/images/corporativas/servicio-ciberseguridad.webp",
+        "width": 1200,
+        "height": 675,
+        "bytes": 144922
+      }
+    ]
+  },
+  {
+    "name": "servicio-software",
+    "source": "Imagenes wed/WhatsApp Image 2026-10-08 at 20.41.33 (3).jpeg",
+    "source_width": 1600,
+    "source_height": 900,
+    "source_bytes": 257692,
+    "source_sha256": "16bd15e567c9b51c84e4187bc226906e84b97df24592a183e9e3107ea753ddca",
+    "variants": [
+      {
+        "file": "static/images/corporativas/servicio-software-640.webp",
+        "width": 640,
+        "height": 360,
+        "bytes": 59302
+      },
+      {
+        "file": "static/images/corporativas/servicio-software-960.webp",
+        "width": 960,
+        "height": 540,
+        "bytes": 103036
+      },
+      {
+        "file": "static/images/corporativas/servicio-software.webp",
+        "width": 1200,
+        "height": 675,
+        "bytes": 135436
+      }
+    ]
+  },
+  {
+    "name": "servicio-redes",
+    "source": "Imagenes wed/WhatsApp Image 2026-10-08 at 20.41.33 (4).jpeg",
+    "source_width": 1600,
+    "source_height": 900,
+    "source_bytes": 333257,
+    "source_sha256": "c6495dc0c6689be6cd2ff2d95b0e735e789c7ebe1fd28063db12219c7eff0b2f",
+    "variants": [
+      {
+        "file": "static/images/corporativas/servicio-redes-640.webp",
+        "width": 640,
+        "height": 360,
+        "bytes": 68692
+      },
+      {
+        "file": "static/images/corporativas/servicio-redes-960.webp",
+        "width": 960,
+        "height": 540,
+        "bytes": 128198
+      },
+      {
+        "file": "static/images/corporativas/servicio-redes.webp",
+        "width": 1200,
+        "height": 675,
+        "bytes": 174388
+      }
+    ]
+  },
+  {
+    "name": "servicio-soporte",
+    "source": "Imagenes wed/WhatsApp Image 2026-10-08 at 20.41.34 (1).jpeg",
+    "source_width": 1600,
+    "source_height": 900,
+    "source_bytes": 259888,
+    "source_sha256": "85280b981169e216b5615f8ad1899a09daf6d26e7403fd73ef31a60059271b3f",
+    "variants": [
+      {
+        "file": "static/images/corporativas/servicio-soporte-640.webp",
+        "width": 640,
+        "height": 360,
+        "bytes": 58734
+      },
+      {
+        "file": "static/images/corporativas/servicio-soporte-960.webp",
+        "width": 960,
+        "height": 540,
+        "bytes": 102330
+      },
+      {
+        "file": "static/images/corporativas/servicio-soporte.webp",
+        "width": 1200,
+        "height": 675,
+        "bytes": 137982
+      }
+    ]
+  },
+  {
+    "name": "servicio-control-acceso",
+    "source": "Imagenes wed/WhatsApp Image 2026-10-08 at 20.41.34 (2).jpeg",
+    "source_width": 1600,
+    "source_height": 900,
+    "source_bytes": 150145,
+    "source_sha256": "2f6cc5c8da162975923e12c1ca7e1ac57010dcc5e03fd9e192484452fc80b774",
+    "variants": [
+      {
+        "file": "static/images/corporativas/servicio-control-acceso-640.webp",
+        "width": 640,
+        "height": 360,
+        "bytes": 30598
+      },
+      {
+        "file": "static/images/corporativas/servicio-control-acceso-960.webp",
+        "width": 960,
+        "height": 540,
+        "bytes": 49324
+      },
+      {
+        "file": "static/images/corporativas/servicio-control-acceso.webp",
+        "width": 1200,
+        "height": 675,
+        "bytes": 64990
+      }
+    ]
+  },
+  {
+    "name": "nosotros-valores",
+    "source": "Imagenes wed/WhatsApp Image 2026-10-08 at 20.41.34 (3).jpeg",
+    "source_width": 1600,
+    "source_height": 900,
+    "source_bytes": 213357,
+    "source_sha256": "b46bf17800fac039007cf001ee684acf8d8fb6c862c5e1fb0df2d6bb0488b8b5",
+    "variants": [
+      {
+        "file": "static/images/corporativas/nosotros-valores-640.webp",
+        "width": 640,
+        "height": 360,
+        "bytes": 48740
+      },
+      {
+        "file": "static/images/corporativas/nosotros-valores-960.webp",
+        "width": 960,
+        "height": 540,
+        "bytes": 80508
+      },
+      {
+        "file": "static/images/corporativas/nosotros-valores.webp",
+        "width": 1600,
+        "height": 900,
+        "bytes": 147162
+      }
+    ]
+  },
+  {
+    "name": "politica-calidad",
+    "source": "Imagenes wed/WhatsApp Image 2026-10-08 at 20.41.34 (4).jpeg",
+    "source_width": 1600,
+    "source_height": 900,
+    "source_bytes": 226355,
+    "source_sha256": "6f347619b5b6ebe89f7be498e29d6848cf090b93315d9e9a9bb2f07a9103810f",
+    "variants": [
+      {
+        "file": "static/images/corporativas/politica-calidad-640.webp",
+        "width": 640,
+        "height": 360,
+        "bytes": 49158
+      },
+      {
+        "file": "static/images/corporativas/politica-calidad-960.webp",
+        "width": 960,
+        "height": 540,
+        "bytes": 83132
+      },
+      {
+        "file": "static/images/corporativas/politica-calidad.webp",
+        "width": 1200,
+        "height": 675,
+        "bytes": 109950
+      }
+    ]
+  },
+  {
+    "name": "contacto-afcyber",
+    "source": "Imagenes wed/WhatsApp Image 2026-10-08 at 20.41.34 (5).jpeg",
+    "source_width": 1600,
+    "source_height": 901,
+    "source_bytes": 190188,
+    "source_sha256": "cf7e01292dda4849cfea21661eaf294add037398e2a8ae7998968e74f55f920d",
+    "variants": [
+      {
+        "file": "static/images/corporativas/contacto-afcyber-640.webp",
+        "width": 640,
+        "height": 360,
+        "bytes": 44042
+      },
+      {
+        "file": "static/images/corporativas/contacto-afcyber-960.webp",
+        "width": 960,
+        "height": 541,
+        "bytes": 71832
+      },
+      {
+        "file": "static/images/corporativas/contacto-afcyber.webp",
+        "width": 1200,
+        "height": 676,
+        "bytes": 93138
+      }
+    ]
+  },
+  {
+    "name": "servicio-cctv",
+    "source": "Imagenes wed/WhatsApp Image 2026-10-08 at 20.41.34.jpeg",
+    "source_width": 1600,
+    "source_height": 900,
+    "source_bytes": 277052,
+    "source_sha256": "84c9ebbac2dafba5330a91b5dc4a4a01ff86c1b76888f81443a52a6e9ea3b9de",
+    "variants": [
+      {
+        "file": "static/images/corporativas/servicio-cctv-640.webp",
+        "width": 640,
+        "height": 360,
+        "bytes": 58028
+      },
+      {
+        "file": "static/images/corporativas/servicio-cctv-960.webp",
+        "width": 960,
+        "height": 540,
+        "bytes": 105326
+      },
+      {
+        "file": "static/images/corporativas/servicio-cctv.webp",
+        "width": 1200,
+        "height": 675,
+        "bytes": 142378
+      }
+    ]
+  },
+  {
+    "name": "productos-software-afcyber",
+    "source": "Imagenes wed/WhatsApp Image 2026-10-08 at 20.41.35.jpeg",
+    "source_width": 1600,
+    "source_height": 900,
+    "source_bytes": 216374,
+    "source_sha256": "9e76f064abecb67b7aa87ba1f95c9e71cf95552c8584d37c5ef4da2051066e11",
+    "variants": [
+      {
+        "file": "static/images/corporativas/productos-software-afcyber-640.webp",
+        "width": 640,
+        "height": 360,
+        "bytes": 47208
+      },
+      {
+        "file": "static/images/corporativas/productos-software-afcyber-960.webp",
+        "width": 960,
+        "height": 540,
+        "bytes": 77714
+      },
+      {
+        "file": "static/images/corporativas/productos-software-afcyber.webp",
+        "width": 1600,
+        "height": 900,
+        "bytes": 140798
+      }
+    ]
+  }
+]

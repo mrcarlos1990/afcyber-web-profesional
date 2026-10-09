@@ -1,0 +1,86 @@
+Imagenes wed/Centro de ciberseguridad futurista nocturno.png
+Imagenes wed/Infraestructura global en la nube.png
+Imagenes wed/WhatsApp Image 2026-10-08 at 20.41.33 (1).jpeg
+Imagenes wed/WhatsApp Image 2026-10-08 at 20.41.33 (2).jpeg
+Imagenes wed/WhatsApp Image 2026-10-08 at 20.41.33 (3).jpeg
+Imagenes wed/WhatsApp Image 2026-10-08 at 20.41.33 (4).jpeg
+Imagenes wed/WhatsApp Image 2026-10-08 at 20.41.33.jpeg
+Imagenes wed/WhatsApp Image 2026-10-08 at 20.41.34 (1).jpeg
+Imagenes wed/WhatsApp Image 2026-10-08 at 20.41.34 (2).jpeg
+Imagenes wed/WhatsApp Image 2026-10-08 at 20.41.34 (3).jpeg
+Imagenes wed/WhatsApp Image 2026-10-08 at 20.41.34 (4).jpeg
+Imagenes wed/WhatsApp Image 2026-10-08 at 20.41.34 (5).jpeg
+Imagenes wed/WhatsApp Image 2026-10-08 at 20.41.34.jpeg
+Imagenes wed/WhatsApp Image 2026-10-08 at 20.41.35.jpeg
+Procfile
+README.md
+app.py
+docs/ACTUALIZACION-CORPORATIVA.md
+docs/ARCHIVOS-PROXIMO-COMMIT.txt
+docs/IMAGENES-CORPORATIVAS.json
+docs/INTEGRACION-FINAL-HOME-CLOUD.md
+docs/INTEGRACION-IMAGENES-CORPORATIVAS.md
+docs/LEGAL-PRESTAMOS-PROPUESTA.md
+docs/PREPARACION-PRODUCCION.md
+docs/REVISION-FINAL-2026-10-08.md
+render.yaml
+scripts/build_corporate.py
+scripts/optimize_corporate_images.py
+static/css/corporate-images.css
+static/css/home.css
+static/images/corporativas/ceo-amauri-institucional-320.webp
+static/images/corporativas/ceo-amauri-institucional-640.webp
+static/images/corporativas/ceo-amauri-institucional.webp
+static/images/corporativas/ceo-amauri-tecnologia-320.webp
+static/images/corporativas/ceo-amauri-tecnologia-640.webp
+static/images/corporativas/ceo-amauri-tecnologia.webp
+static/images/corporativas/contacto-afcyber-640.webp
+static/images/corporativas/contacto-afcyber-960.webp
+static/images/corporativas/contacto-afcyber.webp
+static/images/corporativas/hero-afcyber-640.webp
+static/images/corporativas/hero-afcyber-960.webp
+static/images/corporativas/hero-afcyber.webp
+static/images/corporativas/nosotros-valores-640.webp
+static/images/corporativas/nosotros-valores-960.webp
+static/images/corporativas/nosotros-valores.webp
+static/images/corporativas/politica-calidad-640.webp
+static/images/corporativas/politica-calidad-960.webp
+static/images/corporativas/politica-calidad.webp
+static/images/corporativas/productos-software-afcyber-640.webp
+static/images/corporativas/productos-software-afcyber-960.webp
+static/images/corporativas/productos-software-afcyber.webp
+static/images/corporativas/servicio-cctv-640.webp
+static/images/corporativas/servicio-cctv-960.webp
+static/images/corporativas/servicio-cctv.webp
+static/images/corporativas/servicio-ciberseguridad-640.webp
+static/images/corporativas/servicio-ciberseguridad-960.webp
+static/images/corporativas/servicio-ciberseguridad.webp
+static/images/corporativas/servicio-cloud-640.webp
+static/images/corporativas/servicio-cloud-960.webp
+static/images/corporativas/servicio-cloud.webp
+static/images/corporativas/servicio-control-acceso-640.webp
+static/images/corporativas/servicio-control-acceso-960.webp
+static/images/corporativas/servicio-control-acceso.webp
+static/images/corporativas/servicio-redes-640.webp
+static/images/corporativas/servicio-redes-960.webp
+static/images/corporativas/servicio-redes.webp
+static/images/corporativas/servicio-software-640.webp
+static/images/corporativas/servicio-software-960.webp
+static/images/corporativas/servicio-software.webp
+static/images/corporativas/servicio-soporte-640.webp
+static/images/corporativas/servicio-soporte-960.webp
+static/images/corporativas/servicio-soporte.webp
+static/js/platform.js
+templates/public/base.html
+templates/public/catalog.html
+templates/public/contact.html
+templates/public/faq.html
+templates/public/index.html
+templates/public/partials/corporate-images.html
+templates/public/partials/faq.html
+templates/public/partials/founder-profile.html
+templates/public/partials/identity.html
+templates/public/quality.html
+tests/test_corporate.py
+tests/test_corporate_images.py
+tests/test_public_architecture.py

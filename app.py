@@ -1,4 +1,5 @@
 import json
+import mimetypes
 import os
 import re
 import secrets
@@ -100,6 +101,7 @@ from models import (
 )
 
 load_dotenv()
+mimetypes.add_type("image/webp", ".webp")
 
 BASE_DIR = Path(__file__).resolve().parent
 CORPORATE = json.loads((BASE_DIR / "static/data/company.json").read_text(encoding="utf-8"))
@@ -1357,6 +1359,14 @@ def register_routes(app):
             social_links=get_public_social_links(),
         )
 
+    @app.get("/preguntas-frecuentes")
+    def faq_page():
+        return render_template(
+            "public/faq.html", page_title="Preguntas frecuentes | AFCyber Solutions",
+            faqs=FAQ.query.filter_by(is_active=True).order_by(FAQ.position, FAQ.id).all(),
+            social_links=get_public_social_links(),
+        )
+
     @app.get("/politica-de-calidad")
     def quality_policy():
         return render_template(
@@ -1402,7 +1412,7 @@ def register_routes(app):
     @app.get("/sitemap.xml")
     def sitemap_xml():
         base_url = request.url_root.rstrip("/")
-        urls = [base_url + path for path in ["/", "/descargas", "/solicitar-servicio", "/servicios", "/portafolio", "/nosotros", "/contacto", "/politica-de-calidad", "/privacy-policy", "/terms-and-conditions"]]
+        urls = [base_url + path for path in ["/", "/descargas", "/solicitar-servicio", "/servicios", "/portafolio", "/nosotros", "/contacto", "/politica-de-calidad", "/preguntas-frecuentes", "/privacy-policy", "/terms-and-conditions"]]
         body = "\n".join(f"  <url><loc>{url}</loc></url>" for url in urls)
         xml = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{body}\n</urlset>'
         return Response(xml, mimetype="application/xml")
@@ -1411,9 +1421,9 @@ def register_routes(app):
     def favicon_ico():
         return redirect(url_for("static", filename="img/og-afcyber.svg"))
 
-    @app.get("/descargas")
     @app.get("/descargas/programas")
     @app.get("/descargas/manuales")
+    @app.get("/descargas")
     def downloads():
         section = "todo"
         if request.path.endswith("/programas"):

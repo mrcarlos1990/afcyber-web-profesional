@@ -1,4 +1,8 @@
-"""Regenerate static corporate pages from the same sources used by Flask.
+"""Legacy Netlify export; never used by Render's Flask build or startup.
+
+The canonical HOME is templates/public/index.html, rendered by app.index.
+This exporter preserves the former static deployment, whose root HTML content
+is independent of the live Flask database. Do not run it to update Render.
 
 Run with the project's Python environment: python scripts/build_corporate.py.
 Jinja2 is already provided by Flask; no new product dependency is required.

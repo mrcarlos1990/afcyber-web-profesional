@@ -1,10 +1,12 @@
 {% extends "public/base.html" %}
+{% from 'public/partials/corporate-images.html' import image %}
 {% block content %}
 {% include "public/partials/nav.html" %}
 
 
-<header id="inicio" class="hero-cyber">
+<header id="inicio" class="hero-cyber corporate-hero">
 
+  {{ image('hero-afcyber', 'Ilustración conceptual de soluciones tecnológicas y ciberseguridad de AFCyber Solutions', width=1672, height=941, class_name='corporate-hero-background', sizes='100vw', eager=true) }}
   <div class="container position-relative">
     <div class="row hero-row align-items-center g-5">
       <div class="col-lg-7 reveal">
@@ -16,21 +18,6 @@
 <a class="btn btn-cyber" href="#contacto">Solicitar cotización</a>
 <a class="btn btn-glass" href="#servicios">Ver servicios →</a></div>
       </div>
-      <div class="col-lg-5 reveal">
-        {% if hero.image %}
-          <img class="hero-image" src="{{ hero.image|asset }}" alt="{{ hero.title }}" fetchpriority="high">
-        {% else %}
-          <div class="hero-terminal">
-            <div class="terminal-top"><span></span><span></span><span></span></div>
-            <div class="terminal-core">
-              <div class="orbit-core"><i class="fa-solid fa-microchip"></i></div>
-              <div class="terminal-row"><span>Cyber Shield</span><strong>ACTIVE</strong></div>
-              <div class="terminal-row"><span>Support Layer</span><strong>READY</strong></div>
-              <div class="terminal-row"><span>Business Systems</span><strong>ONLINE</strong></div>
-            </div>
-          </div>
-        {% endif %}
-      </div>
     </div>
   </div>
 </header>
@@ -41,7 +28,7 @@
 <article><strong>{{ ceo.experience_years }}</strong><span>Años de experiencia</span></article>
 </div></div>{% else %}<div class="compact-strip"><div class="container"><span>Software empresarial</span><span>Seguridad tecnológica</span><span>Atención personalizada</span><span>Soporte profesional</span></div></div>{% endif %}
 
-{% include "public/partials/flash.html" %}<main id="contenido">
+{% include "public/partials/flash.html" %}<main id="contenido" tabindex="-1" class="home-main">
 
 
 
@@ -54,7 +41,7 @@
 <p>Tecnología práctica para mejorar tu operación y tu presencia digital.</p></div>
 <div class="row g-3">
 <div class="col-md-6 col-lg-4">
-<article class="service-card"><i class="fa-solid fa-cash-register" aria-hidden="true"></i>
+<article class="service-card has-corporate-image">{{ image('servicio-software', 'Ilustración del desarrollo de aplicaciones empresariales', sizes='(max-width: 767px) calc(100vw - 32px), (max-width: 991px) 45vw, 350px') }}
 <h3>Software & POS</h3>
 <p>Sistemas empresariales, ventas, inventario y facturación.</p>
 <a href="{{ url_for('public_catalog', catalog='services') }}">Ver más <span aria-hidden="true">↗</span></a></article>
@@ -66,19 +53,19 @@
 <a href="{{ url_for('public_catalog', catalog='services') }}">Ver más <span aria-hidden="true">↗</span></a></article>
 </div>
 <div class="col-md-6 col-lg-4">
-<article class="service-card"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+<article class="service-card has-corporate-image">{{ image('servicio-ciberseguridad', 'Ilustración de un centro de operaciones de ciberseguridad', sizes='(max-width: 767px) calc(100vw - 32px), (max-width: 991px) 45vw, 350px') }}
 <h3>Ciberseguridad</h3>
-<p>Protección y seguridad de la información.</p>
+<p>Protección, respaldo y seguridad de información.</p>
 <a href="{{ url_for('public_catalog', catalog='services') }}">Ver más <span aria-hidden="true">↗</span></a></article>
 </div>
 <div class="col-md-6 col-lg-4">
-<article class="service-card"><i class="fa-solid fa-video" aria-hidden="true"></i>
+<article class="service-card has-corporate-image">{{ image('servicio-cctv', 'Ilustración de sistemas empresariales de videovigilancia', sizes='(max-width: 767px) calc(100vw - 32px), (max-width: 991px) 45vw, 350px') }}
 <h3>CCTV & Control de Acceso</h3>
 <p>Videovigilancia y soluciones de seguridad.</p>
 <a href="{{ url_for('public_catalog', catalog='services') }}">Ver más <span aria-hidden="true">↗</span></a></article>
 </div>
 <div class="col-md-6 col-lg-4">
-<article class="service-card"><i class="fa-solid fa-headset" aria-hidden="true"></i>
+<article class="service-card has-corporate-image">{{ image('servicio-soporte', 'Ilustración de mantenimiento y soporte tecnológico', sizes='(max-width: 767px) calc(100vw - 32px), (max-width: 991px) 45vw, 350px') }}
 <h3>Soporte Técnico</h3>
 <p>Computadoras, software y mantenimiento tecnológico.</p>
 <a href="{{ url_for('public_catalog', catalog='services') }}">Ver más <span aria-hidden="true">↗</span></a></article>
@@ -144,10 +131,10 @@
 {% if settings.show_about or settings.show_ceo %}<section id="nosotros" class="section founder-section">
 <div class="container">
 <div class="founder-layout">
-<div id="ceo">{% if settings.show_ceo and ceo.photo %}<img class="founder-brand founder-photo" src="{{ ceo.photo|asset }}" alt="{{ ceo.full_name }}" width="320" height="320" loading="lazy">{% else %}<img class="founder-brand" src="{{ url_for('static', filename='img/brand.webp') }}" alt="AFCyber Solutions" width="320" height="320" loading="lazy">{% endif %}</div>
+<div id="ceo">{{ image('ceo-amauri-institucional', 'Amauri Feliz Valenzuela, fundador y CEO de AFCyber Solutions', width=1000, height=1250, class_name='corporate-portrait', portrait=true, sizes='(max-width: 767px) 220px, 280px') }}</div>
 <div><span class="section-kicker">Dirección y liderazgo</span>
-<h2>Tecnología con respaldo profesional</h2>{% if settings.show_ceo %}<h3>{{ ceo.full_name }}</h3>
-<p class="founder-role">{{ ceo.role }}</p>{% endif %}<a class="btn btn-glass" href="{{ url_for('public_catalog', catalog='about') }}">Conocer AFCyber</a></div></div></div></section>
+<h2>Tecnología con respaldo profesional</h2><p>{{ corporate.summary }}</p>{% if settings.show_ceo %}<h3>Amauri Feliz Valenzuela</h3>
+<p class="founder-role">Fundador y CEO · AFCyber Solutions</p>{% endif %}<a class="btn btn-glass" href="{{ url_for('public_catalog', catalog='about') }}">Conocer AFCyber</a></div></div></div></section>
 {% endif %}
 {% set approved_testimonials = testimonials %}
 {% if settings.show_testimonials and approved_testimonials %}
@@ -176,7 +163,7 @@
     <div class="row g-5">
       <div class="col-lg-5 reveal">
         <span class="section-kicker">Contacto</span>
-        <h2>¿Listo para llevar tu negocio al siguiente nivel?</h2>
+        <h2>Hablemos de tu próximo proyecto</h2>
         <p class="muted">{{ corporate.summary }}</p>
         <div class="hero-actions">
 <a class="btn btn-cyber" href="#quoteForm">Solicitar cotización</a>
@@ -187,25 +174,17 @@
           <span><i class="fa-solid fa-location-dot"></i>{{ settings.address }}</span>
           <span><i class="fa-solid fa-clock"></i>{{ settings.business_hours }}</span>
         </div>
-        <div class="socials">{% for social in social_links if social.url and social.url != '#' %}<a href="{{ social.url }}" target="_blank" aria-label="{{ social.name }}"><i class="{{ social.icon }}"></i></a>{% endfor %}</div>
+        <div class="socials">{% for social in social_links if social.url and social.url != '#' %}<a href="{{ social.url }}" target="_blank" rel="noopener" aria-label="{{ social.name }}"><i class="{{ social.icon }}"></i></a>{% endfor %}</div>
       </div>
       <div class="col-lg-7 reveal">
         {% include "public/partials/quote-form.html" %}
       </div>
     </div>
-{% set department_compact = true %}{% include "public/partials/departments.html" %}
-{% if settings.show_faq %}<details class="home-faq"><summary>Preguntas frecuentes</summary><div class="accordion cyber-accordion reveal" id="faq">
-      {% for faq in faqs %}{% if loop.index == 4 %}<details class="faq-more">
-<summary>Ver todas las preguntas frecuentes</summary>{% endif %}
-      <div class="accordion-item">
-        <h3 class="accordion-header">
-<button class="accordion-button {% if not loop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#faq{{ faq.id }}" aria-controls="faq{{ faq.id }}" aria-expanded="{{ 'true' if loop.first else 'false' }}">{{ faq.question }}</button></h3>
-        <div id="faq{{ faq.id }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}" data-bs-parent="#faq">
-<div class="accordion-body">{{ faq.answer }}</div></div>
-      </div>
-      {% endfor %}{% if faqs|length > 3 %}</details>
-{% endif %}
-    </div></details>{% endif %}
+<a class="corporate-link" href="{{ url_for('contact_page') }}">Contacta con el departamento correcto →</a>
+{% if settings.show_faq and faqs %}<details class="home-faq"><summary>Preguntas frecuentes</summary>
+{% set faqs = faqs[:3] %}{% include "public/partials/faq.html" %}
+<a class="corporate-link" href="{{ url_for('faq_page') }}">Ver todas las preguntas frecuentes →</a>
+</details>{% endif %}
 </div></section>
 
 {% endif %}
@@ -215,6 +194,5 @@
 {% include "public/partials/footer.html" %}
 
 
-<a aria-label="Hablar por WhatsApp" class="wa-float js-wa" href="#" data-message="Hola AFCyber SOLUTIONS, quiero informacion."><i class="fa-brands fa-whatsapp"></i></a>
-<button class="top-button" id="topButton" aria-label="Volver arriba"><i class="fa-solid fa-arrow-up"></i></button>
+{% include "public/partials/floating.html" %}
 {% endblock %}

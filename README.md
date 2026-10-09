@@ -111,7 +111,34 @@ Cada documento genera un PDF privado en `signed-pdfs/` dentro de `PRIVATE_STORAG
 
 La pagina `/verificar-documento/<codigo>` muestra informacion minima: codigo, tipo, estado, fecha, firmantes y hash. No expone el contenido completo ni datos personales innecesarios.
 
-## Migraciones
+## Arquitectura publica y Render
+
+Render sirve `GET /` mediante `app.py:index`, que renderiza
+`templates/public/index.html` y hereda `templates/public/base.html`.
+El layout carga `platform.css`, `home.css`, `corporate.css` y `platform.js`.
+Los wrappers `partials/nav.html` y `partials/footer.html` reutilizan los
+componentes corporativos; los datos institucionales y contactos oficiales
+proceden de `static/data/company.json`. Las metricas numericas proceden del
+perfil CEO en base de datos, pero no se publican mientras no esten verificadas.
+
+Los HTML de raiz, `netlify.toml`, `static/js/main.js` y
+`scripts/build_corporate.py` pertenecen al despliegue estatico legacy. Se
+conservan para no romper ese despliegue, pero no participan en Render y no
+deben editarse para actualizar el HOME Flask. No se genero otro HOME en esta
+correccion. Las fuentes legales aprobadas permanecen en `templates/public/legal/`.
+
+El build de Render instala `requirements.txt`; el arranque declarado en
+`render.yaml` y `Procfile` es `flask db upgrade && gunicorn app:app`.
+Conservar PostgreSQL, `AUTO_CREATE_DB=0`, contrasena administrativa segura,
+secretos en variables de entorno y disco persistente privado. El comando real
+configurado en el panel de un servicio existente debe contrastarse con el
+archivo del repositorio antes de publicar; editar el YAML no modifica el panel.
+
+Las paginas `/nosotros`, `/contacto`, `/politica-de-calidad`,
+`/privacy-policy`, `/terms-and-conditions` y `/preguntas-frecuentes` son publicas.
+El frontend local no cambia la web desplegada hasta revisar y publicar el commit.
+
+## Migraciones de base de datos
 
 El proyecto usa `db.create_all()` solo para desarrollo (`FLASK_DEBUG=1` o `AUTO_CREATE_DB=1`). En staging y produccion debe usarse:
 

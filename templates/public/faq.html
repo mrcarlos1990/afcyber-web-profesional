@@ -1,0 +1,14 @@
+{% extends "public/base.html" %}
+{% block content %}
+{% include "public/partials/nav.html" %}
+<main id="contenido" tabindex="-1" class="catalog-main">
+  <section class="section"><div class="container corporate-reading">
+    <h1>Preguntas frecuentes</h1>
+    <p class="muted">Respuestas sobre nuestros servicios y cómo trabajar con AFCyber Solutions.</p>
+    {% include "public/partials/faq.html" %}
+    <a class="corporate-link" href="{{ url_for('contact_page') }}">Contactar con AFCyber →</a>
+  </div></section>
+</main>
+{% include "public/partials/footer.html" %}
+{% include "public/partials/floating.html" %}
+{% endblock %}
