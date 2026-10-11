@@ -64,7 +64,7 @@ class CorporateImageTests(unittest.TestCase):
 
     def test_no_new_services_or_duplicate_sections_added(self):
         html=app.test_client().get('/').get_data(as_text=True)
-        self.assertEqual(html.count('class="service-card'),6)
+        self.assertEqual(html.count('class="service-card'),3)
         self.assertEqual(html.count('id="servicios"'),1)
         self.assertEqual(html.count('id="identidad"'),1)
         self.assertEqual(html.count('id="contacto"'),1)

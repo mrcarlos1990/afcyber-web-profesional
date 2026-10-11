@@ -49,3 +49,6 @@ venv/
 .pytest_cache/
 .coverage
 .verification/
+
+# Private migration archives, inventories and logs (never commit).
+/backups-migracion/

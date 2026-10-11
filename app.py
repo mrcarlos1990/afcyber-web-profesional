@@ -21,9 +21,11 @@ from urllib.parse import urlparse
 from uuid import uuid4
 
 from dotenv import load_dotenv
-from flask import Flask, Response, abort, flash, has_request_context, redirect, render_template, request, send_file, session, url_for
+from flask import Flask, Response, abort, flash, has_request_context, redirect, render_template, request, send_file, send_from_directory, session, url_for
+from PIL import Image as PillowImage, ImageOps, UnidentifiedImageError
 from flask_login import current_user, login_required, login_user, logout_user
 from sqlalchemy import inspect as sa_inspect
+from sqlalchemy.exc import SQLAlchemyError
 from werkzeug.utils import secure_filename
 
 try:
@@ -105,12 +107,13 @@ mimetypes.add_type("image/webp", ".webp")
 
 BASE_DIR = Path(__file__).resolve().parent
 CORPORATE = json.loads((BASE_DIR / "static/data/company.json").read_text(encoding="utf-8"))
-UPLOAD_FOLDER = BASE_DIR / "static" / "uploads"
+LEGACY_UPLOAD_FOLDER = BASE_DIR / "static" / "uploads"
 PRIVATE_STORAGE_ROOT_ENV = os.getenv("PRIVATE_STORAGE_ROOT", "").strip()
 PRIVATE_STORAGE = Path(PRIVATE_STORAGE_ROOT_ENV).expanduser() if PRIVATE_STORAGE_ROOT_ENV else BASE_DIR / "storage"
 if not PRIVATE_STORAGE.is_absolute():
     PRIVATE_STORAGE = BASE_DIR / PRIVATE_STORAGE
 PRIVATE_STORAGE = PRIVATE_STORAGE.resolve()
+UPLOAD_FOLDER = PRIVATE_STORAGE / "public-media"
 DOWNLOAD_STORAGE = PRIVATE_STORAGE / "downloads"
 INSTALLER_STORAGE = PRIVATE_STORAGE / "installers"
 MANUAL_STORAGE = PRIVATE_STORAGE / "manuals"
@@ -188,7 +191,7 @@ def require_production_runtime(database_url):
         raise RuntimeError("PRIVATE_STORAGE_ROOT es obligatorio en produccion para guardar archivos privados fuera del repositorio.")
     if path_is_relative_to(PRIVATE_STORAGE, BASE_DIR):
         raise RuntimeError("PRIVATE_STORAGE_ROOT debe apuntar a almacenamiento persistente externo al repositorio.")
-    if path_is_relative_to(PRIVATE_STORAGE, UPLOAD_FOLDER):
+    if path_is_relative_to(PRIVATE_STORAGE, LEGACY_UPLOAD_FOLDER):
         raise RuntimeError("Los documentos privados no pueden guardarse dentro de static/uploads.")
     if os.getenv("REQUIRE_SMTP", "1") == "1":
         if not os.getenv("MAIL_SERVER", "").strip() or not os.getenv("MAIL_DEFAULT_SENDER", "").strip():
@@ -292,7 +295,7 @@ def register_filters(app):
             return ""
         if path.startswith("http"):
             return path
-        return url_for("static", filename=f"uploads/{path}")
+        return url_for("public_media", filename=path)
 
     @app.template_filter("lines")
     def lines(value):
@@ -474,7 +477,20 @@ def save_upload(file, allow_pdf=False):
         return None
     safe_name = secure_filename(file.filename.rsplit(".", 1)[0])[:64] or "archivo"
     filename = f"{safe_name}-{uuid4().hex[:10]}.{ext}"
-    file.save(UPLOAD_FOLDER / filename)
+    if ext in {"jpg", "jpeg", "png", "webp"}:
+        try:
+            file.stream.seek(0)
+            with PillowImage.open(file.stream) as source:
+                image = ImageOps.exif_transpose(source)
+                image.thumbnail((1920, 1920))
+                image = image.convert("RGBA" if "A" in image.getbands() or "transparency" in image.info else "RGB")
+                filename = str(Path(filename).with_suffix(".webp"))
+                image.save(UPLOAD_FOLDER / filename, "WEBP", quality=84, method=6)
+        except (UnidentifiedImageError, OSError, ValueError, PillowImage.DecompressionBombError):
+            flash("La imagen no se puede procesar. Usa una imagen válida.", "danger")
+            return None
+    else:
+        file.save(UPLOAD_FOLDER / filename)
     return filename
 
 
@@ -1327,9 +1343,21 @@ def update_known_default_content():
 
 
 def register_routes(app):
+    @app.get("/media/<path:filename>")
+    @app.get("/static/uploads/<path:filename>")
+    def public_media(filename):
+        # Only dedicated public uploads are exposed, never private documents.
+        if Path(filename).name != filename or filename.rsplit(".", 1)[-1].lower() not in ALLOWED_IMAGES | ALLOWED_DOCS:
+            abort(404)
+        folder = UPLOAD_FOLDER if (UPLOAD_FOLDER / filename).is_file() else LEGACY_UPLOAD_FOLDER
+        return send_from_directory(folder, filename, max_age=86400)
+
     @app.context_processor
     def inject_globals():
-        return {"settings": get_settings(), "hero": get_hero(), "corporate": CORPORATE, "static_site": False}
+        session.setdefault("quote_nonce", secrets.token_urlsafe(24))
+        return {"settings": get_settings(), "hero": get_hero(), "corporate": CORPORATE, "static_site": False,
+                "quote_nonce": session["quote_nonce"],
+                "public_portfolio_available": bool(get_settings().show_portfolio and get_public_projects())}
 
     @app.get("/servicios", defaults={"catalog": "services"})
     @app.get("/portafolio", defaults={"catalog": "portfolio"})
@@ -1421,8 +1449,8 @@ def register_routes(app):
     def favicon_ico():
         return redirect(url_for("static", filename="img/og-afcyber.svg"))
 
-    @app.get("/descargas/programas")
-    @app.get("/descargas/manuales")
+    @app.get("/descargas/programas", endpoint="download_programs")
+    @app.get("/descargas/manuales", endpoint="download_manuals")
     @app.get("/descargas")
     def downloads():
         section = "todo"
@@ -1432,6 +1460,15 @@ def register_routes(app):
             section = "manuales"
         programs = Program.query.filter_by(is_active=True, status="publicado", deleted_at=None).order_by(Program.is_featured.desc(), Program.updated_at.desc()).all()
         manuals = Manual.query.filter_by(is_active=True, status="publicado", deleted_at=None).order_by(Manual.updated_at.desc()).all()
+        def available(item):
+            if item.external_url:
+                return bool(clean_url(item.external_url))
+            if not item.file_path:
+                return False
+            path = (PRIVATE_STORAGE / item.file_path).resolve()
+            return path.is_relative_to(PRIVATE_STORAGE) and path.is_file()
+        programs = [item for item in programs if available(item)]
+        manuals = [item for item in manuals if available(item)]
         return render_template("public/downloads.html", section=section, programs=programs, manuals=manuals)
 
     @app.get("/programas/<slug>")
@@ -1633,22 +1670,49 @@ def register_routes(app):
         phone = form_text("phone", 60)
         message = form_text("message", 5000)
         email = normalize_email(form_text("email", 160))
-        if email is None:
-            return redirect(url_for("index") + "#contacto")
-        if not name or not phone or not message:
-            flash("Completa nombre, teléfono y mensaje.", "danger")
-            return redirect(url_for("index") + "#contacto")
+        service = form_text("requested_service", 160)
+        nonce = request.form.get("quote_nonce", "")
+        if nonce and nonce in session.get("quote_completed", []):
+            flash("Esta solicitud ya está guardada. No se ha creado un duplicado.", "info")
+            return redirect(url_for("contact_page") + "#contacto")
+        errors = []
+        if not nonce or not hmac.compare_digest(nonce, session.get("quote_nonce", "")):
+            errors.append("La sesión del formulario cambió. Recarga la página e inténtalo de nuevo.")
+        if not name or not service or not message:
+            errors.append("Completa nombre, servicio y descripción de la necesidad.")
+        if email is None or (not email and not phone):
+            errors.append("Indica un correo válido o un teléfono de contacto.")
+        if phone and not re.fullmatch(r"[+()\d\s.-]{6,60}", phone):
+            errors.append("Revisa el teléfono: utiliza al menos seis caracteres entre números y signos de teléfono.")
+        if request.form.get("accepted_privacy") != "on":
+            errors.append("Acepta la Política de Privacidad para enviar tu consulta.")
+        for field, limit in [("name", 160), ("email", 160), ("phone", 60), ("requested_service", 160), ("message", 5000), ("company", 160)]:
+            if len(request.form.get(field, "")) > limit:
+                errors.append("Uno de los campos supera la longitud permitida.")
+                break
+        if errors:
+            return render_template("public/contact.html", page_title="Contacto | AFCyber Solutions",
+                                   quote_errors=errors, quote_values=request.form,
+                                   social_links=get_public_social_links()), 422
         db.session.add(ContactMessage(
             name=name,
             company=form_text("company", 160),
             phone=phone,
             email=email,
-            requested_service=form_text("requested_service", 160),
-            message=message,
+            requested_service=service,
+            message=message + "\n\n[Consentimiento: Política de Privacidad aceptada para gestionar esta consulta.]",
         ))
-        db.session.commit()
-        flash("Mensaje enviado correctamente. Te contactaremos pronto.", "success")
-        return redirect(url_for("index") + "#contacto")
+        try:
+            db.session.commit()
+        except SQLAlchemyError:
+            db.session.rollback()
+            return render_template("public/contact.html", page_title="Contacto | AFCyber Solutions",
+                                   quote_errors=["No pudimos guardar tu solicitud. Inténtalo de nuevo o contacta por WhatsApp."],
+                                   quote_values=request.form, social_links=get_public_social_links()), 503
+        session["quote_completed"] = (session.get("quote_completed", []) + [nonce])[-8:]
+        session["quote_nonce"] = secrets.token_urlsafe(24)
+        flash("Solicitud guardada para revisión. Esta confirmación no acredita la entrega de un correo.", "success")
+        return redirect(url_for("contact_page") + "#contacto")
 
     @app.route("/admin/login", methods=["GET", "POST"])
     def admin_login():
@@ -1715,7 +1779,7 @@ def get_public_testimonials():
     return [
         item
         for item in Testimonial.query.filter_by(is_active=True).order_by(Testimonial.created_at.desc()).all()
-        if item.client_name not in generic_names and item.company and item.comment
+        if item.id in CORPORATE.get("verified_testimonial_ids", []) and item.client_name not in generic_names and item.company and item.comment
     ]
 
 

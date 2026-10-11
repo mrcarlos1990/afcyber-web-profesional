@@ -20,12 +20,12 @@
       <div class="section-head reveal">
         <span class="section-kicker">Descargas</span>
         <h1>Programas, manuales y documentación disponible.</h1>
-        <p class="muted">Solo se publican archivos activos, verificados y configurados desde el panel administrativo. AFCyber Solutions no muestra programas o manuales ficticios.</p>
+        <p class="muted">Encuentra los recursos disponibles para tus soluciones AFCyber.</p>
       </div>
       <div class="download-tabs reveal" role="navigation" aria-label="Categorías de descargas">
         <a class="{% if section == 'todo' %}active{% endif %}" href="{{ url_for('downloads') }}">Todo</a>
-        <a class="{% if section == 'programas' %}active{% endif %}" href="{{ url_for('downloads') }}/programas">Programas</a>
-        <a class="{% if section == 'manuales' %}active{% endif %}" href="{{ url_for('downloads') }}/manuales">Manuales</a>
+        <a class="{% if section == 'programas' %}active{% endif %}" href="{{ url_for('download_programs') }}">Programas</a>
+        <a class="{% if section == 'manuales' %}active{% endif %}" href="{{ url_for('download_manuals') }}">Manuales</a>
       </div>
 
       {% if section in ['todo', 'programas'] %}
@@ -47,7 +47,7 @@
           </div>
         </article>
         {% else %}
-        <article class="download-empty reveal"><h3>Programas pendientes de publicación</h3><p>La estructura está lista, pero todavía no hay programas reales publicados desde el panel administrativo.</p></article>
+        <article class="download-empty reveal"><h3>No hay programas disponibles</h3><p>Consulta información sobre nuestros programas.</p><a href="{{ url_for('contact_page') }}">Solicitar información →</a></article>
         {% endfor %}
       </div>
       {% endif %}
@@ -70,7 +70,7 @@
           </div>
         </article>
         {% else %}
-        <article class="download-empty reveal"><h3>Manuales pendientes de publicación</h3><p>Cuando existan PDFs reales autorizados, se publicarán aquí con versión, hash y conteo de descargas.</p></article>
+        <article class="download-empty reveal"><h3>No hay manuales disponibles</h3><p>Contacta con soporte para solicitar documentación.</p><a href="{{ url_for('contact_page') }}">Solicitar información →</a></article>
         {% endfor %}
       </div>
       {% endif %}

@@ -1,0 +1,12 @@
+<section id="soluciones" class="section product-section">
+<div class="container"><div class="section-head"><span class="section-kicker">Productos AFCyber</span>
+<h2>Software para tu operación</h2><p>Conoce nuestras soluciones y conversa con nosotros sobre las necesidades de tu negocio.</p></div>
+<div class="product-grid">
+{% for name, features, icon, platform in [
+('AFCyber Préstamos Enterprise', ['Clientes y préstamos; cobros y pagos', 'Intereses y mora; caja', 'Recibos PDF para compartir', 'Reportes y auditoría', 'Importación/exportación'], 'fa-coins', 'Android'),
+('MultiNegocios', ['POS, créditos y servicios', 'Reportes y dashboard', 'Configuración y licencias', 'Roles y permisos; auditoría', 'Copias de seguridad', 'Impresión de comprobantes'], 'fa-store', 'Windows'),
+('CMMS Empresarial', ['Gestión de activos y mantenimiento', 'Órdenes de trabajo e historial'], 'fa-screwdriver-wrench', '')
+] %}
+<article class="product-card"><i class="fa-solid {{ icon }}" aria-hidden="true"></i><h3>{{ name }}</h3>{% if platform %}<span class="product-platform">{{ platform }}</span>{% endif %}{# Insert only approved real product screenshots here when supplied. #}<ul class="product-features">{% for feature in features %}<li>{{ feature }}</li>{% endfor %}</ul>
+<a class="btn btn-glass" href="https://wa.me/18299198058" target="_blank" rel="noopener">Solicitar información</a></article>
+{% endfor %}</div></div></section>

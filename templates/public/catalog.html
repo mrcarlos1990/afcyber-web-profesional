@@ -6,12 +6,14 @@
 <h1>{{ catalog_title }}</h1></div>{% if catalog == "services" %}<section id="servicios" class="section section-deep">
   <div class="container">
     <div class="section-head text-center reveal"><span class="section-kicker">Servicios</span>
-<h2>Soluciones profesionales listas para impulsar tu empresa.</h2></div>
+<h2>Soluciones profesionales listas para impulsar tu empresa.</h2><p>Imágenes conceptuales de nuestros servicios · Ilustraciones corporativas.</p></div>
     <div class="row g-4">
+      {% set visuals = namespace(used=[]) %}
       {% for service in services %}
       <div class="col-md-6 col-xl-4 reveal">
         <article class="service-card">
-          {{ service_image(service) }}
+          {% set rendered_image = service_image(service)|string %}
+          {% if rendered_image not in visuals.used %}{{ rendered_image|safe }}{% set visuals.used = visuals.used + [rendered_image] %}{% else %}<i class="{{ service.icon }}" aria-hidden="true"></i>{% endif %}
           <h3>{{ service.name }}</h3>
           <p>{{ service.description }}</p>
           {% if service.price %}<strong class="price">{{ service.price }}</strong>{% endif %}
@@ -27,7 +29,6 @@
   <div class="container">
     <div class="section-head text-center reveal"><span class="section-kicker">Planes y precios</span>
 <h2>Paquetes flexibles para iniciar o escalar.</h2></div>
-    <figure class="corporate-products-visual">{{ image('productos-software-afcyber', 'Ilustración de soluciones de software empresarial en varios dispositivos', width=1600, height=900, sizes='(max-width: 767px) calc(100vw - 32px), 760px') }}</figure>
     <div class="row g-4">
       {% for plan in plans %}
       <div class="col-lg-4 reveal">

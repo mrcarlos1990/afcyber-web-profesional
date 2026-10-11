@@ -49,11 +49,11 @@ REQUIRE_SMTP=0
 Produccion:
 
 ```env
-SECRET_KEY=clave-aleatoria-de-32-caracteres-o-mas
+SECRET_KEY=<GENERAR_CLAVE_ALEATORIA_SEGURA>
 SIGNING_SECRET=otra-clave-aleatoria-para-tokens-y-hashes
 DATABASE_URL=postgresql://...
 ADMIN_EMAIL=admin@afcybersolutions.com.do
-ADMIN_PASSWORD=contrasena-inicial-fuerte
+ADMIN_PASSWORD=<CONFIGURAR_CONTRASENA_INICIAL_SEGURA>
 FLASK_DEBUG=0
 AUTO_CREATE_DB=0
 SESSION_COOKIE_SECURE=1
@@ -92,6 +92,18 @@ S3_SECRET_ACCESS_KEY=
 ## Descargas y documentos
 
 Los instaladores, manuales, documentos privados, PDFs firmados y adjuntos se guardan bajo `PRIVATE_STORAGE_ROOT`, fuera de `static/` y fuera de Git. En desarrollo puede ser `storage/`; en Render debe ser un disco persistente como `/var/data/afcyber-storage`.
+
+Las imágenes públicas y CV cargados desde el panel se guardan en
+`PRIVATE_STORAGE_ROOT/public-media`, una carpeta pública separada de los
+documentos privados. `/media/<archivo>` sirve únicamente esos recursos; las
+rutas anteriores `/static/uploads/<archivo>` siguen siendo compatibles.
+Las imágenes JPG/PNG/WebP se convierten a WebP, hasta 1920 px, conservando
+proporción y transparencia. ICO y PDF conservan su formato.
+Antes de un despliegue futuro, copiar las cargas públicas existentes de
+`static/uploads` al directorio `public-media` del disco persistente, conservando
+sus nombres, y comprobar el montaje real del servicio. El respaldo local de
+`static/uploads` mantiene acceso a archivos anteriores mientras existan en el
+checkout, pero no garantiza que sobrevivan a un despliegue de Render.
 
 Formatos permitidos:
 
@@ -164,6 +176,14 @@ python -m unittest discover -s tests -v
 Las pruebas usan `sqlite:///:memory:` y almacenamiento temporal aislado. Cubren rutas publicas/admin, CSRF, contacto, descargas, manuales, solicitud de servicio, PDF, OTP, expiracion, reutilizacion de tokens, firma cliente, firma AFCyber, almacenamiento privado, correo con reintentos, compilacion DDL de PostgreSQL y permisos administrativos.
 
 ## Reglas de publicacion
+
+La validación del candidato actual está en
+`docs/VALIDACION-PREPUBLICACION-2026-10-11.md`, con versiones y resultados
+estructurados. Las 37 pruebas completas pasan, pero la auditoría de
+dependencias reporta un hallazgo en Werkzeug 3.1.8 y siguen pendientes las
+comprobaciones reales de Render. El procedimiento de copia con backup y sin
+borrar imágenes originales está en `docs/MIGRACION-IMAGENES-PERSISTENTES.md`.
+No interpretar los informes históricos como confirmación del estado remoto.
 
 No publicar si:
 

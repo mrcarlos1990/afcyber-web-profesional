@@ -6,17 +6,20 @@
 
 <header id="inicio" class="hero-cyber corporate-hero">
 
-  {{ image('hero-afcyber', 'Ilustración conceptual de soluciones tecnológicas y ciberseguridad de AFCyber Solutions', width=1672, height=941, class_name='corporate-hero-background', sizes='100vw', eager=true) }}
   <div class="container position-relative">
     <div class="row hero-row align-items-center g-5">
-      <div class="col-lg-7 reveal">
+      <div class="col-lg-6 reveal">
         <span class="eyebrow"><i class="fa-solid fa-shield-halved"></i>{{ settings.slogan }}</span>
-        <h1>Soluciones tecnológicas para hacer crecer tu negocio</h1>
+        <h1>Software y tecnología para impulsar tu negocio</h1>
 
-        <p>Software empresarial, sistemas POS, desarrollo web, ciberseguridad, CCTV y soporte tecnológico para empresas y negocios.</p>
+        <p>Desarrollamos sistemas empresariales, páginas web y soluciones de seguridad, redes y soporte técnico en San Cristóbal, República Dominicana.</p>
         <div class="hero-actions">
 <a class="btn btn-cyber" href="#contacto">Solicitar cotización</a>
-<a class="btn btn-glass" href="#servicios">Ver servicios →</a></div>
+<a class="btn btn-glass" href="#soluciones">Ver soluciones →</a></div>
+      </div>
+      <div class="col-lg-6 hero-visual">
+        {{ image('hero-afcyber', 'Ilustración conceptual de infraestructura tecnológica y ciberseguridad', width=1672, height=941, sizes='(max-width: 991px) calc(100vw - 32px), 540px', eager=true) }}
+        <span class="visual-caption">Tecnología, seguridad y conexión · Ilustración corporativa</span>
       </div>
     </div>
   </div>
@@ -40,42 +43,17 @@
 <h2>Soluciones para tu negocio</h2>
 <p>Tecnología práctica para mejorar tu operación y tu presencia digital.</p></div>
 <div class="row g-3">
-<div class="col-md-6 col-lg-4">
-<article class="service-card has-corporate-image">{{ image('servicio-software', 'Ilustración del desarrollo de aplicaciones empresariales', sizes='(max-width: 767px) calc(100vw - 32px), (max-width: 991px) 45vw, 350px') }}
-<h3>Software & POS</h3>
-<p>Sistemas empresariales, ventas, inventario y facturación.</p>
-<a href="{{ url_for('public_catalog', catalog='services') }}">Ver más <span aria-hidden="true">↗</span></a></article>
-</div>
-<div class="col-md-6 col-lg-4">
-<article class="service-card"><i class="fa-solid fa-laptop-code" aria-hidden="true"></i>
-<h3>Desarrollo Web</h3>
-<p>Sitios corporativos y soluciones digitales modernas.</p>
-<a href="{{ url_for('public_catalog', catalog='services') }}">Ver más <span aria-hidden="true">↗</span></a></article>
-</div>
-<div class="col-md-6 col-lg-4">
-<article class="service-card has-corporate-image">{{ image('servicio-ciberseguridad', 'Ilustración de un centro de operaciones de ciberseguridad', sizes='(max-width: 767px) calc(100vw - 32px), (max-width: 991px) 45vw, 350px') }}
-<h3>Ciberseguridad</h3>
-<p>Protección, respaldo y seguridad de información.</p>
-<a href="{{ url_for('public_catalog', catalog='services') }}">Ver más <span aria-hidden="true">↗</span></a></article>
-</div>
-<div class="col-md-6 col-lg-4">
-<article class="service-card has-corporate-image">{{ image('servicio-cctv', 'Ilustración de sistemas empresariales de videovigilancia', sizes='(max-width: 767px) calc(100vw - 32px), (max-width: 991px) 45vw, 350px') }}
-<h3>CCTV & Control de Acceso</h3>
-<p>Videovigilancia y soluciones de seguridad.</p>
-<a href="{{ url_for('public_catalog', catalog='services') }}">Ver más <span aria-hidden="true">↗</span></a></article>
-</div>
-<div class="col-md-6 col-lg-4">
-<article class="service-card has-corporate-image">{{ image('servicio-soporte', 'Ilustración de mantenimiento y soporte tecnológico', sizes='(max-width: 767px) calc(100vw - 32px), (max-width: 991px) 45vw, 350px') }}
-<h3>Soporte Técnico</h3>
-<p>Computadoras, software y mantenimiento tecnológico.</p>
-<a href="{{ url_for('public_catalog', catalog='services') }}">Ver más <span aria-hidden="true">↗</span></a></article>
-</div>
-<div class="col-md-6 col-lg-4">
-<article class="service-card"><i class="fa-solid fa-snowflake" aria-hidden="true"></i>
-<h3>Climatización</h3>
-<p>Instalación y mantenimiento de aire acondicionado.</p>
-<a href="{{ url_for('public_catalog', catalog='services') }}">Ver más <span aria-hidden="true">↗</span></a></article>
-</div></div>
+{% for title, description, resource in [
+('Software y desarrollo web', 'Sistemas empresariales, POS y páginas web para organizar tu operación y presentar tu negocio.', 'servicio-software'),
+('Seguridad e infraestructura', 'Ciberseguridad, redes, CCTV y control de acceso para proteger la información y conectar tu negocio.', 'servicio-redes'),
+('Soporte y mantenimiento', 'Diagnóstico y mantenimiento de equipos, software y sistemas de climatización.', 'servicio-soporte')
+] %}
+<div class="col-md-4"><article class="service-card has-corporate-image">
+{{ image(resource, 'Ilustración conceptual de ' ~ title, sizes='(max-width: 767px) calc(100vw - 32px), 350px') }}
+<h3>{{ title }}</h3><p>{{ description }}</p>
+<a href="{{ url_for('contact_page', servicio=title) }}#quoteForm">Cotizar este servicio <span aria-hidden="true">↗</span></a>
+</article></div>
+{% endfor %}</div>
 <div class="section-link">
 <a href="{{ url_for('public_catalog', catalog='services') }}">Ver todos los servicios →</a></div></div></section>
 
@@ -106,6 +84,7 @@
 
 {% endif %}
 
+{% include "public/partials/products.html" %}
 {% include "public/partials/identity.html" %}
 <section class="section why-section" id="confianza">
 <div class="container">
@@ -169,10 +148,11 @@
 <a class="btn btn-cyber" href="#quoteForm">Solicitar cotización</a>
 <a class="btn btn-glass js-wa" href="#">Hablar por WhatsApp</a></div>
 <div class="contact-list">
-          <a class="js-wa" href="#" data-message="Hola AFCyber SOLUTIONS, quiero solicitar una cotizacion."><i class="fa-brands fa-whatsapp"></i>{{ settings.phone }}</a>
+          <a class="js-wa" href="#" data-message="Hola AFCyber SOLUTIONS, quiero solicitar una cotizacion."><i class="fa-brands fa-whatsapp"></i>+1 829-919-8058</a>
           <a href="mailto:{{ corporate.contacts[0].email }}"><i class="fa-solid fa-envelope"></i>{{ corporate.contacts[0].email }}</a>
-          <span><i class="fa-solid fa-location-dot"></i>{{ settings.address }}</span>
-          <span><i class="fa-solid fa-clock"></i>{{ settings.business_hours }}</span>
+          <a href="mailto:{{ corporate.contacts[3].email }}"><i class="fa-solid fa-headset" aria-hidden="true"></i>{{ corporate.contacts[3].email }}</a>
+          <span><i class="fa-solid fa-location-dot"></i>San Cristóbal, República Dominicana</span>
+
         </div>
         <div class="socials">{% for social in social_links if social.url and social.url != '#' %}<a href="{{ social.url }}" target="_blank" rel="noopener" aria-label="{{ social.name }}"><i class="{{ social.icon }}"></i></a>{% endfor %}</div>
       </div>

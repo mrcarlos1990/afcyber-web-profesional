@@ -77,8 +77,9 @@ class CorporateContractTests(unittest.TestCase):
     def test_quote_preserves_csrf_validation_and_optional_fields(self):
         html = self.client.get('/contacto').get_data(as_text=True)
         token = re.search(r'name="_csrf_token" value="([^"]+)"', html).group(1)
-        self.assertEqual(self.client.post('/contact', data={'name':'QA','phone':'000','message':'Local test'}).status_code, 400)
-        data = {'_csrf_token':token,'name':'QA','phone':'000','message':'Local test','company':'QA Company','email':'qa@example.org','requested_service':'Software empresarial'}
+        self.assertEqual(self.client.post('/contact', data={'name':'QA','phone':'8090000000','message':'Local test'}).status_code, 400)
+        nonce = re.search(r'name="quote_nonce" value="([^"]+)"', html).group(1)
+        data = {'quote_nonce':nonce, 'accepted_privacy':'on', '_csrf_token':token,'name':'QA','phone':'8090000000','message':'Local test','company':'QA Company','email':'qa@example.org','requested_service':'Software empresarial'}
         with app.app_context(): before = ContactMessage.query.count()
         self.assertEqual(self.client.post('/contact', data=data).status_code, 302)
         with app.app_context():
@@ -88,7 +89,9 @@ class CorporateContractTests(unittest.TestCase):
             self.assertEqual(item.email, data['email'])
             self.assertEqual(item.requested_service, data['requested_service'])
         data['name'] = ''
-        self.assertEqual(self.client.post('/contact', data=data).status_code, 302)
+        refreshed = self.client.get('/contacto').get_data(as_text=True)
+        data['quote_nonce'] = re.search(r'name="quote_nonce" value="([^"]+)"', refreshed).group(1)
+        self.assertEqual(self.client.post('/contact', data=data).status_code, 422)
         with app.app_context(): self.assertEqual(ContactMessage.query.count(), before+1)
         self.assertEqual(self.client.get('/admin').status_code, 302)
 

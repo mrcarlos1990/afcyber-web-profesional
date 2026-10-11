@@ -1,0 +1,52 @@
+/* Commercial review: compact, readable public interface. */
+.compact-site { --primary:#007bff; --secondary:#00d4ff; background:#080c14; }
+.compact-site .reveal { opacity:1; transform:none; }
+.compact-site .corporate-hero .hero-row { padding:118px 0 52px; }
+.compact-site .corporate-hero h1 { font-size:clamp(2rem,3.5vw,3.1rem); line-height:1.12; max-width:660px; }
+.compact-site .corporate-hero p { max-width:600px; margin-top:18px; }
+.compact-site .section { padding:48px 0; }
+.compact-site .service-card,.product-card { padding:22px; border:1px solid #ffffff18; border-radius:16px; box-shadow:0 10px 28px #0002; }
+.compact-site .service-card { height:100%; }
+.compact-site .service-card h3,.product-card h3 { font-size:1.2rem; line-height:1.3; }
+.product-section { background:#080c14; }
+.product-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; }
+.product-card { background:linear-gradient(135deg,#071a2f,#0b1726); display:flex; flex-direction:column; align-items:flex-start; }
+.product-card>i { color:#00d4ff; font-size:1.35rem; margin-bottom:18px; }
+.product-card p { color:#b3c3d7; }
+.product-card .btn { margin-top:auto; }
+.contact-form label { display:block; font-weight:600; margin-bottom:6px; }
+.contact-form .quote-consent { display:flex; align-items:flex-start; gap:10px; font-size:.9rem; font-weight:400; }
+.quote-consent input { flex:0 0 auto; width:20px; height:20px; margin-top:3px; accent-color:#007bff; }
+.form-help { color:#b3c3d7; font-size:.88rem; margin:4px 0 0; }
+.quote-status:empty { display:none; }
+.quote-errors { border:1px solid #ffb1a8; background:#411d27; padding:14px; margin-bottom:20px; border-radius:10px; color:#fff; }
+.quote-errors ul { margin-bottom:0; }
+.compact-site a:focus-visible,.compact-site button:focus-visible,.compact-site input:focus-visible,.compact-site summary:focus-visible { outline:3px solid #00d4ff; outline-offset:4px; }
+.compact-site .wa-float { width:48px; height:48px; right:16px; bottom:16px; }
+.compact-site .top-button { right:18px; bottom:76px; }
+.compact-site .footer { padding-bottom:82px; }
+@media(max-width:991px) { .compact-site .corporate-hero .hero-row { padding:112px 0 40px; } .compact-site .cyber-nav .navbar-collapse { max-height:calc(100dvh - 76px); overflow:auto; } }
+@media(max-width:767px) { .product-grid { grid-template-columns:1fr; } .compact-site .section { padding:36px 0; } .compact-site .corporate-hero h1 { font-size:2rem; } .compact-site .hero-actions { display:flex; flex-wrap:wrap; gap:12px; } .compact-site .hero-actions .btn { flex:1 1 auto; } .compact-site .contact-form { padding:20px 16px; } .compact-site .corporate-footer-grid { gap:24px; } }
+@media(prefers-reduced-motion:reduce) { .compact-site *, .compact-site *::before,.compact-site *::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
+.product-platform { display:inline-block; color:#bcefff; background:#00d4ff12; border:1px solid #00d4ff30; border-radius:6px; padding:3px 10px; margin:0 0 12px; font-size:.8rem; }
+.compact-site { --button:#007bff; }
+.product-features { color:#b3c3d7; padding-left:20px; margin:0 0 20px; line-height:1.6; }
+.product-features li + li { margin-top:6px; }
+@media(max-width:575px) {
+  /* Dedicated side lane keeps fixed actions outside the scrolling content. */
+  .compact-site { padding-right:64px; }
+  .compact-site::after { content:""; position:fixed; top:70px; right:0; bottom:0; width:64px; background:#080c14; border-left:1px solid #ffffff12; z-index:30; pointer-events:none; }
+  .compact-site .wa-float { right:8px; bottom:max(16px,env(safe-area-inset-bottom)); }
+  .compact-site .top-button { right:10px; bottom:76px; }
+}
+
+/* Visual identity and a separate, proportionate hero illustration. */
+.compact-site .corporate-hero::after { display:none; }
+.hero-visual .corporate-image { width:100%; aspect-ratio:auto; height:auto; border:1px solid #00d4ff35; border-radius:20px; box-shadow:0 24px 70px #0005; }
+.visual-caption { display:block; margin-top:10px; font-size:.75rem; color:#9fb6ce; }
+.compact-site .navbar-brand img { width:76px; height:58px; object-fit:contain; border-radius:6px; }
+.compact-site .footer-brand .brand-logo { width:110px; height:84px; object-fit:contain; border-radius:8px; }
+.compact-site .navbar-brand { gap:10px; }
+.compact-site .navbar-brand span { font-size:1rem; }
+@media(max-width:991px) { .hero-visual { max-width:680px; } }
+@media(max-width:575px) { .compact-site .navbar-brand img { width:58px; height:46px; } .compact-site .navbar-brand span { font-size:.82rem; } .compact-site .corporate-hero .hero-row { row-gap:24px!important; } }

@@ -35,7 +35,7 @@ window.addEventListener("scroll", () => {
   topButton && topButton.classList.toggle("show", window.scrollY > 650);
 }, { passive: true });
 
-topButton && topButton.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+topButton && topButton.addEventListener("click", () => window.scrollTo({ top: 0, behavior: prefersReducedMotion ? "instant" : "smooth" }));
 
 const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
@@ -126,4 +126,32 @@ if (canvas && !prefersReducedMotion) {
   resize();
   draw();
   window.addEventListener("resize", resize);
+}
+// Short enquiry: native constraints, either contact channel and one in-flight submit.
+const quoteForm = document.getElementById('quoteForm');
+if (quoteForm) {
+  const email = quoteForm.elements.email;
+  const phone = quoteForm.elements.phone;
+  const resetContactValidity = () => { email.setCustomValidity(''); phone.setCustomValidity(''); };
+  email.addEventListener('input', resetContactValidity);
+  phone.addEventListener('input', resetContactValidity);
+  quoteForm.addEventListener('submit', (event) => {
+    resetContactValidity();
+    if (!email.value.trim() && !phone.value.trim()) email.setCustomValidity('Indica un correo o teléfono de contacto.');
+    if (!quoteForm.reportValidity()) { event.preventDefault(); return; }
+    if (quoteForm.dataset.sending === 'true') { event.preventDefault(); return; }
+    quoteForm.dataset.sending = 'true';
+    const button = quoteForm.querySelector('button[type="submit"]');
+    button.disabled = true;
+    button.textContent = 'Guardando consulta…';
+    quoteForm.querySelector('.quote-status').textContent = 'Espera la confirmación de guardado.';
+  });
+  window.addEventListener('pageshow', () => {
+    quoteForm.dataset.sending = 'false';
+    const button = quoteForm.querySelector('button[type="submit"]');
+    button.disabled = false; button.textContent = 'Enviar consulta';
+    quoteForm.querySelector('.quote-status').textContent = '';
+  });
+  const errors = quoteForm.querySelector('.quote-errors');
+  if (errors) errors.focus();
 }

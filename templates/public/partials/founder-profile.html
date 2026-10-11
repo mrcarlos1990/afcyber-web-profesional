@@ -8,7 +8,7 @@
         <span class="section-kicker">Dirección y liderazgo</span>
         <h2>Amauri Feliz Valenzuela</h2>
         <p class="founder-role">Fundador y CEO · AFCyber Solutions</p>
-        {% if ceo.bio %}<p>{{ ceo.bio }}</p>{% endif %}
+        <p>Dirección de las soluciones tecnológicas de AFCyber, con enfoque en seguridad, calidad y atención personalizada.</p>
         <a class="corporate-link" href="mailto:{{ corporate.contacts[5].email }}">{{ corporate.contacts[5].email }}</a>
         <div class="hero-actions">
           {% if ceo.linkedin and ceo.linkedin != '#' %}<a class="btn btn-glass" href="{{ ceo.linkedin }}" target="_blank" rel="noopener">LinkedIn</a>{% endif %}
@@ -18,7 +18,7 @@
         {% if ceo.experience or ceo.skills %}
         <details class="founder-details">
           <summary>Conocer el perfil profesional</summary>
-          {% if ceo.experience %}<h3>Experiencia</h3><ul>{% for line in ceo.experience|lines %}<li>{{ line }}</li>{% endfor %}</ul>{% endif %}
+          {% if ceo.experience %}<h3>Áreas de experiencia</h3><ul>{% for line in ceo.experience|lines %}<li>{{ line }}</li>{% endfor %}</ul>{% endif %}
           {% if ceo.skills %}<h3>Tecnologías</h3><ul class="value-list">{% for skill in ceo.skills|lines %}<li>{{ skill }}</li>{% endfor %}</ul>{% endif %}
         </details>
         {% endif %}

@@ -1,16 +1,17 @@
-<form class="contact-form" id="{{ 'contactForm' if static_site else 'quoteForm' }}"{% if not static_site %} method="post" action="{{ url_for('contact') }}"{% endif %}>
-  {% if not static_site %}<input type="hidden" name="_csrf_token" value="{{ csrf_token }}">{% endif %}
+{% set values = quote_values|default({}) %}
+<form class="contact-form" id="quoteForm" method="post" action="{{ url_for('contact') }}">
+  <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+  <input type="hidden" name="quote_nonce" value="{{ quote_nonce }}">
+  {% if quote_errors %}<div class="quote-errors" role="alert" tabindex="-1"><strong>Revisa tu consulta</strong><ul>{% for error in quote_errors %}<li>{{ error }}</li>{% endfor %}</ul></div>{% endif %}
   <div class="row g-3">
-    <div class="col-md-6"><label>Nombre<input class="form-control" name="name" autocomplete="name" required></label></div>
-    <div class="col-md-6"><label>WhatsApp / Teléfono<input class="form-control" type="tel" name="phone" autocomplete="tel" required></label></div>
-    <div class="col-12"><label>Servicio<input class="form-control" name="requested_service" placeholder="¿Qué servicio necesitas?"></label></div>
-    <div class="col-12"><label>Cuéntanos qué necesitas<textarea class="form-control" name="message" rows="3" required></textarea></label></div>
-    <div class="col-12">
-      <details><summary>Agregar empresa o correo (opcional)</summary><div class="row g-3">
-        <div class="col-md-6"><label>Empresa<input class="form-control" name="company" autocomplete="organization"></label></div>
-        <div class="col-md-6"><label>Correo<input class="form-control" type="email" name="email" autocomplete="email"></label></div>
-      </div></details>
-    </div>
-    <div class="col-12"><button class="btn {{ 'btn-primary-premium' if static_site else 'btn-cyber' }} w-100" type="submit">{{ 'Enviar por WhatsApp' if static_site else 'Enviar solicitud' }}</button></div>
+    <div class="col-12"><label for="quote-name">Nombre</label><input id="quote-name" class="form-control" name="name" autocomplete="name" maxlength="160" required value="{{ values.get('name', '') }}"></div>
+    <div class="col-12"><p id="quote-contact-help" class="form-help">Indica al menos un medio de contacto: correo o teléfono.</p></div>
+    <div class="col-md-6"><label for="quote-email">Correo electrónico</label><input id="quote-email" class="form-control" type="email" name="email" autocomplete="email" maxlength="160" aria-describedby="quote-contact-help" value="{{ values.get('email', '') }}"></div>
+    <div class="col-md-6"><label for="quote-phone">Teléfono / WhatsApp</label><input id="quote-phone" class="form-control" type="tel" name="phone" autocomplete="tel" minlength="6" maxlength="60" pattern="[+()0-9 .\-]{6,60}" aria-describedby="quote-contact-help" value="{{ values.get('phone', '') }}"></div>
+    <div class="col-12"><label for="quote-service">Servicio o producto</label><input id="quote-service" class="form-control" name="requested_service" maxlength="160" list="quote-services" required value="{{ values.get('requested_service', request.args.get('servicio', '')) }}"><datalist id="quote-services">{% for service in ['Software y desarrollo web','Seguridad e infraestructura','Soporte y mantenimiento','AFCyber Préstamos Enterprise','MultiNegocios','CMMS Empresarial'] %}<option value="{{ service }}">{% endfor %}</datalist></div>
+    <div class="col-12"><label for="quote-message">Cuéntanos qué necesitas</label><textarea id="quote-message" class="form-control" name="message" rows="3" maxlength="5000" required>{{ values.get('message', '') }}</textarea></div>
+    <div class="col-12"><label class="quote-consent"><input type="checkbox" name="accepted_privacy" required {% if values.get('accepted_privacy') == 'on' %}checked{% endif %}><span>He leído y acepto la <a href="{{ url_for('legal_document', document='privacy-policy') }}">Política de Privacidad</a> para gestionar esta consulta.</span></label></div>
+    <div class="col-12"><button class="btn btn-cyber w-100" type="submit">Enviar consulta</button><p class="form-help quote-status" aria-live="polite"></p></div>
   </div>
+  <a class="corporate-link" href="{{ url_for('request_service') }}">¿Necesitas adjuntar documentos? Abrir solicitud detallada →</a>
 </form>

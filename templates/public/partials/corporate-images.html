@@ -12,6 +12,9 @@
 {% elif 'ciber' in name %}{{ image('servicio-ciberseguridad', 'Ilustración de un centro de operaciones de ciberseguridad') }}
 {% elif 'redes' in name or 'servidores' in name %}{{ image('servicio-redes', 'Ilustración de infraestructura de redes y servidores') }}
 {% elif 'soporte' in name or 'mantenimiento' in name or 'computadoras' in name %}{{ image('servicio-soporte', 'Ilustración de mantenimiento y soporte tecnológico') }}
+{% elif 'pos' in name or 'erp' in name %}{{ image('productos-software-afcyber', 'Ilustración conceptual de software empresarial; no es una captura de nuestros productos', width=1600, height=900) }}
+{% elif 'web' in name or 'landing' in name %}{{ image('hero-afcyber', 'Ilustración conceptual de tecnología para servicios digitales', width=1672, height=941) }}
+{% elif 'automatiz' in name %}{{ image('servicio-cloud', 'Ilustración conceptual de infraestructura conectada para automatización empresarial') }}
 {% elif 'software' in name or 'pos' in name or 'erp' in name or 'automatiz' in name %}{{ image('servicio-software', 'Ilustración del desarrollo de aplicaciones empresariales') }}
 {% elif service.image %}<img src="{{ service.image|asset }}" alt="{{ service.name }}" loading="lazy" decoding="async">{% else %}<i class="{{ service.icon }}" aria-hidden="true"></i>{% endif %}
 {%- endmacro %}

@@ -1,5 +1,6 @@
 import io
 import os
+import re
 import shutil
 import tempfile
 import unittest
@@ -125,11 +126,16 @@ class AppTests(unittest.TestCase):
         response = self.client.post("/contact", data={"name": "Ana", "phone": "8090000000", "message": "Hola"})
         self.assertEqual(response.status_code, 400)
         token = self.csrf_token("/")
+        html = self.client.get("/").get_data(as_text=True)
+        nonce = re.search(r'name="quote_nonce" value="([^"]+)"', html).group(1)
         response = self.client.post(
             "/contact",
             data={
                 "_csrf_token": token,
                 "name": "Ana",
+                "quote_nonce": nonce,
+                "accepted_privacy": "on",
+                "requested_service": "Soporte",
                 "phone": "8090000000",
                 "email": "ana@example.com",
                 "message": "Hola",

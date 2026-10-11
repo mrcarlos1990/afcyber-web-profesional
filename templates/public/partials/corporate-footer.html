@@ -3,7 +3,7 @@
     <div class="corporate-footer-grid">
       <div>
         <a class="footer-brand" href="{{ url_for('index') }}">
-          {% if settings.logo %}<img class="brand-logo" src="{{ settings.logo|asset }}" alt="{{ settings.company_name }}" width="48" height="48" loading="lazy">{% else %}<img class="brand-logo" src="{{ url_for('static', filename='img/brand.webp') }}" alt="AFCyber Solutions" width="48" height="48" loading="lazy">{% endif %}
+          {% if settings.logo %}<img class="brand-logo" src="{{ settings.logo|asset }}" alt="{{ settings.company_name }}" width="48" height="48" loading="lazy">{% else %}<img class="brand-logo" src="{{ url_for('static', filename='img/brand-readable.webp') }}" alt="AFCyber Solutions" width="48" height="48" loading="lazy">{% endif %}
           <span>{{ corporate.name }}</span>
         </a>
         <p>{{ corporate.summary }}</p>
@@ -14,7 +14,7 @@
         <a href="{{ url_for('public_catalog', catalog='about') }}">Nosotros</a>
         <a href="{{ url_for('public_catalog', catalog='about') }}#mision-y-vision">Misión y visión</a>
         <a href="{{ url_for('quality_policy') }}">Política de Calidad</a>
-        <a href="{{ url_for('public_catalog', catalog='portfolio') }}">Portafolio</a>
+        {% if public_portfolio_available %}<a href="{{ url_for('public_catalog', catalog='portfolio') }}">Portafolio</a>{% endif %}
         <a href="{{ url_for('contact_page') }}">Contacto</a>{% if not static_site %}<a href="{{ url_for('request_service') }}">Solicitar servicio</a>{% endif %}
       </nav>
       <nav aria-label="Enlaces de servicios">
