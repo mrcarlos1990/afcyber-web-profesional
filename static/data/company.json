@@ -41,5 +41,14 @@
   "legal_links": [
     {"name": "Política de Privacidad", "document": "privacy-policy", "url": "https://afcybersolutions.com.do/privacy-policy"},
     {"name": "Términos y Condiciones", "document": "terms-and-conditions", "url": "https://afcybersolutions.com.do/terms-and-conditions"}
-  ]
+  ],
+  "public_facts": {
+    "location": "San Cristóbal, República Dominicana",
+    "phone": "+1 829-919-8058",
+    "whatsapp": "18299198058",
+    "founder": "Amauri Feliz Valenzuela",
+    "founder_role": "Fundador y CEO",
+    "history": null,
+    "published_hours": null
+  }
 }

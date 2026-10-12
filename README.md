@@ -194,3 +194,28 @@ No publicar si:
 - `pip-audit` no concluye sin hallazgos criticos.
 - Las pruebas no pasan.
 - Hay documentos, firmas, instaladores, PDFs, bases, secretos o archivos personales preparados para commit.
+
+
+## Asistente virtual y cotizaciones (12 de octubre de 2026)
+
+El widget funciona con reglas, búsqueda y conocimiento público compartido, sin
+OpenAI API ni servicios de IA de pago. Los productos se mantienen en
+`static/data/products.json`; los datos corporativos en `static/data/company.json`;
+servicios/FAQ/programas usan los registros públicos existentes del panel.
+
+`/cotizacion` guarda solicitudes numeradas antes de intentar SMTP; el formulario
+anterior `/contact` mantiene compatibilidad y sus mensajes administrativos.
+El panel protegido `/admin/cotizaciones` permite consultar, cambiar estado y
+reintentar correo. La cola persiste en PostgreSQL y no usa archivos temporales.
+
+Está pendiente aplicar, SOLO con autorización, la migración
+`20261012_0002` después de `20260722_0001`. SMTP reutiliza las variables
+MAIL_SERVER, MAIL_PORT, MAIL_USE_TLS, MAIL_USERNAME, MAIL_PASSWORD y
+MAIL_DEFAULT_SENDER. Los reintentos seguros se pueden procesar en un entorno
+migrado con `flask --app app cotizaciones-reintentar --limit 20`.
+
+Detalle de funciones, riesgos, archivos, pruebas, configuración y publicación:
+`docs/ASISTENTE-COTIZACIONES.md`. Esta nueva fase tiene 52 pruebas aprobadas y
+Werkzeug 3.1.9; su pip-audit no encontró vulnerabilidades conocidas. Los informes
+anteriores de Werkzeug 3.1.8 son historial. Render/PostgreSQL/SMTP reales y
+persistencia tras redespliegue todavía requieren validación independiente.

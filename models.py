@@ -176,6 +176,44 @@ class ContactMessage(db.Model):
     created_at = db.Column(db.DateTime, default=utc_now)
 
 
+class QuoteRequest(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    submission_key = db.Column(db.String(64), nullable=False, unique=True)
+    name = db.Column(db.String(160), nullable=False)
+    company = db.Column(db.String(160))
+    phone = db.Column(db.String(60), nullable=False)
+    email = db.Column(db.String(160))
+    requested_service = db.Column(db.String(160), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    budget = db.Column(db.String(120))
+    status = db.Column(db.String(20), nullable=False, default="RECIBIDA")
+    consent_version = db.Column(db.String(40), nullable=False, default="2026-10")
+    created_at = db.Column(db.DateTime, nullable=False, default=utc_now)
+
+    @property
+    def number(self):
+        return f"AFC-{self.created_at.year}-{self.id:06d}"
+
+
+class QuoteMail(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    quote_id = db.Column(db.Integer, db.ForeignKey("quote_request.id"), nullable=False)
+    kind = db.Column(db.String(20), nullable=False)
+    status = db.Column(db.String(20), nullable=False, default="PENDIENTE")
+    attempts = db.Column(db.Integer, nullable=False, default=0)
+    updated_at = db.Column(db.DateTime, nullable=False, default=utc_now)
+    delivery_id = db.Column(db.Integer, db.ForeignKey("email_delivery.id"))
+    quote = db.relationship("QuoteRequest", backref="mail_jobs")
+    delivery = db.relationship("EmailDelivery")
+    __table_args__ = (db.UniqueConstraint("quote_id", "kind", name="uq_quote_mail_kind"),)
+
+
+class PublicRateBucket(db.Model):
+    key = db.Column(db.String(64), primary_key=True)
+    count = db.Column(db.Integer, nullable=False, default=0)
+    expires_at = db.Column(db.Integer, nullable=False, index=True)
+
+
 class SocialLink(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)

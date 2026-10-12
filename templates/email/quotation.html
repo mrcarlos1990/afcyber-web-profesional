@@ -1,0 +1,6 @@
+<!doctype html><html lang="es"><body style="margin:0;background:#080c14;font-family:Arial,sans-serif;color:#e9f3ff"><main style="max-width:620px;margin:24px auto;padding:28px;background:#071a2f;border-top:4px solid #007bff">
+<h1 style="color:#00d4ff;font-size:24px">AFCyber Solutions</h1><h2>{{ 'Nueva solicitud de cotización' if admin else 'Hemos recibido tu solicitud' }}</h2>
+<p><strong>{{ quote.number }}</strong> · {{ timestamp.strftime('%d/%m/%Y %H:%M') }} (República Dominicana)</p>
+{% if not admin %}<p>Tu solicitud está guardada. Un asesor revisará el alcance antes de preparar una propuesta; esta confirmación no es una oferta de precio ni una promesa de disponibilidad.</p>{% endif %}
+<dl>{% for label,value in [('Nombre',quote.name),('Empresa',quote.company),('Teléfono',quote.phone),('Correo',quote.email),('Producto o servicio',quote.requested_service),('Descripción',quote.description),('Presupuesto estimado',quote.budget)] %}<dt style="color:#00d4ff;margin-top:14px">{{ label }}</dt><dd style="margin:4px 0;white-space:pre-wrap">{{ value or 'No indicado' }}</dd>{% endfor %}</dl>
+<p>Contacto: cotizaciones@afcybersolutions.com.do</p><p style="font-size:12px">Información enviada con consentimiento para gestionar la solicitud.</p></main></body></html>

@@ -1,0 +1,8 @@
+{% extends 'admin/base.html' %}{% block content %}
+<div class="admin-header"><h1>{{ quote.number }}</h1><a href="{{ url_for('quotes.admin_list') }}">← Cotizaciones</a></div><article class="admin-card">
+<dl>{% for label,value in [('Cliente',quote.name),('Empresa',quote.company),('Teléfono',quote.phone),('Correo',quote.email),('Producto o servicio',quote.requested_service),('Necesidad',quote.description),('Presupuesto',quote.budget)] %}<dt>{{ label }}</dt><dd style="white-space:pre-wrap">{{ value or 'No indicado' }}</dd>{% endfor %}</dl>
+<form method="post" action="{{ url_for('quotes.status',quote_id=quote.id) }}"><input type="hidden" name="_csrf_token" value="{{ csrf_token }}"><label for="quote-state">Estado</label><select id="quote-state" name="status">{% for state in states %}<option {% if state==quote.status %}selected{% endif %}>{{ state }}</option>{% endfor %}</select><button type="submit">Guardar estado</button></form>
+</article><article class="admin-card"><h2>Correos</h2>
+{% for job in quote.mail_jobs %}<div><p>{{ job.kind }} · {{ job.status }} · intentos {{ job.attempts }}/5</p>
+{% if job.status!='ENVIADO' %}<form method="post" action="{{ url_for('quotes.retry',job_id=job.id) }}"><input type="hidden" name="_csrf_token" value="{{ csrf_token }}"><label><input type="checkbox" name="confirm_uncertain"> Si la entrega es incierta, he comprobado el proveedor y acepto el riesgo de duplicación.</label><button type="submit">Reintentar correo</button></form>{% endif %}</div>{% endfor %}
+<p>Una entrega SMTP aceptada no acredita recepción en bandeja de entrada. Los trabajos ENVIANDO caducados se revisan tras cinco minutos; no se reenvían automáticamente.</p></article>{% endblock %}
