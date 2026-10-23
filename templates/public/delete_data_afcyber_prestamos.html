@@ -1,0 +1,152 @@
+{% extends "public/base.html" %}
+{% block content %}
+<nav class="navbar navbar-expand-lg fixed-top cyber-nav" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="{{ url_for('index') }}">
+      {% if settings.logo %}<img src="{{ settings.logo|asset }}" alt="{{ settings.company_name }}">{% else %}<span class="logo-mark">AF</span>{% endif %}
+      <span>{{ settings.company_name }}</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#legalMenu" aria-controls="legalMenu" aria-expanded="false" aria-label="Abrir menu"><span class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="legalMenu">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#servicios">Servicios</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('downloads') }}">Descargas</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('product_afcyber_prestamos') }}">AFCyber Préstamos</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('privacy_afcyber_prestamos') }}">Privacidad</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#contacto">Contacto</a></li>
+        <li class="nav-item ms-lg-3"><a class="btn btn-cyber" href="{{ url_for('request_service') }}">Solicitar servicio</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<main id="contenido" class="page-shell legal-page">
+  <section class="legal-hero">
+    <div class="container">
+      <nav class="breadcrumb-lite" aria-label="Ubicación">
+        <a href="{{ url_for('index') }}">Inicio</a>
+        <span aria-hidden="true">/</span>
+        <span>Eliminación de Datos</span>
+      </nav>
+      <span class="section-kicker">AFCyber Préstamos Enterprise</span>
+      <h1>Eliminación de Datos — AFCyber Préstamos Enterprise</h1>
+      <p>AFCyber Préstamos Enterprise almacena principalmente la información comercial de la aplicación de forma local en el dispositivo Android.</p>
+      <p>La aplicación no utiliza actualmente un sistema de cuentas remotas de AFCyber Solutions para almacenar automáticamente los clientes, préstamos y pagos del usuario.</p>
+      <p class="legal-date"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i> Última actualización: 6 de octubre de 2026</p>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="legal-layout">
+      <aside class="legal-toc" aria-label="Índice de contenidos">
+        <h2>Contenido</h2>
+        <a href="#como-eliminar">Cómo eliminar los datos</a>
+        <a href="#informacion-eliminable">Información que puede eliminarse</a>
+        <a href="#informacion-conservada">Información técnica que puede conservarse</a>
+        <a href="#respaldos-externos">Respaldos externos</a>
+        <a href="#solicitud-afcyber">Solicitud a AFCyber Solutions</a>
+        <a href="#contacto-legal">Contacto</a>
+      </aside>
+
+      <article class="legal-article">
+        <section id="como-eliminar" class="legal-section">
+          <h2>Cómo eliminar los datos</h2>
+          <p>Un administrador autorizado puede solicitar la eliminación directamente desde AFCyber Préstamos Enterprise.</p>
+          <ol>
+            <li>Inicie sesión con un usuario con permisos de Administrador.</li>
+            <li>Acceda a Ajustes/Configuración.</li>
+            <li>Localice la opción "Eliminar todos los datos".</li>
+            <li>Lea la advertencia mostrada por la aplicación.</li>
+            <li>Escriba exactamente "ELIMINAR" cuando se solicite la confirmación.</li>
+            <li>Confirme la operación.</li>
+          </ol>
+          <div class="legal-warning" role="note">
+            <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+            <p>La eliminación es irreversible respecto de los datos locales afectados.</p>
+          </div>
+        </section>
+
+        <section id="informacion-eliminable" class="legal-section">
+          <h2>Información que puede eliminarse</h2>
+          <ul>
+            <li>Clientes.</li>
+            <li>Préstamos.</li>
+            <li>Cuotas.</li>
+            <li>Pagos y cobros.</li>
+            <li>Distribuciones de pagos.</li>
+            <li>Mora y cargos.</li>
+            <li>Caja y movimientos.</li>
+            <li>Recibos.</li>
+            <li>Refinanciamientos.</li>
+            <li>Usuarios y administradores locales.</li>
+            <li>Sesiones.</li>
+            <li>Registros de auditoría.</li>
+            <li>Notificaciones y datos comerciales.</li>
+            <li>Configuraciones comerciales.</li>
+            <li>Historial interno de respaldos.</li>
+            <li>Adjuntos privados de clientes.</li>
+            <li>Archivos temporales y cachés comerciales.</li>
+          </ul>
+        </section>
+
+        <section id="informacion-conservada" class="legal-section">
+          <h2>Información técnica que puede conservarse</h2>
+          <p>La eliminación de datos comerciales no necesariamente elimina la identidad técnica de la instalación.</p>
+          <p>Para mantener el sistema de activación y evitar que una eliminación de información comercial sea interpretada como un dispositivo nuevo, AFCyber Préstamos Enterprise puede conservar:</p>
+          <ul>
+            <li>Device ID.</li>
+            <li>Installation ID.</li>
+            <li>Licencia de la aplicación.</li>
+            <li>Información necesaria para verificar la licencia.</li>
+            <li>Información técnica de revocación, cuando corresponda.</li>
+            <li>Información de tiempo confiable utilizada por el sistema de licencias.</li>
+            <li>Material criptográfico local necesario para proteger o verificar esos datos.</li>
+          </ul>
+          <p>Esto permite que una licencia válida continúe asociada a la misma instalación después de eliminar los datos comerciales.</p>
+        </section>
+
+        <section id="respaldos-externos" class="legal-section">
+          <h2>Respaldos externos</h2>
+          <p>Los archivos .afcbak y otros archivos que hayan sido exportados fuera del almacenamiento privado de AFCyber Préstamos Enterprise no se eliminan automáticamente.</p>
+          <p>Si desea eliminarlos, deberá hacerlo manualmente desde el dispositivo, unidad, servicio o ubicación donde fueron guardados.</p>
+          <p>Lo mismo puede aplicarse a PDF, CSV, recibos u otros documentos previamente exportados o compartidos.</p>
+        </section>
+
+        <section id="solicitud-afcyber" class="legal-section">
+          <h2>¿Necesito solicitar a AFCyber Solutions que elimine mis datos comerciales?</h2>
+          <p>En la arquitectura actual de AFCyber Préstamos Enterprise, los datos comerciales principales se almacenan localmente y pueden eliminarse desde la propia aplicación.</p>
+          <p>AFCyber Solutions no dispone actualmente de una cuenta remota que almacene automáticamente su base de clientes, préstamos y pagos.</p>
+          <p>Si necesita asistencia para localizar o utilizar la función de eliminación, puede comunicarse con soporte.</p>
+        </section>
+
+        <section id="contacto-legal" class="legal-section legal-contact">
+          <h2>Contacto</h2>
+          <p><strong>AFCyber Solutions</strong></p>
+          <p><strong>Soporte técnico:</strong> <a href="mailto:soporte@afcybersolutions.com.do">soporte@afcybersolutions.com.do</a></p>
+          <p><strong>Información general:</strong> <a href="mailto:info@afcybersolutions.com.do">info@afcybersolutions.com.do</a></p>
+          <p><strong>Sitio web:</strong> <a href="https://afcybersolutions.com.do/">https://afcybersolutions.com.do/</a></p>
+          <a class="legal-link-card" href="{{ url_for('privacy_afcyber_prestamos') }}">
+            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+            <span>Ver Política de Privacidad de AFCyber Préstamos Enterprise</span>
+          </a>
+        </section>
+      </article>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div><a class="footer-brand" href="{{ url_for('index') }}"><span class="logo-mark">AF</span>{{ settings.company_name }}</a><p>{{ settings.short_description }}</p></div>
+      <div><h3>Contacto</h3><a href="mailto:{{ settings.main_email }}">{{ settings.main_email }}</a><span>{{ settings.address }}</span></div>
+      <div><h3>Producto</h3><a href="{{ url_for('product_afcyber_prestamos') }}">AFCyber Préstamos Enterprise</a></div>
+      <div><h3>Legal</h3><a href="{{ url_for('privacy_afcyber_prestamos') }}">Política de Privacidad</a><a href="{{ url_for('delete_data_afcyber_prestamos') }}">Eliminación de Datos</a></div>
+      <div><h3>AFCyber Préstamos</h3><a href="mailto:soporte@afcybersolutions.com.do">Soporte técnico</a><a href="mailto:info@afcybersolutions.com.do">Información general</a></div>
+    </div>
+    <div class="footer-bottom"><span>© <span id="year"></span> {{ settings.company_name }}. {{ settings.copyright_text }}</span><span>{{ settings.footer_text }}</span></div>
+  </div>
+</footer>
+
+<button class="top-button" id="topButton" type="button" aria-label="Volver arriba"><i class="fa-solid fa-arrow-up"></i></button>
+{% endblock %}

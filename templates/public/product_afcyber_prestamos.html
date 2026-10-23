@@ -1,0 +1,143 @@
+{% extends "public/base.html" %}
+{% block content %}
+<nav class="navbar navbar-expand-lg fixed-top cyber-nav nav-scrolled" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="{{ url_for('index') }}#inicio">
+      {% if settings.logo %}<img src="{{ settings.logo|asset }}" alt="{{ settings.company_name }}">{% else %}<span class="logo-mark">AF</span>{% endif %}
+      <span>{{ settings.company_name }}</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#productMenu" aria-controls="productMenu" aria-expanded="false" aria-label="Abrir menu"><span class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="productMenu">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('downloads') }}">Descargas</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('privacy_afcyber_prestamos') }}">Privacidad</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('delete_data_afcyber_prestamos') }}">Eliminar datos</a></li>
+        <li class="nav-item ms-lg-3"><a class="btn btn-cyber" href="mailto:soporte@afcybersolutions.com.do">Soporte</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<main id="contenido" class="page-shell product-page">
+  <section class="product-hero">
+    <div class="container">
+      <nav class="breadcrumb-lite" aria-label="Ubicación">
+        <a href="{{ url_for('index') }}">Inicio</a>
+        <span aria-hidden="true">/</span>
+        <span>AFCyber Préstamos Enterprise</span>
+      </nav>
+      <div class="product-hero-grid">
+        <div>
+          <span class="section-kicker"><i class="fa-brands fa-android" aria-hidden="true"></i>Android</span>
+          <h1>AFCyber Préstamos Enterprise</h1>
+          <p>AFCyber Préstamos Enterprise es una herramienta administrativa para la gestión de clientes, préstamos, cuotas, cobros, recibos, caja, reportes y operaciones relacionadas.</p>
+          <p class="muted">La descarga oficial actual se realiza mediante APK alojado por AFCyber Solutions. La activación continúa dependiendo de los mecanismos actuales de licenciamiento: licencia completa, archivo .afclicense o QR firmado.</p>
+          <div class="hero-actions">
+            {% if version %}
+            <a class="btn btn-cyber" href="{{ url_for('download_afcyber_prestamos_android') }}"><i class="fa-brands fa-android"></i>Descargar para Android</a>
+            {% else %}
+            <span class="btn btn-glass disabled" aria-disabled="true"><i class="fa-brands fa-android"></i>Descarga no publicada</span>
+            {% endif %}
+            <a class="btn btn-glass" href="{{ url_for('privacy_afcyber_prestamos') }}">Política de Privacidad</a>
+            <a class="btn btn-glass" href="{{ url_for('delete_data_afcyber_prestamos') }}">Eliminación de Datos</a>
+          </div>
+        </div>
+        <aside class="product-release-card" aria-label="Versión publicada">
+          <span>Versión publicada</span>
+          {% if version %}
+          <strong>v{{ version.version }}</strong>
+          <dl>
+            <div><dt>Fecha</dt><dd>{{ version.published_on.strftime('%d/%m/%Y') if version.published_on else 'No indicada' }}</dd></div>
+            <div><dt>Tamaño</dt><dd>{{ version.file_size|filesize }}</dd></div>
+            <div><dt>Requisitos</dt><dd>{{ min_sdk_label }}</dd></div>
+            <div><dt>Descargas</dt><dd>{{ version.download_count or 0 }}</dd></div>
+          </dl>
+          {% else %}
+          <strong>Pendiente</strong>
+          <p>El APK release firmado todavía no está publicado desde el panel administrativo.</p>
+          {% endif %}
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="section product-section">
+    <div class="container">
+      <div class="product-grid">
+        <article class="detail-panel">
+          <span class="section-kicker">Integridad</span>
+          <h2>Información del APK</h2>
+          {% if version %}
+          <div class="detail-grid product-detail-grid">
+            <span><strong>Nombre público</strong>AFCyber-Prestamos-Enterprise-v{{ version.version }}.apk</span>
+            <span><strong>Versión</strong>{{ version.version }}</span>
+            <span><strong>Fecha de publicación</strong>{{ version.published_on.strftime('%d/%m/%Y') if version.published_on else 'No indicada' }}</span>
+            <span><strong>Tamaño</strong>{{ version.file_size|filesize }}</span>
+            <span><strong>Sistema</strong>Android</span>
+            <span><strong>Requisito mínimo</strong>{{ min_sdk_label }}</span>
+          </div>
+          <div class="hash-box">
+            <strong>SHA-256 del archivo APK</strong>
+            <code>{{ version.sha256 }}</code>
+          </div>
+          {% if version.description %}<div class="detail-copy"><h3>Descripción de la versión</h3><p>{{ version.description }}</p></div>{% endif %}
+          {% if version.release_notes %}<div class="detail-copy"><h3>Notas de versión</h3><p>{{ version.release_notes }}</p></div>{% endif %}
+          {% else %}
+          <p class="muted">Cuando el administrador publique un APK release firmado, esta página mostrará versión, fecha, tamaño y SHA-256 calculado automáticamente desde el archivo recibido.</p>
+          {% endif %}
+        </article>
+
+        <article class="detail-panel">
+          <span class="section-kicker">Instalación en Android</span>
+          <h2>Instalación segura</h2>
+          <ol class="install-steps">
+            <li>Descargue el APK desde esta página oficial.</li>
+            <li>Abra el archivo descargado.</li>
+            <li>Android puede solicitar autorización para instalar aplicaciones desde esta fuente.</li>
+            <li>Autorice únicamente el navegador o gestor de archivos utilizado para la instalación.</li>
+            <li>Complete la instalación.</li>
+            <li>Abra AFCyber Préstamos Enterprise y siga el proceso de activación.</li>
+          </ol>
+          <p class="legal-date"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Descargue AFCyber Préstamos Enterprise únicamente desde los canales oficiales de AFCyber Solutions.</p>
+        </article>
+
+        <article class="detail-panel">
+          <span class="section-kicker">Contacto y legal</span>
+          <h2>Soporte oficial</h2>
+          <p class="muted">Para soporte técnico, licencias, activación y eliminación de datos, utilice los canales oficiales de AFCyber Solutions.</p>
+          <div class="contact-list product-contact">
+            <a href="mailto:soporte@afcybersolutions.com.do"><i class="fa-solid fa-envelope"></i>soporte@afcybersolutions.com.do</a>
+            <a href="mailto:info@afcybersolutions.com.do"><i class="fa-solid fa-circle-info"></i>info@afcybersolutions.com.do</a>
+            <a href="https://afcybersolutions.com.do/"><i class="fa-solid fa-globe"></i>https://afcybersolutions.com.do/</a>
+          </div>
+          <div class="card-actions">
+            <a class="btn btn-glass" href="{{ url_for('privacy_afcyber_prestamos') }}">Política de Privacidad</a>
+            <a class="btn btn-glass" href="{{ url_for('delete_data_afcyber_prestamos') }}">Eliminación de Datos</a>
+          </div>
+        </article>
+
+        <article class="detail-panel">
+          <span class="section-kicker">Canales oficiales</span>
+          <h2>Preparado para Google Play</h2>
+          <p class="muted">La página está preparada para añadir en el futuro un canal de Google Play sin cambiar la arquitectura. Mientras no exista una publicación oficial en Google Play, la descarga disponible será el APK alojado por AFCyber Solutions.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div><a class="footer-brand" href="{{ url_for('index') }}"><span class="logo-mark">AF</span>{{ settings.company_name }}</a><p>{{ settings.short_description }}</p></div>
+      <div><h3>Producto</h3><a href="{{ url_for('product_afcyber_prestamos') }}">AFCyber Préstamos Enterprise</a><a href="{{ url_for('download_afcyber_prestamos_android') if version else url_for('product_afcyber_prestamos') }}">Descargar para Android</a></div>
+      <div><h3>Legal</h3><a href="{{ url_for('privacy_afcyber_prestamos') }}">Política de Privacidad</a><a href="{{ url_for('delete_data_afcyber_prestamos') }}">Eliminación de Datos</a></div>
+      <div><h3>Contacto</h3><a href="mailto:soporte@afcybersolutions.com.do">Soporte técnico</a><a href="mailto:info@afcybersolutions.com.do">Información general</a></div>
+    </div>
+    <div class="footer-bottom"><span>© <span id="year"></span> {{ settings.company_name }}. {{ settings.copyright_text }}</span><span>{{ settings.footer_text }}</span></div>
+  </div>
+</footer>
+
+<button class="top-button" id="topButton" type="button" aria-label="Volver arriba"><i class="fa-solid fa-arrow-up"></i></button>
+{% endblock %}

@@ -1,0 +1,42 @@
+<footer class="footer corporate-footer">
+  <div class="container">
+    <div class="corporate-footer-grid">
+      <div>
+        <a class="footer-brand" href="{{ url_for('index') }}">
+          {% if settings.logo %}<img class="brand-logo" src="{{ settings.logo|asset }}" alt="{{ settings.company_name }}" width="48" height="48" loading="lazy">{% else %}<img class="brand-logo" src="{{ url_for('static', filename='img/brand-readable.webp') }}" alt="AFCyber Solutions" width="48" height="48" loading="lazy">{% endif %}
+          <span>{{ corporate.name }}</span>
+        </a>
+        <p>{{ corporate.summary }}</p>
+        {% if social_links %}<div class="socials">{% for social in social_links if social.url and social.url != '#' %}<a href="{{ social.url }}" target="_blank" rel="noopener" aria-label="{{ social.name }}"><i class="{{ social.icon }}" aria-hidden="true"></i></a>{% endfor %}</div>{% endif %}
+      </div>
+      <nav aria-label="Enlaces de empresa">
+        <h3>Empresa</h3>
+        <a href="{{ url_for('public_catalog', catalog='about') }}">Nosotros</a>
+        <a href="{{ url_for('public_catalog', catalog='about') }}#mision-y-vision">Misión y visión</a>
+        <a href="{{ url_for('quality_policy') }}">Política de Calidad</a>
+        {% if public_portfolio_available %}<a href="{{ url_for('public_catalog', catalog='portfolio') }}">Portafolio</a>{% endif %}
+        <a href="{{ url_for('contact_page') }}">Contacto</a>{% if not static_site %}<a href="{{ url_for('request_service') }}">Solicitar servicio</a>{% endif %}
+      </nav>
+      <nav aria-label="Enlaces de servicios">
+        <h3>Servicios</h3>
+        {% for name in ['Software empresarial', 'Desarrollo web', 'Ciberseguridad', 'CCTV', 'Soporte técnico', 'Otros servicios'] %}
+        <a href="{{ url_for('public_catalog', catalog='services') }}">{{ name }}</a>
+        {% endfor %}
+        {% if not static_site %}<a href="{{ url_for('downloads') }}">Descargas y manuales</a>{% endif %}
+      </nav>
+      <div>
+        <h3>Contacto</h3>
+        {% for index in [0, 1, 3] %}<a href="mailto:{{ corporate.contacts[index].email }}">{{ corporate.contacts[index].email }}</a>{% endfor %}
+        <a class="{{ 'js-whatsapp' if static_site else 'js-wa' }}" href="#" data-message="Hola AFCyber Solutions, quiero solicitar información.">WhatsApp: {{ settings.phone }}</a>
+        <a class="footer-all-contacts" href="{{ url_for('contact_page') }}">Ver todos los contactos →</a>
+      </div>
+    </div>
+    <div class="corporate-legal-links">
+      {% for legal in corporate.legal_links %}<a href="{{ url_for('legal_document', document=legal.document) }}">{{ legal.name }}</a>{% endfor %}
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="{{ 'currentYear' if static_site else 'year' }}"></span> {{ corporate.name }}. {{ settings.copyright_text }}</span>
+      {% if settings.footer_text %}<span>{{ settings.footer_text }}</span>{% endif %}
+    </div>
+  </div>
+</footer>

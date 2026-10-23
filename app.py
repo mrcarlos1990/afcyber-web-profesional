@@ -4,14 +4,19 @@ import secrets
 import hashlib
 import html
 import hmac
+import json
 import mimetypes
+import shutil
 import smtplib
 import ssl
+import subprocess
 import sys
 import textwrap
+import zipfile
 from datetime import datetime, timedelta, timezone
 from email.message import EmailMessage
 from email.utils import parseaddr
+from functools import wraps
 from io import BytesIO
 from pathlib import Path
 from time import time
@@ -19,9 +24,11 @@ from urllib.parse import urlparse
 from uuid import uuid4
 
 from dotenv import load_dotenv
-from flask import Flask, Response, abort, flash, has_request_context, redirect, render_template, request, send_file, session, url_for
+from flask import Flask, Response, abort, flash, has_request_context, redirect, render_template, request, send_file, send_from_directory, session, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from sqlalchemy import inspect as sa_inspect
+from sqlalchemy.exc import IntegrityError
+from werkzeug.exceptions import HTTPException
 from werkzeug.utils import secure_filename
 
 try:
@@ -71,6 +78,8 @@ except ImportError:  # pragma: no cover - respaldo para entornos locales sin dep
 from extensions import db, login_manager
 from models import (
     AboutSection,
+    AdminAuditEvent,
+    AndroidAppVersion,
     Attachment,
     CEOProfile,
     ContactMessage,
@@ -86,6 +95,9 @@ from models import (
     Plan,
     PortfolioProject,
     Program,
+    PublicRateBucket,
+    QuoteMail,
+    QuoteRequest,
     Service,
     ServiceDocument,
     ServiceRequest,
@@ -101,6 +113,13 @@ from models import (
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent
+CORPORATE = {}
+_corporate_file = BASE_DIR / "static" / "data" / "company.json"
+if _corporate_file.is_file():
+    try:
+        CORPORATE = json.loads(_corporate_file.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        CORPORATE = {}
 UPLOAD_FOLDER = BASE_DIR / "static" / "uploads"
 PRIVATE_STORAGE_ROOT_ENV = os.getenv("PRIVATE_STORAGE_ROOT", "").strip()
 PRIVATE_STORAGE = Path(PRIVATE_STORAGE_ROOT_ENV).expanduser() if PRIVATE_STORAGE_ROOT_ENV else BASE_DIR / "storage"
@@ -114,11 +133,20 @@ DOCUMENT_STORAGE = PRIVATE_STORAGE / "documents"
 SIGNED_PDF_STORAGE = PRIVATE_STORAGE / "signed-pdfs"
 ATTACHMENT_STORAGE = PRIVATE_STORAGE / "attachments"
 LOG_STORAGE = PRIVATE_STORAGE / "logs"
+ANDROID_APK_STORAGE = PRIVATE_STORAGE / "android-apks" / "afcyber-prestamos"
 ALLOWED_IMAGES = {"jpg", "jpeg", "png", "webp", "ico"}
 ALLOWED_DOCS = {"pdf"}
 ALLOWED_PROGRAM_FILES = {"exe", "msi", "zip"}
 ALLOWED_MANUAL_FILES = {"pdf"}
 ALLOWED_ATTACHMENT_FILES = {"pdf", "jpg", "jpeg", "png", "webp", "zip"}
+ALLOWED_ANDROID_APK_FILES = {"apk"}
+APK_MAX_UPLOAD_MB = int(os.getenv("APK_MAX_UPLOAD_MB", os.getenv("MAX_UPLOAD_MB", "60")))
+APK_MAX_UPLOAD_BYTES = APK_MAX_UPLOAD_MB * 1024 * 1024
+EXPECTED_ANDROID_SIGNING_CERT_SHA256 = "79070c4f28bd86aa3b1ba3253d8f254a9ec0aa173f41412d0829aa298c429eef"
+REQUIRE_APK_SIGNATURE = os.getenv(
+    "REQUIRE_APK_SIGNATURE",
+    "0" if os.getenv("FLASK_DEBUG", "0").lower() in {"1", "true", "yes", "on"} else "1",
+).lower() in {"1", "true", "yes", "on"}
 LOGIN_MAX_ATTEMPTS = 5
 LOGIN_LOCKOUT_SECONDS = 300
 HEX_COLOR_RE = re.compile(r"^#[0-9a-fA-F]{6}$")
@@ -143,6 +171,11 @@ REQUIRED_PRODUCTION_TABLES = {
     "signature_audit_event",
     "email_delivery",
     "attachment",
+    "android_app_version",
+    "admin_audit_event",
+    "quote_request",
+    "quote_mail",
+    "public_rate_bucket",
 }
 
 
@@ -164,6 +197,17 @@ def path_is_relative_to(child, parent):
 
 def should_auto_create_db():
     return is_debug_mode() or os.getenv("AUTO_CREATE_DB", "0").lower() in {"1", "true", "yes", "on"}
+
+
+def admin_required(view):
+    @wraps(view)
+    @login_required
+    def wrapped(*args, **kwargs):
+        if not current_user.is_active_admin:
+            logout_user()
+            abort(403)
+        return view(*args, **kwargs)
+    return wrapped
 
 
 def is_migration_command():
@@ -236,7 +280,7 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = database_url
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["SQLALCHEMY_ENGINE_OPTIONS"] = engine_options
-    app.config["MAX_CONTENT_LENGTH"] = int(os.getenv("MAX_UPLOAD_MB", "60")) * 1024 * 1024
+    app.config["MAX_CONTENT_LENGTH"] = max(int(os.getenv("MAX_UPLOAD_MB", "60")), APK_MAX_UPLOAD_MB) * 1024 * 1024
     app.config["UPLOAD_FOLDER"] = str(UPLOAD_FOLDER)
     app.config["PRIVATE_STORAGE_ROOT"] = str(PRIVATE_STORAGE)
     app.config["PREFERRED_URL_SCHEME"] = "https" if is_production_mode() else "http"
@@ -250,7 +294,7 @@ def create_app():
 
     (BASE_DIR / "instance").mkdir(exist_ok=True)
     UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
-    for folder in [DOWNLOAD_STORAGE, INSTALLER_STORAGE, MANUAL_STORAGE, DOCUMENT_STORAGE, SIGNED_PDF_STORAGE, ATTACHMENT_STORAGE, LOG_STORAGE]:
+    for folder in [DOWNLOAD_STORAGE, INSTALLER_STORAGE, MANUAL_STORAGE, DOCUMENT_STORAGE, SIGNED_PDF_STORAGE, ATTACHMENT_STORAGE, LOG_STORAGE, ANDROID_APK_STORAGE]:
         folder.mkdir(parents=True, exist_ok=True)
 
     db.init_app(app)
@@ -261,6 +305,10 @@ def create_app():
     register_filters(app)
     register_security(app)
     register_routes(app)
+    from quotations import register_quotes, rate_limit
+    from assistant import register_assistant
+    register_quotes(app, send_configured_email, normalize_email)
+    register_assistant(app, rate_limit)
 
     with app.app_context():
         if not is_migration_command():
@@ -633,11 +681,189 @@ def save_private_upload(file, allowed_exts, folder):
     }
 
 
+def apk_signature_info(path):
+    apksigner = os.getenv("APKSIGNER_PATH", "").strip() or shutil.which("apksigner")
+    if not apksigner:
+        return {"available": False, "verified": False, "certificate_sha256": None, "error": "apksigner no disponible"}
+    try:
+        result = subprocess.run(
+            [apksigner, "verify", "--print-certs", str(path)],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        return {"available": False, "verified": False, "certificate_sha256": None, "error": str(exc)}
+    output = f"{result.stdout}\n{result.stderr}"
+    match = re.search(r"certificate SHA-256 digest:\s*([0-9a-fA-F:]+)", output)
+    certificate = match.group(1).replace(":", "").lower() if match else None
+    return {
+        "available": True,
+        "verified": result.returncode == 0 and bool(certificate),
+        "certificate_sha256": certificate,
+        "error": output.strip()[:1000] if result.returncode != 0 else "",
+    }
+
+
+def save_android_apk_upload(file):
+    if not file or not file.filename:
+        flash("Selecciona un APK release firmado.", "danger")
+        return None
+    if "." not in file.filename:
+        flash("El APK necesita extensión .apk.", "danger")
+        return None
+    ext = file.filename.rsplit(".", 1)[1].lower()
+    if ext not in ALLOWED_ANDROID_APK_FILES:
+        flash("Solo se permiten archivos .apk.", "danger")
+        return None
+    original_name = secure_filename(file.filename)[:255] or "aplicacion.apk"
+    filename = f"afcyber-prestamos-{uuid4().hex}.apk"
+    target = ANDROID_APK_STORAGE / filename
+    digest = hashlib.sha256()
+    size = 0
+    file.stream.seek(0)
+    with target.open("wb") as handle:
+        for chunk in iter(lambda: file.stream.read(1024 * 1024), b""):
+            size += len(chunk)
+            if size > APK_MAX_UPLOAD_BYTES:
+                handle.close()
+                target.unlink(missing_ok=True)
+                flash(f"El APK supera el límite configurado de {APK_MAX_UPLOAD_MB} MB.", "danger")
+                return None
+            digest.update(chunk)
+            handle.write(chunk)
+    if size == 0:
+        target.unlink(missing_ok=True)
+        flash("El APK no puede estar vacío.", "danger")
+        return None
+    if not zipfile.is_zipfile(target):
+        target.unlink(missing_ok=True)
+        flash("El archivo .apk no tiene una estructura ZIP/APK válida.", "danger")
+        return None
+    try:
+        with zipfile.ZipFile(target) as archive:
+            member_names = set(archive.namelist())
+            if "AndroidManifest.xml" not in member_names:
+                target.unlink(missing_ok=True)
+                flash("El archivo no contiene un AndroidManifest.xml válido de APK.", "danger")
+                return None
+            if any(Path(name).is_absolute() or ".." in Path(name).parts for name in member_names):
+                target.unlink(missing_ok=True)
+                flash("El APK contiene rutas internas no permitidas.", "danger")
+                return None
+    except (OSError, zipfile.BadZipFile):
+        target.unlink(missing_ok=True)
+        flash("No se pudo leer la estructura interna del APK.", "danger")
+        return None
+    signature = apk_signature_info(target)
+    if signature["available"]:
+        if not signature["verified"]:
+            target.unlink(missing_ok=True)
+            flash("No se pudo verificar la firma del APK con apksigner.", "danger")
+            return None
+        if signature["certificate_sha256"] != EXPECTED_ANDROID_SIGNING_CERT_SHA256:
+            target.unlink(missing_ok=True)
+            flash("El certificado de firma Android no coincide con la identidad release esperada.", "danger")
+            return None
+    else:
+        flash("apksigner no está disponible; confirma manualmente que el APK es release firmado antes de publicarlo.", "warning")
+    return {
+        "relative_path": str(target.relative_to(PRIVATE_STORAGE)).replace("\\", "/"),
+        "size": size,
+        "sha256": digest.hexdigest(),
+        "original_name": original_name,
+        "signature_cert_sha256": signature["certificate_sha256"],
+        "signature_verified": signature["available"] and signature["verified"],
+    }
+
+
 def private_path(relative_path):
     candidate = (PRIVATE_STORAGE / (relative_path or "")).resolve()
     if not path_is_relative_to(candidate, PRIVATE_STORAGE):
         abort(404)
     return candidate
+
+
+def current_android_app_version():
+    return AndroidAppVersion.query.filter_by(
+        app_slug="afcyber-prestamos",
+        is_public=True,
+        status="publicado",
+    ).order_by(AndroidAppVersion.published_on.desc().nullslast(), AndroidAppVersion.uploaded_at.desc()).first()
+
+
+def android_version_name(value):
+    value = (value or "").strip()
+    safe = re.sub(r"[^A-Za-z0-9._-]+", "-", value).strip(".-_")
+    return safe[:40] or "1.0.0"
+
+
+def android_apk_download_name(item):
+    return f"AFCyber-Prestamos-Enterprise-v{android_version_name(item.version)}.apk"
+
+
+def android_min_sdk_label(min_sdk):
+    labels = {
+        21: "Android 5.0 o superior",
+        22: "Android 5.1 o superior",
+        23: "Android 6.0 o superior",
+        24: "Android 7.0 o superior",
+        25: "Android 7.1 o superior",
+        26: "Android 8.0 o superior",
+        27: "Android 8.1 o superior",
+        28: "Android 9 o superior",
+        29: "Android 10 o superior",
+        30: "Android 11 o superior",
+        31: "Android 12 o superior",
+        32: "Android 12L o superior",
+        33: "Android 13 o superior",
+        34: "Android 14 o superior",
+        35: "Android 15 o superior",
+    }
+    return labels.get(min_sdk, f"SDK Android {min_sdk} o superior" if min_sdk else "No especificado")
+
+
+def android_publishability_error(item):
+    if not item.file_path:
+        return "La versión no tiene un archivo APK asociado."
+    try:
+        path = private_path(item.file_path)
+    except HTTPException:
+        return "La ruta privada del APK no es válida."
+    if not path.is_file():
+        return "El APK no existe en el almacenamiento privado."
+    if REQUIRE_APK_SIGNATURE and not item.signature_verified:
+        return "La firma del APK no ha sido validada por apksigner; la versión queda como borrador."
+    return None
+
+
+def publish_android_app_version(item):
+    error = android_publishability_error(item)
+    if error:
+        return False, error
+    AndroidAppVersion.query.filter(
+        AndroidAppVersion.app_slug == "afcyber-prestamos",
+        AndroidAppVersion.id != item.id,
+    ).update({"is_public": False, "status": "anterior"})
+    item.is_public = True
+    item.status = "publicado"
+    if not item.published_on:
+        item.published_on = utc_now().date()
+    return True, None
+
+
+def log_admin_event(action, item_type, item_id=None, detail=None):
+    db.session.add(AdminAuditEvent(
+        uuid=make_uuid(),
+        actor_id=current_user.id if current_user.is_authenticated else None,
+        action=action,
+        item_type=item_type,
+        item_id=item_id,
+        detail=detail,
+        ip_hash=request_ip_hash() if has_request_context() else None,
+        user_agent_hash=request_user_agent_hash() if has_request_context() else None,
+    ))
 
 
 def first_active_template():
@@ -906,7 +1132,18 @@ def safe_mail_error(exc):
     return message[:1000]
 
 
-def send_configured_email(recipient, subject, body, email_type, attachment_path=None):
+def send_configured_email(
+    recipient,
+    subject,
+    body,
+    email_type,
+    attachment_path=None,
+    *,
+    html_body=None,
+    reply_to=None,
+    message_id=None,
+    max_retries_override=None,
+):
     delivery = EmailDelivery(uuid=make_uuid(), recipient=recipient, subject=subject, email_type=email_type, status="pendiente")
     db.session.add(delivery)
     server = os.getenv("MAIL_SERVER", "").strip()
@@ -922,7 +1159,13 @@ def send_configured_email(recipient, subject, body, email_type, attachment_path=
     message["From"] = sender
     message["To"] = recipient
     message["Subject"] = subject
+    if reply_to:
+        message["Reply-To"] = reply_to
+    if message_id:
+        message["Message-ID"] = message_id
     message.set_content(body)
+    if html_body:
+        message.add_alternative(html_body, subtype="html")
     if attachment_path:
         path = private_path(attachment_path)
         if path.exists():
@@ -930,7 +1173,9 @@ def send_configured_email(recipient, subject, body, email_type, attachment_path=
 
     port = int(os.getenv("MAIL_PORT", "587"))
     use_tls = os.getenv("MAIL_USE_TLS", "1") == "1"
-    max_retries = max(0, min(int(os.getenv("MAIL_MAX_RETRIES", "2")), 5))
+    configured_retries = int(os.getenv("MAIL_MAX_RETRIES", "2"))
+    max_retries = configured_retries if max_retries_override is None else max_retries_override
+    max_retries = max(0, min(max_retries, 5))
     for attempt in range(max_retries + 1):
         try:
             with smtplib.SMTP(server, port, timeout=15) as smtp:
@@ -1323,9 +1568,101 @@ def update_known_default_content():
 
 
 def register_routes(app):
+    @app.get("/media/<path:filename>")
+    def public_media(filename):
+        suffix = Path(filename).suffix.lower().lstrip(".")
+        if Path(filename).name != filename or suffix not in ALLOWED_IMAGES | ALLOWED_DOCS:
+            abort(404)
+        path = (UPLOAD_FOLDER / filename).resolve()
+        if not path_is_relative_to(path, UPLOAD_FOLDER) or not path.is_file():
+            abort(404)
+        return send_from_directory(UPLOAD_FOLDER, filename, max_age=86400)
+
     @app.context_processor
     def inject_globals():
-        return {"settings": get_settings(), "hero": get_hero()}
+        session.setdefault("quote_nonce", secrets.token_urlsafe(24))
+        return {
+            "settings": get_settings(),
+            "hero": get_hero(),
+            "corporate": CORPORATE,
+            "static_site": False,
+            "quote_nonce": session["quote_nonce"],
+            "public_portfolio_available": bool(get_settings().show_portfolio and get_public_projects()),
+        }
+
+    @app.get("/servicios", defaults={"catalog": "services"})
+    @app.get("/portafolio", defaults={"catalog": "portfolio"})
+    @app.get("/nosotros", defaults={"catalog": "about"})
+    def public_catalog(catalog):
+        if catalog not in {"services", "portfolio", "about"}:
+            abort(404)
+        if catalog == "about":
+            return render_template(
+                "public/about.html",
+                about=get_about(),
+                ceo=get_ceo(),
+                page_title="Nosotros | AFCyber Solutions",
+                page_description=CORPORATE.get("identity_intro", "Conoce AFCyber Solutions."),
+                social_links=get_public_social_links(),
+                corporate_layout=True,
+            )
+        return render_template(
+            "public/catalog.html",
+            catalog=catalog,
+            catalog_title={"services": "Servicios y soluciones", "portfolio": "Portafolio completo"}[catalog],
+            about=get_about(),
+            ceo=get_ceo(),
+            services=Service.query.filter_by(is_active=True).order_by(Service.position, Service.id).all(),
+            plans=Plan.query.filter_by(is_active=True).order_by(Plan.position, Plan.id).all(),
+            projects=get_public_projects(),
+            social_links=get_public_social_links(),
+            corporate_layout=True,
+        )
+
+    @app.get("/contacto")
+    def contact_page():
+        return render_template(
+            "public/contact.html",
+            page_title="Contacto | AFCyber Solutions",
+            page_description="Contactos oficiales de información, ventas, cotizaciones, soporte, licencias y dirección de AFCyber Solutions.",
+            social_links=get_public_social_links(),
+            corporate_layout=True,
+        )
+
+    @app.get("/preguntas-frecuentes")
+    def faq_page():
+        return render_template(
+            "public/faq.html",
+            page_title="Preguntas frecuentes | AFCyber Solutions",
+            faqs=FAQ.query.filter_by(is_active=True).order_by(FAQ.position, FAQ.id).all(),
+            social_links=get_public_social_links(),
+            corporate_layout=True,
+        )
+
+    @app.get("/politica-de-calidad")
+    def quality_policy():
+        return render_template(
+            "public/quality.html",
+            page_title="Política de Calidad | AFCyber Solutions",
+            page_description=CORPORATE.get("identity_intro", "Política de Calidad de AFCyber Solutions."),
+            social_links=get_public_social_links(),
+            corporate_layout=True,
+        )
+
+    @app.get("/privacy-policy", defaults={"document": "privacy-policy"})
+    @app.get("/terms-and-conditions", defaults={"document": "terms-and-conditions"})
+    def legal_document(document):
+        legal = next((item for item in CORPORATE.get("legal_links", []) if item.get("document") == document), None)
+        if not legal:
+            abort(404)
+        return render_template(
+            "public/legal.html",
+            legal_document=document,
+            page_title=legal["name"] + " | AFCyber Solutions",
+            canonical_url=legal.get("url"),
+            social_links=get_public_social_links(),
+            corporate_layout=True,
+        )
 
     @app.get("/")
     def index():
@@ -1356,7 +1693,22 @@ def register_routes(app):
     @app.get("/sitemap.xml")
     def sitemap_xml():
         base_url = request.url_root.rstrip("/")
-        urls = [base_url + "/", base_url + "/descargas", base_url + "/solicitar-servicio"]
+        urls = [
+            base_url + "/",
+            base_url + "/descargas",
+            base_url + "/solicitar-servicio",
+            base_url + "/productos/afcyber-prestamos",
+            base_url + "/privacidad/afcyber-prestamos",
+            base_url + "/eliminar-datos/afcyber-prestamos",
+            base_url + "/servicios",
+            base_url + "/portafolio",
+            base_url + "/nosotros",
+            base_url + "/contacto",
+            base_url + "/preguntas-frecuentes",
+            base_url + "/politica-de-calidad",
+            base_url + "/privacy-policy",
+            base_url + "/terms-and-conditions",
+        ]
         body = "\n".join(f"  <url><loc>{url}</loc></url>" for url in urls)
         xml = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{body}\n</urlset>'
         return Response(xml, mimetype="application/xml")
@@ -1364,6 +1716,37 @@ def register_routes(app):
     @app.get("/favicon.ico")
     def favicon_ico():
         return redirect(url_for("static", filename="img/og-afcyber.svg"))
+
+    @app.get("/privacidad/afcyber-prestamos")
+    def privacy_afcyber_prestamos():
+        return render_template(
+            "public/privacy_afcyber_prestamos.html",
+            page_title="Política de Privacidad | AFCyber Préstamos Enterprise",
+            page_description="Política de privacidad de AFCyber Préstamos Enterprise. Información sobre almacenamiento local, seguridad, licenciamiento, cámara QR, Bluetooth, respaldos y eliminación de datos.",
+            canonical_url="https://afcybersolutions.com.do/privacidad/afcyber-prestamos",
+        )
+
+    @app.get("/eliminar-datos/afcyber-prestamos")
+    def delete_data_afcyber_prestamos():
+        return render_template(
+            "public/delete_data_afcyber_prestamos.html",
+            page_title="Eliminación de Datos | AFCyber Préstamos Enterprise",
+            page_description="Información e instrucciones para eliminar los datos almacenados localmente por AFCyber Préstamos Enterprise.",
+            canonical_url="https://afcybersolutions.com.do/eliminar-datos/afcyber-prestamos",
+        )
+
+    @app.get("/productos/afcyber-prestamos")
+    def product_afcyber_prestamos():
+        version = current_android_app_version()
+        return render_template(
+            "public/product_afcyber_prestamos.html",
+            version=version,
+            min_sdk_label=android_min_sdk_label(version.min_sdk) if version else "No especificado",
+            expected_cert_sha256=EXPECTED_ANDROID_SIGNING_CERT_SHA256,
+            page_title="AFCyber Préstamos Enterprise para Android | AFCyber Solutions",
+            page_description="AFCyber Préstamos Enterprise es una solución administrativa para gestionar clientes, préstamos, cuotas, cobros, recibos, caja y reportes desde Android.",
+            canonical_url="https://afcybersolutions.com.do/productos/afcyber-prestamos",
+        )
 
     @app.get("/descargas")
     @app.get("/descargas/programas")
@@ -1397,6 +1780,36 @@ def register_routes(app):
     def download_manual(slug):
         item = Manual.query.filter_by(slug=slug, is_active=True, status="publicado", deleted_at=None).first_or_404()
         return serve_download(item, "manual")
+
+    @app.get("/descargar/afcyber-prestamos/android")
+    def download_afcyber_prestamos_android():
+        item = current_android_app_version()
+        if not item or not item.file_path:
+            return render_template("public/error.html", code=404, title="APK no disponible", message="AFCyber Préstamos Enterprise todavía no tiene un APK publicado para descarga."), 404
+        path = private_path(item.file_path)
+        if not path.exists() or not path.is_file():
+            return render_template("public/error.html", code=404, title="APK no encontrado", message="El APK no está disponible en el almacenamiento configurado."), 404
+        digest = sha256_file(path)
+        if digest != item.sha256:
+            return render_template("public/error.html", code=409, title="APK retenido", message="La verificación de integridad SHA-256 no coincide. Contacta a soporte."), 409
+        item.download_count = (item.download_count or 0) + 1
+        item.last_downloaded_at = utc_now()
+        db.session.add(DownloadEvent(
+            uuid=make_uuid(),
+            item_type="android_apk",
+            item_id=item.id,
+            item_slug=f"{item.app_slug}-{item.version}",
+            ip_hash=request_ip_hash(),
+            user_agent_hash=request_user_agent_hash(),
+        ))
+        db.session.commit()
+        return send_file(
+            path,
+            mimetype="application/vnd.android.package-archive",
+            as_attachment=True,
+            download_name=android_apk_download_name(item),
+            conditional=True,
+        )
 
     @app.route("/solicitar-servicio", methods=["GET", "POST"])
     def request_service():
@@ -1573,6 +1986,9 @@ def register_routes(app):
 
     @app.post("/contact")
     def contact():
+        if "quote_nonce" in request.form or "accepted_privacy" in request.form:
+            from quotations import process_submission
+            return process_submission(send_configured_email, normalize_email, social_links=get_public_social_links())
         name = form_text("name", 160)
         phone = form_text("phone", 60)
         message = form_text("message", 5000)
@@ -1638,6 +2054,7 @@ def register_routes(app):
             "faqs": FAQ.query.count(),
             "programs": Program.query.filter_by(deleted_at=None).count(),
             "manuals": Manual.query.filter_by(deleted_at=None).count(),
+            "android_versions": AndroidAppVersion.query.filter_by(app_slug="afcyber-prestamos").count(),
             "requests": ServiceRequest.query.filter_by(deleted_at=None).count(),
             "documents": ServiceDocument.query.filter_by(deleted_at=None).count(),
         }, messages=ContactMessage.query.order_by(ContactMessage.created_at.desc()).limit(6).all())
@@ -1778,6 +2195,7 @@ def register_admin_routes(app):
 
     crud_routes(app)
     download_admin_routes(app)
+    application_admin_routes(app)
     document_admin_routes(app)
 
 
@@ -2260,6 +2678,140 @@ def download_admin_routes(app):
         db.session.commit()
         flash("Elemento desactivado. El archivo físico no fue eliminado.", "warning")
         return redirect(url_for("admin_downloads"))
+
+
+def application_admin_routes(app):
+    @app.route("/admin/applications/afcyber-prestamos", methods=["GET", "POST"])
+    @admin_required
+    def admin_afcyber_prestamos_app():
+        if request.method == "POST":
+            version_value = form_text("version", 60)
+            if not version_value:
+                flash("Indica la versión del APK.", "danger")
+                return redirect(url_for("admin_afcyber_prestamos_app"))
+            upload = save_android_apk_upload(request.files.get("apk_file"))
+            if not upload:
+                return redirect(url_for("admin_afcyber_prestamos_app"))
+            if AndroidAppVersion.query.filter_by(sha256=upload["sha256"]).first():
+                private_path(upload["relative_path"]).unlink(missing_ok=True)
+                flash("Ya existe una versión con el mismo SHA-256 del APK.", "danger")
+                return redirect(url_for("admin_afcyber_prestamos_app"))
+            min_sdk = form_int("min_sdk", "minSdk", default=0, min_value=0, max_value=100)
+            if min_sdk is None:
+                private_path(upload["relative_path"]).unlink(missing_ok=True)
+                return redirect(url_for("admin_afcyber_prestamos_app"))
+            item = AndroidAppVersion(
+                uuid=make_uuid(),
+                app_slug="afcyber-prestamos",
+                version=version_value,
+                description=form_text("description", 6000),
+                release_notes=form_text("release_notes", 8000),
+                min_sdk=min_sdk or None,
+                file_path=upload["relative_path"],
+                original_name=upload["original_name"],
+                file_size=upload["size"],
+                sha256=upload["sha256"],
+                signature_cert_sha256=upload["signature_cert_sha256"],
+                signature_verified=upload["signature_verified"],
+                status="borrador",
+                published_on=parse_date(form_text("published_on", 20)),
+            )
+            db.session.add(item)
+            db.session.flush()
+            if checkbox_value("is_public"):
+                published, publish_error = publish_android_app_version(item)
+                if not published:
+                    flash(publish_error, "warning")
+            log_admin_event("android_apk_uploaded", "android_app_version", item.id, f"Versión {item.version} cargada.")
+            if item.is_public:
+                log_admin_event("android_apk_published", "android_app_version", item.id, f"Versión {item.version} publicada.")
+            try:
+                db.session.commit()
+            except IntegrityError:
+                db.session.rollback()
+                private_path(upload["relative_path"]).unlink(missing_ok=True)
+                flash("No se pudo guardar la versión; otra operación puede haber publicado una versión al mismo tiempo.", "danger")
+                return redirect(url_for("admin_afcyber_prestamos_app"))
+            flash("Versión Android cargada correctamente.", "success")
+            return redirect(url_for("admin_afcyber_prestamos_app"))
+        versions = AndroidAppVersion.query.filter_by(app_slug="afcyber-prestamos").order_by(AndroidAppVersion.uploaded_at.desc()).all()
+        return render_template(
+            "admin/afcyber_prestamos_app.html",
+            versions=versions,
+            current_version=current_android_app_version(),
+            apk_max_upload_mb=APK_MAX_UPLOAD_MB,
+            expected_cert_sha256=EXPECTED_ANDROID_SIGNING_CERT_SHA256,
+            apksigner_available=bool(os.getenv("APKSIGNER_PATH", "").strip() or shutil.which("apksigner")),
+            min_sdk_label=android_min_sdk_label,
+            audit_events=AdminAuditEvent.query.filter_by(item_type="android_app_version").order_by(AdminAuditEvent.created_at.desc()).limit(40).all(),
+            require_apk_signature=REQUIRE_APK_SIGNATURE,
+        )
+
+    @app.post("/admin/applications/afcyber-prestamos/<int:item_id>")
+    @admin_required
+    def update_afcyber_prestamos_app_version(item_id):
+        item = AndroidAppVersion.query.get_or_404(item_id)
+        item.version = form_text("version", 60) or item.version
+        item.description = form_text("description", 6000)
+        item.release_notes = form_text("release_notes", 8000)
+        min_sdk = form_int("min_sdk", "minSdk", default=0, min_value=0, max_value=100)
+        if min_sdk is None:
+            return redirect(url_for("admin_afcyber_prestamos_app"))
+        item.min_sdk = min_sdk or None
+        item.published_on = parse_date(form_text("published_on", 20))
+        apk_file = request.files.get("apk_file")
+        upload = None
+        if apk_file and apk_file.filename:
+            upload = save_android_apk_upload(apk_file)
+            if not upload:
+                db.session.rollback()
+                return redirect(url_for("admin_afcyber_prestamos_app"))
+        if upload:
+            duplicate = AndroidAppVersion.query.filter(AndroidAppVersion.sha256 == upload["sha256"], AndroidAppVersion.id != item.id).first()
+            if duplicate:
+                private_path(upload["relative_path"]).unlink(missing_ok=True)
+                db.session.rollback()
+                flash("Ya existe otra versión con el mismo SHA-256 del APK.", "danger")
+                return redirect(url_for("admin_afcyber_prestamos_app"))
+            item.file_path = upload["relative_path"]
+            item.original_name = upload["original_name"]
+            item.file_size = upload["size"]
+            item.sha256 = upload["sha256"]
+            item.signature_cert_sha256 = upload["signature_cert_sha256"]
+            item.signature_verified = upload["signature_verified"]
+            log_admin_event("android_apk_replaced", "android_app_version", item.id, f"Archivo de versión {item.version} reemplazado.")
+        if checkbox_value("is_public"):
+            published, publish_error = publish_android_app_version(item)
+            if published:
+                log_admin_event("android_apk_published", "android_app_version", item.id, f"Versión {item.version} publicada.")
+            else:
+                item.is_public = False
+                item.status = "borrador"
+                flash(publish_error, "warning")
+        else:
+            item.is_public = False
+            item.status = form_text("status", 40) or "borrador"
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            if upload:
+                private_path(upload["relative_path"]).unlink(missing_ok=True)
+            flash("No se pudo actualizar la versión; otra operación puede haber publicado una versión al mismo tiempo.", "danger")
+            return redirect(url_for("admin_afcyber_prestamos_app"))
+        flash("Versión Android actualizada.", "success")
+        return redirect(url_for("admin_afcyber_prestamos_app"))
+
+    @app.post("/admin/applications/afcyber-prestamos/<int:item_id>/unpublish")
+    @admin_required
+    def unpublish_afcyber_prestamos_app_version(item_id):
+        item = AndroidAppVersion.query.get_or_404(item_id)
+        item.is_public = False
+        item.status = "borrador"
+        log_admin_event("android_apk_unpublished", "android_app_version", item.id, f"Versión {item.version} despublicada.")
+        db.session.commit()
+        flash("Versión despublicada. El APK físico se conserva.", "warning")
+        return redirect(url_for("admin_afcyber_prestamos_app"))
 
 
 def document_admin_routes(app):

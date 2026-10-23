@@ -1,0 +1,37 @@
+{% from 'public/partials/corporate-images.html' import image %}
+<section id="identidad" class="section identity-section{% if identity_internal %} identity-internal{% endif %}" aria-labelledby="identity-title">
+  <div class="container">
+    <div class="corporate-heading">
+      <span class="section-kicker">Identidad corporativa</span>
+      <h2 id="identity-title">Nuestra identidad</h2>
+      <p>{{ corporate.identity_intro }}</p>
+    </div>
+    {% if identity_internal %}<figure class="corporate-identity-visual">{{ image('nosotros-valores', 'Ilustración de colaboración, misión y valores corporativos', width=1600, height=900, sizes='(max-width: 767px) calc(100vw - 32px), 760px') }}</figure>{% endif %}
+    <div class="identity-grid" id="mision-y-vision">
+      <article class="identity-card" id="mision">
+        <h3><i class="fa-solid fa-bullseye" aria-hidden="true"></i> Misión</h3>
+        <p>{{ corporate.mission }}</p>
+      </article>
+      <article class="identity-card" id="vision">
+        <h3><i class="fa-solid fa-eye" aria-hidden="true"></i> Visión</h3>
+        <p>{{ corporate.vision }}</p>
+      </article>
+    </div>
+    <div class="corporate-values" id="valores">
+      <h3>Valores corporativos</h3>
+      <ul class="value-list">
+        {% for value in corporate['values'] %}
+        <li><i class="fa-solid fa-{{ value.icon }}" aria-hidden="true"></i>{{ value.name }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <article class="quality-band" id="calidad">
+      <h3><i class="fa-solid fa-clipboard-check" aria-hidden="true"></i> Política de Calidad</h3>
+      {% for paragraph in corporate.quality %}<p>{{ paragraph }}</p>{% endfor %}
+      <a class="corporate-link" href="{{ url_for('quality_policy') }}">Conocer nuestra Política de Calidad →</a>
+    </article>
+    {% if not identity_internal %}
+    <a class="corporate-link" href="{{ url_for('public_catalog', catalog='about') }}">Conocer más sobre AFCyber Solutions →</a>
+    {% endif %}
+  </div>
+</section>

@@ -1,0 +1,29 @@
+{% from 'public/partials/corporate-images.html' import image %}
+{% if settings.show_ceo %}
+<section id="ceo" class="section founder-section">
+  <div class="container">
+    <div class="founder-layout">
+      {{ image('ceo-amauri-institucional', 'Amauri Feliz Valenzuela, fundador y CEO de AFCyber Solutions', width=1000, height=1250, class_name='corporate-portrait', portrait=true, sizes='(max-width: 767px) 220px, 320px') }}
+      <div>
+        <span class="section-kicker">Dirección y liderazgo</span>
+        <h2>Amauri Feliz Valenzuela</h2>
+        <p class="founder-role">Fundador y CEO · AFCyber Solutions</p>
+        <p>Dirección de las soluciones tecnológicas de AFCyber, con enfoque en seguridad, calidad y atención personalizada.</p>
+        <a class="corporate-link" href="mailto:{{ corporate.contacts[5].email }}">{{ corporate.contacts[5].email }}</a>
+        <div class="hero-actions">
+          {% if ceo.linkedin and ceo.linkedin != '#' %}<a class="btn btn-glass" href="{{ ceo.linkedin }}" target="_blank" rel="noopener">LinkedIn</a>{% endif %}
+          <a class="btn btn-cyber {{ 'js-whatsapp' if static_site else 'js-wa' }}" href="#" data-message="{{ ceo.whatsapp_message }}">Contactar por WhatsApp</a>
+          {% if ceo.cv_pdf %}<a class="btn btn-glass" href="{{ ceo.cv_pdf|asset }}" target="_blank" rel="noopener">Descargar CV</a>{% endif %}
+        </div>
+        {% if ceo.experience or ceo.skills %}
+        <details class="founder-details">
+          <summary>Conocer el perfil profesional</summary>
+          {% if ceo.experience %}<h3>Áreas de experiencia</h3><ul>{% for line in ceo.experience|lines %}<li>{{ line }}</li>{% endfor %}</ul>{% endif %}
+          {% if ceo.skills %}<h3>Tecnologías</h3><ul class="value-list">{% for skill in ceo.skills|lines %}<li>{{ skill }}</li>{% endfor %}</ul>{% endif %}
+        </details>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}

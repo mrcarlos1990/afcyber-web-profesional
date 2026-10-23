@@ -1,0 +1,54 @@
+{
+  "name": "AFCyber Solutions",
+  "domain": "afcybersolutions.com.do",
+  "summary": "Soluciones tecnológicas, software, seguridad y soporte para empresas y negocios.",
+  "metrics_verified": false,
+  "verified_testimonial_ids": [],
+  "identity_intro": "Tecnología, seguridad e innovación al servicio de nuestros clientes.",
+  "who": [
+    "AFCyber Solutions es una empresa de soluciones tecnológicas orientada al desarrollo de software, ciberseguridad, infraestructura tecnológica, soporte técnico, desarrollo web, videovigilancia, control de acceso y otros servicios destinados a apoyar la transformación y operación tecnológica de empresas, negocios y profesionales.",
+    "Trabajamos con un enfoque basado en seguridad, calidad, atención personalizada y mejora continua, desarrollando soluciones adaptadas a las necesidades particulares de cada cliente."
+  ],
+  "mission": "Brindar soluciones tecnológicas integrales, seguras y eficientes que ayuden a empresas, emprendedores y organizaciones a optimizar sus operaciones, proteger su información y aprovechar la tecnología como herramienta para su crecimiento.",
+  "vision": "Consolidarnos como una empresa tecnológica de referencia en República Dominicana, reconocida por la calidad de nuestras soluciones, la innovación, la seguridad, la atención personalizada y el compromiso con nuestros clientes.",
+  "values": [
+    {"name": "Integridad", "icon": "scale-balanced"},
+    {"name": "Responsabilidad", "icon": "circle-check"},
+    {"name": "Innovación", "icon": "lightbulb"},
+    {"name": "Seguridad", "icon": "shield-halved"},
+    {"name": "Calidad", "icon": "gem"},
+    {"name": "Confidencialidad", "icon": "lock"},
+    {"name": "Compromiso", "icon": "handshake"},
+    {"name": "Orientación al cliente", "icon": "users"}
+  ],
+  "quality": [
+    "En AFCyber Solutions nos comprometemos a proporcionar soluciones y servicios tecnológicos confiables, seguros y adaptados a las necesidades de nuestros clientes, procurando cumplir los requisitos acordados, aplicar buenas prácticas, proteger la información y mejorar continuamente nuestros procesos, productos y servicios.",
+    "Promovemos una cultura basada en la calidad, la innovación, la responsabilidad, la seguridad de la información y la satisfacción del cliente."
+  ],
+  "approach": [
+    {"name": "Comprender cada necesidad", "text": "Atención personalizada para definir el alcance y los requisitos de cada solución.", "icon": "comments"},
+    {"name": "Trabajar con buenas prácticas", "text": "Seguridad, calidad y responsabilidad durante el desarrollo y la prestación del servicio.", "icon": "shield-halved"},
+    {"name": "Mejorar continuamente", "text": "Revisar nuestros procesos, productos y servicios para mejorar la experiencia del cliente.", "icon": "arrows-rotate"}
+  ],
+  "contacts": [
+    {"id": "informacion", "name": "Información general", "short_name": "Información", "email": "info@afcybersolutions.com.do", "icon": "circle-info", "description": "Consultas generales sobre AFCyber Solutions y sus servicios."},
+    {"id": "ventas", "name": "Ventas", "short_name": "Ventas", "email": "ventas@afcybersolutions.com.do", "icon": "briefcase", "description": "Orientación comercial y consultas sobre soluciones para tu negocio."},
+    {"id": "cotizaciones", "name": "Cotizaciones", "short_name": "Cotizaciones", "email": "cotizaciones@afcybersolutions.com.do", "icon": "file-invoice", "description": "Solicitudes de propuestas y cotizaciones de servicios o proyectos."},
+    {"id": "soporte", "name": "Soporte técnico", "short_name": "Soporte", "email": "soporte@afcybersolutions.com.do", "icon": "headset", "description": "Asistencia con productos y servicios de AFCyber Solutions."},
+    {"id": "licencias", "name": "Licencias", "short_name": "Licencias", "email": "licencias@afcybersolutions.com.do", "icon": "key", "description": "Consultas sobre licencias de software y productos."},
+    {"id": "direccion", "name": "Dirección / Contacto profesional", "short_name": "Dirección", "email": "a.felizv@afcybersolutions.com.do", "icon": "user-tie", "description": "Contacto profesional con la dirección de AFCyber Solutions."}
+  ],
+  "legal_links": [
+    {"name": "Política de Privacidad", "document": "privacy-policy", "url": "https://afcybersolutions.com.do/privacy-policy"},
+    {"name": "Términos y Condiciones", "document": "terms-and-conditions", "url": "https://afcybersolutions.com.do/terms-and-conditions"}
+  ],
+  "public_facts": {
+    "location": "San Cristóbal, República Dominicana",
+    "phone": "+1 829-919-8058",
+    "whatsapp": "18299198058",
+    "founder": "Amauri Feliz Valenzuela",
+    "founder_role": "Fundador y CEO",
+    "history": null,
+    "published_hours": null
+  }
+}

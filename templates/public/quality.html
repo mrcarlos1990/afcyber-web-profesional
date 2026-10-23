@@ -1,0 +1,27 @@
+{% extends "public/base.html" %}
+{% from 'public/partials/corporate-images.html' import image %}
+{% block content %}
+{% include "public/partials/nav.html" %}
+<main id="contenido" class="catalog-main corporate-page">
+  <section id="politica-de-calidad" class="section corporate-intro">
+    <div class="container corporate-reading">
+      <a class="back-link" href="{{ url_for('public_catalog', catalog='about') }}">← Conocer AFCyber</a>
+      <span class="section-kicker">Declaración institucional</span>
+      <h1>Política de Calidad</h1>
+      <figure class="corporate-page-visual">{{ image('politica-calidad', 'Ilustración de planificación y mejora de la calidad', width=1200, height=675, sizes='(max-width: 767px) calc(100vw - 32px), 760px') }}</figure>
+      <p class="corporate-lead">{{ corporate.name }}</p>
+      <div class="quality-declaration">{% for paragraph in corporate.quality %}<p>{{ paragraph }}</p>{% endfor %}</div>
+      <h2>Principios</h2>
+      <ul class="value-list">{% for value in corporate['values'] %}<li><i class="fa-solid fa-{{ value.icon }}" aria-hidden="true"></i>{{ value.name }}</li>{% endfor %}</ul>
+      <div class="policy-principles">
+        <article><h2>Compromiso con el cliente</h2><p>Adaptar nuestras soluciones a las necesidades de cada cliente, procurar cumplir los requisitos acordados y mantener una atención personalizada.</p></article>
+        <article><h2>Seguridad de la información</h2><p>Aplicar buenas prácticas, proteger la información y promover la confidencialidad y la responsabilidad en la prestación de nuestros servicios.</p></article>
+        <article><h2>Mejora continua</h2><p>Mejorar continuamente nuestros procesos, productos y servicios, promoviendo la calidad, la innovación y la satisfacción del cliente.</p></article>
+      </div>
+      <div class="policy-contact"><h2>Contacto</h2><p>Para consultas sobre esta declaración institucional:</p><a class="corporate-link" href="mailto:{{ corporate.contacts[0].email }}">{{ corporate.contacts[0].email }}</a><a class="corporate-link" href="{{ url_for('contact_page') }}">Ver todos los contactos →</a></div>
+    </div>
+  </section>
+</main>
+{% include "public/partials/footer.html" %}
+{% include "public/partials/floating.html" %}
+{% endblock %}

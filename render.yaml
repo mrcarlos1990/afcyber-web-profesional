@@ -31,6 +31,10 @@ services:
         value: /var/data/afcyber-storage
       - key: STORAGE_PROVIDER
         value: render_disk
+      - key: APK_MAX_UPLOAD_MB
+        value: "120"
+      - key: REQUIRE_APK_SIGNATURE
+        value: "1"
       - key: MAIL_SERVER
         sync: false
       - key: MAIL_PORT

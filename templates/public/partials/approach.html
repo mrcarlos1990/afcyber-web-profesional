@@ -1,0 +1,13 @@
+<section id="enfoque" class="section corporate-approach">
+  <div class="container">
+    <div class="corporate-heading"><span class="section-kicker">Cómo trabajamos</span><h2>Nuestro enfoque</h2></div>
+    <div class="approach-grid">
+      {% for principle in corporate.approach %}
+      <article class="identity-card">
+        <i class="fa-solid fa-{{ principle.icon }}" aria-hidden="true"></i>
+        <h3>{{ principle.name }}</h3><p>{{ principle.text }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>

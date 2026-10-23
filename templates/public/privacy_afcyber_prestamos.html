@@ -1,0 +1,239 @@
+{% extends "public/base.html" %}
+{% block content %}
+<nav class="navbar navbar-expand-lg fixed-top cyber-nav" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="{{ url_for('index') }}">
+      {% if settings.logo %}<img src="{{ settings.logo|asset }}" alt="{{ settings.company_name }}">{% else %}<span class="logo-mark">AF</span>{% endif %}
+      <span>{{ settings.company_name }}</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#legalMenu" aria-controls="legalMenu" aria-expanded="false" aria-label="Abrir menu"><span class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="legalMenu">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#servicios">Servicios</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('downloads') }}">Descargas</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('product_afcyber_prestamos') }}">AFCyber Préstamos</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('delete_data_afcyber_prestamos') }}">Eliminar datos</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#contacto">Contacto</a></li>
+        <li class="nav-item ms-lg-3"><a class="btn btn-cyber" href="{{ url_for('request_service') }}">Solicitar servicio</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<main id="contenido" class="page-shell legal-page">
+  <section class="legal-hero">
+    <div class="container">
+      <nav class="breadcrumb-lite" aria-label="Ubicación">
+        <a href="{{ url_for('index') }}">Inicio</a>
+        <span aria-hidden="true">/</span>
+        <span>Política de Privacidad</span>
+      </nav>
+      <span class="section-kicker">AFCyber Préstamos Enterprise</span>
+      <h1>Política de Privacidad — AFCyber Préstamos Enterprise</h1>
+      <p>AFCyber Solutions respeta la privacidad de los usuarios de AFCyber Préstamos Enterprise. Esta Política de Privacidad explica qué información puede procesar la aplicación, cómo se utiliza, dónde se almacena y qué opciones tiene el usuario respecto de sus datos.</p>
+      <p>Al utilizar AFCyber Préstamos Enterprise, el usuario reconoce las prácticas descritas en esta política.</p>
+      <p class="legal-date"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i> Última actualización: 6 de octubre de 2026</p>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="legal-layout">
+      <aside class="legal-toc" aria-label="Índice de contenidos">
+        <h2>Contenido</h2>
+        <a href="#finalidad">1. Finalidad</a>
+        <a href="#informacion-procesada">2. Información procesada</a>
+        <a href="#almacenamiento-local">3. Almacenamiento local</a>
+        <a href="#respaldos">4. Respaldos</a>
+        <a href="#exportacion">5. Exportación y uso compartido</a>
+        <a href="#camara">6. Cámara y códigos QR</a>
+        <a href="#bluetooth">7. Bluetooth</a>
+        <a href="#notificaciones">8. Notificaciones</a>
+        <a href="#licenciamiento">9. Licenciamiento</a>
+        <a href="#analitica">10. Analítica y telemetría</a>
+        <a href="#eliminacion">11. Eliminación de información</a>
+        <a href="#retencion">12. Retención</a>
+        <a href="#seguridad">13. Seguridad</a>
+        <a href="#menores">14. Menores de edad</a>
+        <a href="#responsabilidad">15. Responsabilidad sobre datos</a>
+        <a href="#cambios">16. Cambios</a>
+        <a href="#contacto-legal">17. Contacto</a>
+      </aside>
+
+      <article class="legal-article">
+        <section id="finalidad" class="legal-section">
+          <h2>1. Finalidad de la aplicación</h2>
+          <p>AFCyber Préstamos Enterprise es una herramienta de gestión administrativa para prestamistas y negocios que administran operaciones de crédito.</p>
+          <p>La aplicación permite, entre otras funciones, registrar y administrar clientes, préstamos, cuotas, intereses, mora, cargos, cobros, recibos, caja, refinanciamientos, reportes y respaldos.</p>
+          <p>AFCyber Préstamos Enterprise no es una plataforma para que consumidores soliciten préstamos, no funciona como marketplace de préstamos, no conecta consumidores con prestamistas, no consulta burós de crédito y no realiza desembolsos bancarios automáticos.</p>
+        </section>
+
+        <section id="informacion-procesada" class="legal-section">
+          <h2>2. Información procesada</h2>
+          <p>Dependiendo de las funciones utilizadas, la aplicación puede almacenar información introducida por el operador, incluyendo:</p>
+          <ul>
+            <li>Nombre y apellido de clientes.</li>
+            <li>Número de identificación, cédula o pasaporte.</li>
+            <li>Número telefónico.</li>
+            <li>Correo electrónico.</li>
+            <li>Dirección.</li>
+            <li>Referencias y notas.</li>
+            <li>Información sobre ingresos y límites de crédito.</li>
+            <li>Fotografías o documentos adjuntos agregados voluntariamente.</li>
+            <li>Información de préstamos, capital, intereses, cuotas, mora y cargos.</li>
+            <li>Información de pagos, cobros, caja y movimientos.</li>
+            <li>Recibos, refinanciamientos y reportes.</li>
+            <li>Información de usuarios y administradores locales.</li>
+            <li>Registros de auditoría y actividad interna de la aplicación.</li>
+          </ul>
+          <p>La información es introducida y administrada por el usuario u operador de AFCyber Préstamos Enterprise.</p>
+        </section>
+
+        <section id="almacenamiento-local" class="legal-section">
+          <h2>3. Almacenamiento local</h2>
+          <p>AFCyber Préstamos Enterprise funciona principalmente mediante almacenamiento local en el dispositivo.</p>
+          <p>La información comercial de clientes, préstamos, pagos y operaciones no es enviada automáticamente a servidores de AFCyber Solutions.</p>
+          <p>Actualmente la aplicación no utiliza un backend remoto para almacenar automáticamente esta información.</p>
+          <p>La base de datos comercial local no cuenta actualmente con cifrado integral propio de la base de datos.</p>
+          <p>Sin embargo, determinados datos de seguridad, sesión, identificación de instalación y licenciamiento utilizan mecanismos de protección proporcionados por Android, incluyendo Android Keystore y cifrado AES/GCM cuando corresponde.</p>
+          <p>La seguridad física y lógica del dispositivo también es responsabilidad del usuario.</p>
+          <p>Se recomienda mantener bloqueo de pantalla, sistema operativo actualizado y controles adecuados de acceso al dispositivo.</p>
+        </section>
+
+        <section id="respaldos" class="legal-section">
+          <h2>4. Respaldos</h2>
+          <p>AFCyber Préstamos Enterprise permite generar respaldos de información.</p>
+          <p>Los archivos de respaldo .afcbak generados por la aplicación utilizan mecanismos criptográficos para proteger su contenido.</p>
+          <p>Cuando el usuario exporta un respaldo fuera del almacenamiento privado de la aplicación, será responsable de proteger el archivo y el lugar donde decida conservarlo.</p>
+          <p>AFCyber Solutions no controla servicios, dispositivos o ubicaciones externas seleccionadas por el usuario.</p>
+        </section>
+
+        <section id="exportacion" class="legal-section">
+          <h2>5. Exportación y uso compartido</h2>
+          <p>La aplicación puede permitir al usuario generar, guardar o compartir información mediante funciones como:</p>
+          <ul>
+            <li>PDF.</li>
+            <li>CSV.</li>
+            <li>Recibos.</li>
+            <li>Respaldos.</li>
+            <li>Correo electrónico.</li>
+            <li>WhatsApp u otras aplicaciones compatibles.</li>
+            <li>Funciones de compartir de Android.</li>
+            <li>Impresión.</li>
+          </ul>
+          <p>Estas acciones son iniciadas expresamente por el usuario.</p>
+          <p>Una vez que la información es exportada o compartida con una aplicación, servicio, dispositivo o ubicación externa, su tratamiento puede quedar sujeto a las políticas y medidas de seguridad del destinatario correspondiente.</p>
+          <p>Los archivos exportados como PDF, CSV u otros formatos no necesariamente permanecen cifrados por AFCyber Préstamos Enterprise una vez almacenados fuera del espacio privado de la aplicación.</p>
+        </section>
+
+        <section id="camara" class="legal-section">
+          <h2>6. Cámara y códigos QR</h2>
+          <p>AFCyber Préstamos Enterprise puede solicitar acceso opcional a la cámara exclusivamente para escanear códigos QR utilizados en el proceso de activación de licencia.</p>
+          <p>El acceso a la cámara se solicita cuando el usuario decide utilizar la función de escaneo.</p>
+          <p>El procesamiento del código QR se realiza localmente en el dispositivo.</p>
+          <p>La función de activación por QR no está diseñada para almacenar fotografías ni grabar videos.</p>
+          <p>Si el usuario no concede acceso a la cámara, puede continuar utilizando otros métodos disponibles de activación, como pegar la licencia o importar un archivo de licencia compatible.</p>
+        </section>
+
+        <section id="bluetooth" class="legal-section">
+          <h2>7. Bluetooth</h2>
+          <p>La aplicación puede utilizar Bluetooth para comunicarse con impresoras compatibles seleccionadas o previamente vinculadas por el usuario.</p>
+          <p>Bluetooth se utiliza para funciones de impresión y no para obtener la ubicación del usuario.</p>
+        </section>
+
+        <section id="notificaciones" class="legal-section">
+          <h2>8. Notificaciones</h2>
+          <p>AFCyber Préstamos Enterprise puede utilizar notificaciones locales relacionadas con las funciones de la aplicación.</p>
+          <p>La aplicación puede solicitar autorización para mostrar notificaciones en las versiones de Android que así lo requieran.</p>
+          <p>Estas notificaciones no constituyen por sí mismas un sistema de publicidad ni de telemetría remota.</p>
+        </section>
+
+        <section id="licenciamiento" class="legal-section">
+          <h2>9. Identificador del dispositivo y licenciamiento</h2>
+          <p>La aplicación genera y conserva identificadores técnicos de instalación, incluyendo un Device ID, utilizados para la activación, validación de licencia y protección del software contra usos no autorizados.</p>
+          <p>La validación actual de las licencias se realiza localmente mediante mecanismos criptográficos.</p>
+          <p>AFCyber Préstamos Enterprise no necesita transmitir automáticamente los datos comerciales de los clientes a un servidor para validar la licencia.</p>
+        </section>
+
+        <section id="analitica" class="legal-section">
+          <h2>10. Servicios de analítica, publicidad y telemetría</h2>
+          <p>La versión actual de AFCyber Préstamos Enterprise no integra servicios de:</p>
+          <ul>
+            <li>Publicidad.</li>
+            <li>Analítica de comportamiento.</li>
+            <li>Crash reporting remoto.</li>
+            <li>Telemetría remota de usuarios.</li>
+          </ul>
+          <p>La aplicación tampoco utiliza estos mecanismos para vender información personal de los usuarios o de sus clientes.</p>
+        </section>
+
+        <section id="eliminacion" class="legal-section">
+          <h2>11. Eliminación de información</h2>
+          <p>Un administrador autorizado puede utilizar la función disponible dentro de la aplicación para eliminar los datos comerciales almacenados localmente.</p>
+          <p>La eliminación puede comprender clientes, préstamos, cuotas, pagos, recibos, caja, usuarios locales, configuraciones comerciales, registros y otros datos relacionados.</p>
+          <p>Por motivos de activación y licenciamiento, determinados identificadores técnicos de instalación y la licencia pueden conservarse después de eliminar los datos comerciales.</p>
+          <p>Los respaldos que el usuario haya exportado previamente fuera del almacenamiento privado de AFCyber Préstamos Enterprise no se eliminan automáticamente.</p>
+          <p>El usuario debe eliminarlos directamente desde el lugar donde fueron almacenados.</p>
+          <a class="legal-link-card" href="{{ url_for('delete_data_afcyber_prestamos') }}">
+            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+            <span>Consultar instrucciones para eliminar los datos de AFCyber Préstamos Enterprise</span>
+          </a>
+        </section>
+
+        <section id="retencion" class="legal-section">
+          <h2>12. Retención</h2>
+          <p>Los datos comerciales locales permanecen en el dispositivo mientras sean necesarios para el uso de la aplicación o hasta que sean eliminados por un administrador autorizado, se borren los datos de la aplicación o se desinstale la aplicación, según corresponda.</p>
+          <p>Los archivos exportados fuera de la aplicación permanecen bajo control del usuario y del sistema o servicio donde hayan sido almacenados.</p>
+        </section>
+
+        <section id="seguridad" class="legal-section">
+          <h2>13. Seguridad</h2>
+          <p>AFCyber Solutions implementa medidas técnicas destinadas a proteger información sensible de la aplicación, incluyendo mecanismos criptográficos para determinados datos de seguridad y licenciamiento y para los archivos de respaldo protegidos.</p>
+          <p>No obstante, ningún sistema informático puede garantizar seguridad absoluta.</p>
+          <p>El usuario es responsable de mantener protegido el dispositivo, las credenciales administrativas y los archivos que exporte o comparta.</p>
+        </section>
+
+        <section id="menores" class="legal-section">
+          <h2>14. Menores de edad</h2>
+          <p>AFCyber Préstamos Enterprise es una herramienta de uso profesional y comercial y no está diseñada ni dirigida a niños.</p>
+          <p>Los operadores responsables de la aplicación deben cumplir las leyes aplicables respecto del tratamiento de información personal bajo su administración.</p>
+        </section>
+
+        <section id="responsabilidad" class="legal-section">
+          <h2>15. Responsabilidad sobre los datos de clientes</h2>
+          <p>La persona o negocio que utiliza AFCyber Préstamos Enterprise es responsable de contar con las autorizaciones y bases legales necesarias para registrar y procesar información de sus propios clientes.</p>
+          <p>AFCyber Solutions proporciona la herramienta tecnológica, pero no determina qué clientes registra el operador ni las operaciones financieras que este realiza.</p>
+        </section>
+
+        <section id="cambios" class="legal-section">
+          <h2>16. Cambios en esta política</h2>
+          <p>Esta Política de Privacidad puede actualizarse cuando se incorporen nuevas funciones, cambien las prácticas de tratamiento de información o sea necesario cumplir requisitos legales o de las plataformas de distribución.</p>
+          <p>La fecha de actualización aparecerá al comienzo de esta política.</p>
+        </section>
+
+        <section id="contacto-legal" class="legal-section legal-contact">
+          <h2>17. Contacto</h2>
+          <p><strong>AFCyber Solutions</strong></p>
+          <p><strong>Soporte técnico:</strong> <a href="mailto:soporte@afcybersolutions.com.do">soporte@afcybersolutions.com.do</a></p>
+          <p><strong>Información general:</strong> <a href="mailto:info@afcybersolutions.com.do">info@afcybersolutions.com.do</a></p>
+          <p><strong>Sitio web:</strong> <a href="https://afcybersolutions.com.do/">https://afcybersolutions.com.do/</a></p>
+        </section>
+      </article>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div><a class="footer-brand" href="{{ url_for('index') }}"><span class="logo-mark">AF</span>{{ settings.company_name }}</a><p>{{ settings.short_description }}</p></div>
+      <div><h3>Contacto</h3><a href="mailto:{{ settings.main_email }}">{{ settings.main_email }}</a><span>{{ settings.address }}</span></div>
+      <div><h3>Producto</h3><a href="{{ url_for('product_afcyber_prestamos') }}">AFCyber Préstamos Enterprise</a></div>
+      <div><h3>Legal</h3><a href="{{ url_for('privacy_afcyber_prestamos') }}">Política de Privacidad</a><a href="{{ url_for('delete_data_afcyber_prestamos') }}">Eliminación de Datos</a></div>
+      <div><h3>AFCyber Préstamos</h3><a href="mailto:soporte@afcybersolutions.com.do">Soporte técnico</a><a href="mailto:info@afcybersolutions.com.do">Información general</a></div>
+    </div>
+    <div class="footer-bottom"><span>© <span id="year"></span> {{ settings.company_name }}. {{ settings.copyright_text }}</span><span>{{ settings.footer_text }}</span></div>
+  </div>
+</footer>
+
+<button class="top-button" id="topButton" type="button" aria-label="Volver arriba"><i class="fa-solid fa-arrow-up"></i></button>
+{% endblock %}

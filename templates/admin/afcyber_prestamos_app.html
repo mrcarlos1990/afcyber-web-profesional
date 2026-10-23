@@ -1,0 +1,88 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div class="admin-header">
+  <h1>AFCyber Préstamos Enterprise</h1>
+  <p>Aplicaciones → AFCyber Préstamos Enterprise → Versiones. Sube únicamente APK release firmado y previamente verificado.</p>
+</div>
+
+<section class="admin-card">
+  <h2>Nueva versión Android</h2>
+  <p class="text-muted">Límite APK: {{ apk_max_upload_mb }} MB. SHA-256 del certificado release esperado: <code>{{ expected_cert_sha256 }}</code>.</p>
+  {% if apksigner_available %}
+  <p class="text-success"><strong>apksigner disponible:</strong> el servidor intentará verificar la firma y el certificado release.</p>
+  {% else %}
+  <p class="text-warning"><strong>apksigner no disponible:</strong> el servidor validará extensión, tamaño, ZIP/APK y SHA-256 del archivo, pero no verificará criptográficamente el certificado firmante.</p>
+  {% if require_apk_signature %}
+  <p class="text-danger"><strong>Publicación bloqueada:</strong> este entorno exige validación criptográfica antes de publicar una versión.</p>
+  {% endif %}
+  {% endif %}
+  <form class="stacked-form" method="post" enctype="multipart/form-data">
+    <div class="grid-4">
+      <input class="form-control" name="version" placeholder="Versión, ej. 1.0.0" required>
+      <input class="form-control" type="date" name="published_on">
+      <input class="form-control" type="number" name="min_sdk" min="0" max="100" placeholder="minSdk opcional, ej. 26">
+      <input class="form-control" type="file" name="apk_file" accept=".apk" required>
+    </div>
+    <textarea class="form-control mt-2" name="description" placeholder="Descripción de esta versión"></textarea>
+    <textarea class="form-control mt-2" name="release_notes" placeholder="Notas de versión"></textarea>
+    <label class="check mt-2"><input type="checkbox" name="is_public"> Publicar como versión principal</label>
+    <div class="form-actions"><button class="btn btn-primary">Cargar APK</button></div>
+  </form>
+</section>
+
+<section class="admin-card">
+  <h2>Versión pública actual</h2>
+  {% if current_version %}
+  <div class="app-current">
+    <strong>v{{ current_version.version }}</strong>
+    <span>{{ current_version.file_size|filesize }} · {{ current_version.published_on.strftime('%d/%m/%Y') if current_version.published_on else 'Fecha no indicada' }}</span>
+    <code>{{ current_version.sha256 }}</code>
+    <a class="btn btn-outline-primary" href="{{ url_for('product_afcyber_prestamos') }}" target="_blank" rel="noopener">Ver página pública</a>
+  </div>
+  {% else %}
+  <p>No hay una versión pública principal.</p>
+  {% endif %}
+</section>
+
+<section class="admin-card">
+  <h2>Historial de versiones</h2>
+  {% for item in versions %}
+  <form class="edit-row app-version-row" method="post" enctype="multipart/form-data" action="{{ url_for('update_afcyber_prestamos_app_version', item_id=item.id) }}">
+    <input class="form-control" name="version" value="{{ item.version }}" required>
+    <input class="form-control" type="date" name="published_on" value="{{ item.published_on.isoformat() if item.published_on else '' }}">
+    <input class="form-control" type="number" name="min_sdk" min="0" max="100" value="{{ item.min_sdk or '' }}" placeholder="minSdk">
+    <select class="form-control" name="status">
+      <option {% if item.status == 'borrador' %}selected{% endif %}>borrador</option>
+      <option {% if item.status == 'publicado' %}selected{% endif %}>publicado</option>
+      <option {% if item.status == 'anterior' %}selected{% endif %}>anterior</option>
+      <option {% if item.status == 'desactivado' %}selected{% endif %}>desactivado</option>
+    </select>
+    <input class="form-control" type="file" name="apk_file" accept=".apk">
+    <label class="check"><input type="checkbox" name="is_public" {% if item.is_public %}checked{% endif %}> Versión pública principal</label>
+    <textarea class="form-control" name="description" placeholder="Descripción de esta versión">{{ item.description or '' }}</textarea>
+    <textarea class="form-control" name="release_notes">{{ item.release_notes or '' }}</textarea>
+    <small>
+      Tamaño: {{ item.file_size|filesize }} · SHA-256: {{ item.sha256 }} · Requisito: {{ min_sdk_label(item.min_sdk) }} ·
+      Firma servidor: {{ 'verificada' if item.signature_verified else 'no verificada automáticamente' }} ·
+      Descargas: {{ item.download_count or 0 }}
+    </small>
+    <button class="btn btn-primary">Guardar</button>
+    <button class="btn btn-outline-warning" formaction="{{ url_for('unpublish_afcyber_prestamos_app_version', item_id=item.id) }}">Despublicar</button>
+  </form>
+  {% else %}
+  <p>No hay versiones cargadas.</p>
+  {% endfor %}
+</section>
+
+<section class="admin-card">
+  <h2>Auditoría de operaciones</h2>
+  {% for event in audit_events %}
+  <div class="message-row">
+    <strong>{{ event.action }}</strong>
+    <span>{{ event.detail }} · {{ event.created_at.strftime('%d/%m/%Y %H:%M') if event.created_at else 'Sin fecha' }}</span>
+  </div>
+  {% else %}
+  <p>No hay operaciones registradas.</p>
+  {% endfor %}
+</section>
+{% endblock %}

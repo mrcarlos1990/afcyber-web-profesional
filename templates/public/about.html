@@ -1,0 +1,29 @@
+{% extends "public/base.html" %}
+{% block content %}
+{% include "public/partials/nav.html" %}
+<main id="contenido" class="catalog-main corporate-page">
+  <section id="nosotros" class="section corporate-intro">
+    <div class="container corporate-reading">
+      <a class="back-link" href="{{ url_for('index') }}">← Volver al inicio</a>
+      <span class="section-kicker">AFCyber Solutions</span>
+      <h1>Quiénes somos</h1>
+      {% for paragraph in corporate.who %}<p>{{ paragraph }}</p>{% endfor %}
+      <nav class="corporate-anchor-nav" aria-label="Contenido de Nosotros">
+        <a href="#mision-y-vision">Misión y visión</a><a href="#valores">Valores</a><a href="#calidad">Calidad</a><a href="#enfoque">Nuestro enfoque</a>{% if settings.show_ceo %}<a href="#ceo">Fundador</a>{% endif %}<a href="#contacto-institucional">Contacto</a>
+      </nav>
+    </div>
+  </section>
+  {% set identity_internal = true %}
+  {% include "public/partials/identity.html" %}
+  {% include "public/partials/approach.html" %}
+  {% include "public/partials/founder-profile.html" %}
+  <section id="contacto-institucional" class="section corporate-contact">
+    <div class="container">
+      {% include "public/partials/departments.html" %}
+      <div class="institutional-data"><span>{{ corporate.name }}</span><span>{{ settings.address }}</span><a href="https://{{ corporate.domain }}">{{ corporate.domain }}</a></div>
+    </div>
+  </section>
+</main>
+{% include "public/partials/footer.html" %}
+{% include "public/partials/floating.html" %}
+{% endblock %}

@@ -50,6 +50,12 @@ body { margin: 0; font-family: Inter, system-ui, sans-serif; background: #f4f7fb
 .message-row span, .message-card span, .message-card small { color: #64748b; }
 .message-card.unread { border-left: 5px solid #0b5fff; }
 .message-actions { margin-top: 14px; display: flex; gap: 10px; }
+.app-current { display: grid; gap: 8px; }
+.app-current strong { color: #0b5fff; font-size: 2rem; }
+.app-current code,
+.app-version-row code,
+.app-version-row small { overflow-wrap: anywhere; }
+.app-version-row small { grid-column: 1 / -1; color: #64748b; }
 .login-body { min-height: 100vh; display: grid; place-items: center; background: radial-gradient(circle at 20% 20%, #0b5fff33, transparent 34%), #081525; }
 .login-card { width: min(420px, 92vw); background: #fff; border-radius: 8px; padding: 30px; box-shadow: 0 30px 70px rgba(0,0,0,.25); }
 .login-card h1 { font-weight: 900; margin: 10px 0 4px; }

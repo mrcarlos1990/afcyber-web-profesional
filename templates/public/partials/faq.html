@@ -1,0 +1,8 @@
+<div class="accordion cyber-accordion" id="faq">
+  {% for faq in faqs %}
+  <div class="accordion-item">
+    <h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq{{ faq.id }}" aria-controls="faq{{ faq.id }}" aria-expanded="false">{{ faq.question }}</button></h3>
+    <div id="faq{{ faq.id }}" class="accordion-collapse collapse" data-bs-parent="#faq"><div class="accordion-body">{{ faq.answer }}</div></div>
+  </div>
+  {% endfor %}
+</div>

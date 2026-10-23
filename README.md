@@ -43,6 +43,7 @@ AUTO_CREATE_DB=1
 SESSION_COOKIE_SECURE=0
 BASE_URL=http://127.0.0.1:5000
 PRIVATE_STORAGE_ROOT=storage
+APK_MAX_UPLOAD_MB=120
 REQUIRE_SMTP=0
 ```
 
@@ -59,6 +60,9 @@ AUTO_CREATE_DB=0
 SESSION_COOKIE_SECURE=1
 BASE_URL=https://afcybersolutions.com.do
 PRIVATE_STORAGE_ROOT=/var/data/afcyber-storage
+APK_MAX_UPLOAD_MB=120
+REQUIRE_APK_SIGNATURE=1
+APKSIGNER_PATH=/ruta/a/build-tools/35.0.0/apksigner
 REQUIRE_SMTP=1
 ```
 
@@ -83,6 +87,7 @@ Almacenamiento privado:
 STORAGE_PROVIDER=render_disk
 PRIVATE_STORAGE_ROOT=/var/data/afcyber-storage
 MAX_UPLOAD_MB=60
+APK_MAX_UPLOAD_MB=120
 S3_ENDPOINT_URL=
 S3_BUCKET=
 S3_ACCESS_KEY_ID=
@@ -93,9 +98,12 @@ S3_SECRET_ACCESS_KEY=
 
 Los instaladores, manuales, documentos privados, PDFs firmados y adjuntos se guardan bajo `PRIVATE_STORAGE_ROOT`, fuera de `static/` y fuera de Git. En desarrollo puede ser `storage/`; en Render debe ser un disco persistente como `/var/data/afcyber-storage`.
 
+La publicación Android exige `REQUIRE_APK_SIGNATURE=1` en staging/producción. El servicio no descarga ni instala Android SDK automáticamente: `APKSIGNER_PATH` debe apuntar a `apksigner` de Android SDK Build Tools instalado en la imagen/entorno de ejecución. Si `apksigner` no está disponible, el APK puede quedar cargado como borrador, pero no se publica.
+
 Formatos permitidos:
 
 - Programas: `.exe`, `.msi`, `.zip`
+- AFCyber Préstamos Enterprise Android: `.apk` release firmado, almacenado en `android-apks/afcyber-prestamos/` dentro de `PRIVATE_STORAGE_ROOT`
 - Manuales: `.pdf`
 - Adjuntos: `.pdf`, `.jpg`, `.jpeg`, `.png`, `.webp`, `.zip`
 

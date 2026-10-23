@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 
 from flask_login import UserMixin
+from sqlalchemy import and_
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from extensions import db
@@ -176,6 +177,47 @@ class ContactMessage(db.Model):
     created_at = db.Column(db.DateTime, default=utc_now)
 
 
+class QuoteRequest(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    submission_key = db.Column(db.String(64), nullable=False, unique=True)
+    name = db.Column(db.String(160), nullable=False)
+    company = db.Column(db.String(160))
+    phone = db.Column(db.String(60), nullable=False)
+    email = db.Column(db.String(160))
+    requested_service = db.Column(db.String(160), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    budget = db.Column(db.String(120))
+    status = db.Column(db.String(20), nullable=False, default="RECIBIDA")
+    consent_version = db.Column(db.String(40), nullable=False, default="2026-10")
+    created_at = db.Column(db.DateTime, nullable=False, default=utc_now)
+
+    @property
+    def number(self):
+        return f"AFC-{self.created_at.year}-{self.id:06d}"
+
+
+class QuoteMail(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    quote_id = db.Column(db.Integer, db.ForeignKey("quote_request.id"), nullable=False)
+    kind = db.Column(db.String(20), nullable=False)
+    status = db.Column(db.String(20), nullable=False, default="PENDIENTE")
+    attempts = db.Column(db.Integer, nullable=False, default=0)
+    updated_at = db.Column(db.DateTime, nullable=False, default=utc_now)
+    delivery_id = db.Column(db.Integer, db.ForeignKey("email_delivery.id"))
+    quote = db.relationship("QuoteRequest", backref="mail_jobs")
+    delivery = db.relationship("EmailDelivery")
+
+    __table_args__ = (
+        db.UniqueConstraint("quote_id", "kind", name="uq_quote_mail_kind"),
+    )
+
+
+class PublicRateBucket(db.Model):
+    key = db.Column(db.String(64), primary_key=True)
+    count = db.Column(db.Integer, nullable=False, default=0)
+    expires_at = db.Column(db.Integer, nullable=False, index=True)
+
+
 class SocialLink(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
@@ -262,6 +304,59 @@ class DownloadEvent(db.Model):
 
     __table_args__ = (
         db.Index("ix_download_event_item", "item_type", "item_id"),
+    )
+
+
+class AndroidAppVersion(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    uuid = db.Column(db.String(36), unique=True, nullable=False)
+    app_slug = db.Column(db.String(80), nullable=False, default="afcyber-prestamos")
+    version = db.Column(db.String(60), nullable=False)
+    description = db.Column(db.Text)
+    release_notes = db.Column(db.Text)
+    min_sdk = db.Column(db.Integer)
+    file_path = db.Column(db.String(255), nullable=False)
+    original_name = db.Column(db.String(255))
+    file_size = db.Column(db.Integer, default=0)
+    sha256 = db.Column(db.String(64), unique=True, nullable=False)
+    signature_cert_sha256 = db.Column(db.String(64))
+    signature_verified = db.Column(db.Boolean, default=False)
+    is_public = db.Column(db.Boolean, default=False)
+    status = db.Column(db.String(40), default="borrador")
+    published_on = db.Column(db.Date)
+    download_count = db.Column(db.Integer, default=0)
+    last_downloaded_at = db.Column(db.DateTime)
+    uploaded_at = db.Column(db.DateTime, default=utc_now)
+    updated_at = db.Column(db.DateTime, default=utc_now, onupdate=utc_now)
+
+    __table_args__ = (
+        db.Index("ix_android_app_public", "app_slug", "is_public"),
+        db.Index(
+            "uq_android_app_public_version",
+            "app_slug",
+            unique=True,
+            sqlite_where=and_(is_public.is_(True), status == "publicado"),
+            postgresql_where=and_(is_public.is_(True), status == "publicado"),
+        ),
+    )
+
+
+class AdminAuditEvent(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    uuid = db.Column(db.String(36), unique=True, nullable=False)
+    actor_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    action = db.Column(db.String(80), nullable=False)
+    item_type = db.Column(db.String(80), nullable=False)
+    item_id = db.Column(db.Integer)
+    detail = db.Column(db.Text)
+    ip_hash = db.Column(db.String(64))
+    user_agent_hash = db.Column(db.String(64))
+    created_at = db.Column(db.DateTime, default=utc_now)
+
+    actor = db.relationship("User", backref="admin_audit_events")
+
+    __table_args__ = (
+        db.Index("ix_admin_audit_item", "item_type", "item_id"),
     )
 
 

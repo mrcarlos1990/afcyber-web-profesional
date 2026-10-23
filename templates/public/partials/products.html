@@ -1,0 +1,9 @@
+<section id="soluciones" class="section product-section">
+<div class="container"><div class="section-head"><span class="section-kicker">Productos AFCyber</span>
+<h2>Software para tu operación</h2><p>Conoce nuestras soluciones y conversa con nosotros sobre las necesidades de tu negocio.</p></div>
+<div class="product-grid">
+{% for product in public_products %}
+{% set name=product.name %}{% set features=product.features %}{% set icon=product.icon %}{% set platform=product.platform %}
+<article class="product-card"><i class="fa-solid {{ icon }}" aria-hidden="true"></i><h3>{{ name }}</h3>{% if platform %}<span class="product-platform">{{ platform }}</span>{% endif %}{# Insert only approved real product screenshots here when supplied. #}<ul class="product-features">{% for feature in features %}<li>{{ feature }}</li>{% endfor %}</ul>
+<a class="btn btn-glass" href="{{ product.url }}">Solicitar información</a></article>
+{% endfor %}</div></div></section>
