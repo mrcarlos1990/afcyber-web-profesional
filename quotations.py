@@ -1,6 +1,7 @@
-"""Durable quotations and a bounded outbox using the existing SMTP helper."""
+"""Durable quotations and a bounded outbox using the configured mail helper."""
 import hashlib
 import hmac
+import os
 import secrets
 import time
 from datetime import timedelta
@@ -14,6 +15,9 @@ from extensions import db
 from models import QuoteRequest, QuoteMail, PublicRateBucket, ContactMessage, utc_now
 
 STATES = {'RECIBIDA', 'EN_REVISION', 'RESPONDIDA', 'CERRADA'}
+DEFAULT_CONTACT_RECIPIENT = 'info@afcybersolutions.com.do'
+DEFAULT_SUPPORT_RECIPIENT = 'soporte@afcybersolutions.com.do'
+SUPPORT_TERMS = ('soporte', 'mantenimiento', 'incidente', 'asistencia', 'ayuda', 'reparacion', 'reparación')
 
 
 def rate_limit(scope, limit, seconds):
@@ -35,6 +39,19 @@ def rate_limit(scope, limit, seconds):
 
 def submission_key(nonce):
     return hashlib.sha256(nonce.encode()).hexdigest()
+
+
+def default_notification_recipient(service='', channel='contact'):
+    normalized = (service or '').strip().lower()
+    if channel == 'quotation':
+        return os.getenv('QUOTATION_RECIPIENT', '').strip() or os.getenv('CONTACT_RECIPIENT', '').strip() or DEFAULT_CONTACT_RECIPIENT
+    if any(term in normalized for term in SUPPORT_TERMS):
+        return os.getenv('SUPPORT_RECIPIENT', '').strip() or DEFAULT_SUPPORT_RECIPIENT
+    return (
+        os.getenv('CONTACT_RECIPIENT', '').strip()
+        or os.getenv('COMPANY_NOTIFICATION_EMAIL', '').strip()
+        or DEFAULT_CONTACT_RECIPIENT
+    )
 
 
 def create_quote(fields, nonce):
@@ -62,7 +79,7 @@ def create_quote(fields, nonce):
         raise
 
 
-def deliver_mail(job_id, sender, allow_uncertain=False):
+def deliver_mail(job_id, sender, allow_uncertain=False, recipient_for=None):
     job = db.session.get(QuoteMail, job_id)
     if not job:
         return False
@@ -77,7 +94,8 @@ def deliver_mail(job_id, sender, allow_uncertain=False):
     job = db.session.get(QuoteMail, job_id)
     quote = job.quote
     admin = job.kind == 'administrador'
-    recipient = 'cotizaciones@afcybersolutions.com.do' if admin else quote.email
+    recipient_for = recipient_for or default_notification_recipient
+    recipient = recipient_for(quote.requested_service, 'quotation') if admin else quote.email
     timestamp = quote.created_at.replace(tzinfo=__import__('datetime').timezone.utc).astimezone(ZoneInfo('America/Santo_Domingo'))
     body = (f'Solicitud {quote.number}\nFecha: {timestamp:%d/%m/%Y %H:%M} (República Dominicana)\n'
             f'Nombre: {quote.name}\nEmpresa: {quote.company or "No indicada"}\nTeléfono: {quote.phone or "No indicado"}\n'
@@ -86,13 +104,19 @@ def deliver_mail(job_id, sender, allow_uncertain=False):
     subject = 'Nueva solicitud de cotización - AFCyber Solutions' if admin else f'Solicitud recibida {quote.number} - AFCyber Solutions'
     message_id = f'<afcyber-quote-{quote.id}-{job.kind}@afcybersolutions.com.do>'
     try:
-        html_body = current_app.jinja_env.get_template('email/quotation.html').render(quote=quote, admin=admin, timestamp=timestamp)
+        html_body = current_app.jinja_env.get_template('email/quotation.html').render(
+            quote=quote,
+            admin=admin,
+            timestamp=timestamp,
+            recipient=recipient,
+        )
         delivery = sender(recipient, subject, body, 'quotation_' + job.kind,
                           html_body=html_body, reply_to=quote.email if admin else None,
-                          message_id=message_id, max_retries_override=0)
+                          message_id=message_id, max_retries_override=0,
+                          existing_delivery=job.delivery)
         db.session.flush()
         job.delivery_id = delivery.id
-        if delivery.status == 'enviado':
+        if delivery.status in {'enviado', 'aceptado'}:
             job.status = 'ENVIADO'
         elif delivery.status == 'omitido':
             job.status = 'PENDIENTE'
@@ -112,13 +136,14 @@ def deliver_mail(job_id, sender, allow_uncertain=False):
     return True
 
 
-def deliver_quote(quote, sender):
+def deliver_quote(quote, sender, recipient_for=None):
     for job in list(quote.mail_jobs):
-        deliver_mail(job.id, sender)
+        deliver_mail(job.id, sender, recipient_for=recipient_for)
 
 
-def register_quotes(app, sender, normalize_email):
+def register_quotes(app, sender, normalize_email, recipient_for=None):
     bp = Blueprint('quotes', __name__)
+    recipient_for = recipient_for or default_notification_recipient
 
     @bp.get('/cotizacion')
     def form():
@@ -171,7 +196,12 @@ def register_quotes(app, sender, normalize_email):
         if job.status == 'ENVIANDO' and job.updated_at < utc_now().replace(tzinfo=None) - timedelta(minutes=5):
             job.status = 'INCIERTO'
             db.session.commit()
-        deliver_mail(job.id, sender, allow_uncertain=request.form.get('confirm_uncertain')=='on')
+        deliver_mail(
+            job.id,
+            sender,
+            allow_uncertain=request.form.get('confirm_uncertain') == 'on',
+            recipient_for=recipient_for,
+        )
         return redirect(url_for('quotes.admin_detail', quote_id=job.quote_id))
 
     @app.cli.command('cotizaciones-reintentar')
@@ -180,13 +210,13 @@ def register_quotes(app, sender, normalize_email):
         """Retry safe pending/failed jobs only; never ambiguous or already-sent mail."""
         jobs = QuoteMail.query.filter(QuoteMail.status.in_(['PENDIENTE','FALLIDO']), QuoteMail.attempts<5).order_by(QuoteMail.id).limit(limit).all()
         for job in jobs:
-            deliver_mail(job.id, sender)
+            deliver_mail(job.id, sender, recipient_for=recipient_for)
         click.echo(f'Procesados: {len(jobs)}. Los resultados se consultan en el panel.')
 
     app.register_blueprint(bp)
 
 
-def process_submission(sender, normalize_email, strict=False, social_links=None):
+def process_submission(sender, normalize_email, strict=False, social_links=None, recipient_for=None):
     values = request.form
     nonce = values.get('quote_nonce','')
     valid_session = nonce and (hmac.compare_digest(nonce,session.get('quote_nonce','')) or nonce in session.get('quote_completed',[]))
@@ -232,6 +262,6 @@ def process_submission(sender, normalize_email, strict=False, social_links=None)
     session['quote_completed'] = (session.get('quote_completed',[]) + [nonce])[-8:]
     session['quote_nonce'] = secrets.token_urlsafe(24)
     if created:
-        deliver_quote(quote, sender)
+        deliver_quote(quote, sender, recipient_for=recipient_for)
     flash(f'Solicitud guardada para revisión: {quote.number}. Esta confirmación no acredita la entrega de un correo.', 'success')
     return redirect(url_for('quotes.form' if strict else 'contact_page') + '#quoteForm')

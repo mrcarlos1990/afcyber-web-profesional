@@ -1,0 +1,6 @@
+<!doctype html><html lang="es"><body style="margin:0;background:#080c14;font-family:Arial,sans-serif;color:#e9f3ff"><main style="max-width:620px;margin:24px auto;padding:28px;background:#071a2f;border-top:4px solid #007bff">
+<h1 style="color:#00d4ff;font-size:24px">AFCyber Solutions</h1><h2>{{ 'Nueva solicitud de contacto' if admin else 'Hemos recibido tu mensaje' }}</h2>
+<p><strong>{{ identifier }}</strong> · {{ timestamp.strftime('%d/%m/%Y %H:%M') }} (República Dominicana)</p>
+{% if not admin %}<p>Gracias por escribirnos. Un asesor revisará tu solicitud y responderá por un canal oficial. Esta confirmación acredita la recepción por el sistema, no una entrega definitiva ni una oferta comercial.</p>{% endif %}
+<dl>{% for label,value in [('Nombre',contact.name),('Empresa',contact.company),('Correo',contact.email),('Teléfono',contact.phone),('Servicio solicitado',contact.requested_service),('Mensaje',contact.message)] %}<dt style="color:#00d4ff;margin-top:14px">{{ label }}</dt><dd style="margin:4px 0;white-space:pre-wrap">{{ value or 'No indicado' }}</dd>{% endfor %}</dl>
+<p>Canal de atención: {{ recipient }}</p><p style="font-size:12px">Información enviada con consentimiento para gestionar la consulta.</p></main></body></html>

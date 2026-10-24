@@ -43,7 +43,7 @@
 <section class="admin-card">
   <h2>Últimos correos registrados</h2>
   {% for email in emails %}
-    <div class="message-row"><strong>{{ email.email_type }}</strong><span>{{ email.recipient }} · {{ email.status }}{% if email.error %} · {{ email.error }}{% endif %}</span></div>
+    <div class="message-row"><strong>{{ email.email_type }}</strong><span>{{ email.provider }} · {{ email.status }} · {{ email.recipient }}{% if email.provider_message_id %} · ID {{ email.provider_message_id }}{% endif %}{% if email.error %} · {{ email.error }}{% endif %}</span></div>
   {% else %}
     <p>No hay correos registrados.</p>
   {% endfor %}

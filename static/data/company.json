@@ -33,7 +33,7 @@
   "contacts": [
     {"id": "informacion", "name": "Información general", "short_name": "Información", "email": "info@afcybersolutions.com.do", "icon": "circle-info", "description": "Consultas generales sobre AFCyber Solutions y sus servicios."},
     {"id": "ventas", "name": "Ventas", "short_name": "Ventas", "email": "ventas@afcybersolutions.com.do", "icon": "briefcase", "description": "Orientación comercial y consultas sobre soluciones para tu negocio."},
-    {"id": "cotizaciones", "name": "Cotizaciones", "short_name": "Cotizaciones", "email": "cotizaciones@afcybersolutions.com.do", "icon": "file-invoice", "description": "Solicitudes de propuestas y cotizaciones de servicios o proyectos."},
+    {"id": "cotizaciones", "name": "Cotizaciones", "short_name": "Cotizaciones", "email": "info@afcybersolutions.com.do", "icon": "file-invoice", "description": "Solicitudes de propuestas y cotizaciones de servicios o proyectos."},
     {"id": "soporte", "name": "Soporte técnico", "short_name": "Soporte", "email": "soporte@afcybersolutions.com.do", "icon": "headset", "description": "Asistencia con productos y servicios de AFCyber Solutions."},
     {"id": "licencias", "name": "Licencias", "short_name": "Licencias", "email": "licencias@afcybersolutions.com.do", "icon": "key", "description": "Consultas sobre licencias de software y productos."},
     {"id": "direccion", "name": "Dirección / Contacto profesional", "short_name": "Dirección", "email": "a.felizv@afcybersolutions.com.do", "icon": "user-tie", "description": "Contacto profesional con la dirección de AFCyber Solutions."}

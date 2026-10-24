@@ -2,6 +2,7 @@ import os
 import re
 import secrets
 import hashlib
+import base64
 import html
 import hmac
 import json
@@ -22,9 +23,10 @@ from pathlib import Path
 from time import time
 from urllib.parse import urlparse
 from uuid import uuid4
+from zoneinfo import ZoneInfo
 
 from dotenv import load_dotenv
-from flask import Flask, Response, abort, flash, has_request_context, redirect, render_template, request, send_file, send_from_directory, session, url_for
+from flask import Flask, Response, abort, current_app, flash, has_request_context, redirect, render_template, request, send_file, send_from_directory, session, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from sqlalchemy import inspect as sa_inspect
 from sqlalchemy.exc import IntegrityError
@@ -109,6 +111,7 @@ from models import (
     User,
     utc_now,
 )
+from resend_client import send_email as send_resend_email
 
 load_dotenv()
 
@@ -151,6 +154,12 @@ LOGIN_MAX_ATTEMPTS = 5
 LOGIN_LOCKOUT_SECONDS = 300
 HEX_COLOR_RE = re.compile(r"^#[0-9a-fA-F]{6}$")
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+DEFAULT_CONTACT_RECIPIENT = "info@afcybersolutions.com.do"
+DEFAULT_SUPPORT_RECIPIENT = "soporte@afcybersolutions.com.do"
+SUPPORT_REQUEST_TERMS = (
+    "soporte", "mantenimiento", "incidente", "asistencia", "ayuda", "reparacion",
+    "reparación", "diagnostico", "diagnóstico", "mesa de ayuda",
+)
 GOOGLE_TAG_RE = re.compile(r"^(G|GT|UA|AW)-[A-Za-z0-9-]{4,}$")
 CONSENT_VERSION = "2026-07"
 OTP_TTL_MINUTES = 15
@@ -230,9 +239,21 @@ def require_production_runtime(database_url):
         raise RuntimeError("PRIVATE_STORAGE_ROOT debe apuntar a almacenamiento persistente externo al repositorio.")
     if path_is_relative_to(PRIVATE_STORAGE, UPLOAD_FOLDER):
         raise RuntimeError("Los documentos privados no pueden guardarse dentro de static/uploads.")
-    if os.getenv("REQUIRE_SMTP", "1") == "1":
+    provider = os.getenv("EMAIL_PROVIDER", "smtp").strip().lower()
+    delivery_required = env_flag(
+        "REQUIRE_EMAIL_DELIVERY",
+        default=os.getenv("REQUIRE_SMTP", "1") == "1",
+    )
+    if provider not in {"smtp", "resend"}:
+        raise RuntimeError("EMAIL_PROVIDER debe ser 'resend' o 'smtp'.")
+    if delivery_required and provider == "resend":
+        if not os.getenv("RESEND_API_KEY", "").strip() or not os.getenv("RESEND_FROM_EMAIL", "").strip():
+            raise RuntimeError("RESEND_API_KEY y RESEND_FROM_EMAIL son obligatorios en produccion.")
+    if delivery_required and provider == "smtp":
         if not os.getenv("MAIL_SERVER", "").strip() or not os.getenv("MAIL_DEFAULT_SENDER", "").strip():
             raise RuntimeError("MAIL_SERVER y MAIL_DEFAULT_SENDER son obligatorios en produccion.")
+        if not env_flag("MAIL_USE_TLS", default=True):
+            raise RuntimeError("MAIL_USE_TLS debe estar activo en produccion.")
 
 
 def validate_database_schema():
@@ -307,7 +328,7 @@ def create_app():
     register_routes(app)
     from quotations import register_quotes, rate_limit
     from assistant import register_assistant
-    register_quotes(app, send_configured_email, normalize_email)
+    register_quotes(app, send_configured_email, normalize_email, notification_recipient)
     register_assistant(app, rate_limit)
 
     with app.app_context():
@@ -437,6 +458,41 @@ def normalize_email(value, required=False):
     except EmailNotValidError:
         flash("El correo electrónico no tiene un formato válido.", "danger")
         return None
+
+
+def notification_recipient(service="", channel="contact"):
+    """Return the configured corporate inbox without trusting form data for routing."""
+    normalized_service = re.sub(r"\s+", " ", (service or "").strip().lower())
+    if channel == "quotation":
+        candidate = os.getenv("QUOTATION_RECIPIENT", "").strip() or os.getenv("CONTACT_RECIPIENT", "").strip() or DEFAULT_CONTACT_RECIPIENT
+        return candidate if EMAIL_RE.fullmatch(candidate) else DEFAULT_CONTACT_RECIPIENT
+    is_support = any(term in normalized_service for term in SUPPORT_REQUEST_TERMS)
+    if is_support:
+        candidate = os.getenv("SUPPORT_RECIPIENT", "").strip() or DEFAULT_SUPPORT_RECIPIENT
+        fallback = DEFAULT_SUPPORT_RECIPIENT
+    else:
+        candidate = (
+            os.getenv("CONTACT_RECIPIENT", "").strip()
+            or os.getenv("COMPANY_NOTIFICATION_EMAIL", "").strip()
+            or DEFAULT_CONTACT_RECIPIENT
+        )
+        fallback = DEFAULT_CONTACT_RECIPIENT
+    return candidate if EMAIL_RE.fullmatch(candidate) else fallback
+
+
+def local_email_timestamp(value=None):
+    value = value or utc_now()
+    if value.tzinfo is None:
+        value = value.replace(tzinfo=timezone.utc)
+    return value.astimezone(ZoneInfo("America/Santo_Domingo"))
+
+
+def safe_header(value, max_length=255):
+    return re.sub(r"[\r\n]+", " ", str(value or "")).strip()[:max_length]
+
+
+def env_flag(name, default=False):
+    return os.getenv(name, "1" if default else "0").strip().lower() in {"1", "true", "yes", "on"}
 
 
 def password_is_strong(password):
@@ -1108,6 +1164,7 @@ def create_document_pdf(document, version=None, watermark=None):
     data = professional_pdf if professional_pdf is not None else build_simple_pdf(f"AFCyber Solutions - {document.title}", lines)
     filename = f"{document.code.lower()}-v{document.current_version}-{uuid4().hex[:8]}.pdf"
     path = SIGNED_PDF_STORAGE / filename
+    path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(data)
     return str(path.relative_to(PRIVATE_STORAGE)).replace("\\", "/"), sha256_bytes(data)
 
@@ -1126,10 +1183,26 @@ def log_signature_event(event_type, document=None, signature_request=None, detai
 
 def safe_mail_error(exc):
     message = f"{exc.__class__.__name__}: {exc}"
-    for secret in [os.getenv("MAIL_PASSWORD", ""), os.getenv("MAIL_USERNAME", "")]:
+    for secret in [
+        os.getenv("MAIL_PASSWORD", ""),
+        os.getenv("MAIL_USERNAME", ""),
+        os.getenv("RESEND_API_KEY", ""),
+    ]:
         if secret:
             message = message.replace(secret, "[redacted]")
     return message[:1000]
+
+
+def selected_email_provider():
+    return os.getenv("EMAIL_PROVIDER", "smtp").strip().lower() or "smtp"
+
+
+def email_delivery_required():
+    return env_flag("REQUIRE_EMAIL_DELIVERY", default=False)
+
+
+def email_accepted(delivery):
+    return bool(delivery and delivery.status in {"enviado", "aceptado"})
 
 
 def send_configured_email(
@@ -1143,16 +1216,118 @@ def send_configured_email(
     reply_to=None,
     message_id=None,
     max_retries_override=None,
+    existing_delivery=None,
 ):
-    delivery = EmailDelivery(uuid=make_uuid(), recipient=recipient, subject=subject, email_type=email_type, status="pendiente")
-    db.session.add(delivery)
+    recipient = safe_header(recipient, 180)
+    subject = safe_header(subject)
+    provider = selected_email_provider()
+    if existing_delivery is not None:
+        delivery = existing_delivery
+        delivery.recipient = recipient
+        delivery.subject = subject
+        delivery.email_type = email_type
+        delivery.provider = provider
+        delivery.status = "pendiente"
+        delivery.error = None
+        delivery.provider_message_id = None
+        delivery.accepted_at = None
+        delivery.sent_at = None
+        if not delivery.idempotency_key:
+            delivery.idempotency_key = f"afcyber-{delivery.uuid}"
+    else:
+        delivery_uuid = make_uuid()
+        delivery = EmailDelivery(
+            uuid=delivery_uuid,
+            recipient=recipient,
+            subject=subject,
+            email_type=email_type,
+            provider=provider,
+            idempotency_key=f"afcyber-{delivery_uuid}",
+            status="pendiente",
+        )
+        db.session.add(delivery)
     server = os.getenv("MAIL_SERVER", "").strip()
-    sender = os.getenv("MAIL_DEFAULT_SENDER", "").strip()
+    smtp_sender = safe_header(os.getenv("MAIL_DEFAULT_SENDER", ""), 180)
+    resend_sender = safe_header(os.getenv("RESEND_FROM_EMAIL", ""), 180)
+    sender = resend_sender if provider == "resend" else smtp_sender
     username = os.getenv("MAIL_USERNAME", "").strip()
     password = os.getenv("MAIL_PASSWORD", "").strip()
-    if not server or not sender:
-        delivery.status = "omitido"
-        delivery.error = "Correo no configurado por variables de entorno."
+    api_key = os.getenv("RESEND_API_KEY", "").strip()
+    if provider not in {"smtp", "resend"}:
+        delivery.status = "error"
+        delivery.error = "Proveedor de correo no permitido."
+        return delivery
+    if provider == "smtp" and (not server or not sender):
+        delivery.status = "error" if email_delivery_required() else "omitido"
+        delivery.error = "Correo SMTP no configurado por variables de entorno."
+        return delivery
+    if provider == "resend" and (not api_key or not sender):
+        delivery.status = "error" if email_delivery_required() else "omitido"
+        delivery.error = "Correo Resend no configurado por variables de entorno."
+        return delivery
+    sender_address = parseaddr(sender)[1]
+    if not EMAIL_RE.fullmatch(recipient) or not EMAIL_RE.fullmatch(sender_address):
+        delivery.status = "error"
+        delivery.error = "Destinatario o remitente de correo inválido."
+        return delivery
+    if reply_to:
+        reply_to = safe_header(reply_to, 180)
+        if not EMAIL_RE.fullmatch(reply_to):
+            reply_to = None
+
+    if provider == "resend":
+        attachments = []
+        if attachment_path:
+            path = private_path(attachment_path)
+            if path.exists() and path.is_file():
+                attachments.append({
+                    "filename": path.name,
+                    "content": base64.b64encode(path.read_bytes()).decode("ascii"),
+                })
+        try:
+            configured_retries = int(os.getenv("RESEND_MAX_RETRIES", "2"))
+        except (TypeError, ValueError):
+            configured_retries = 2
+        max_retries = configured_retries if max_retries_override is None else max_retries_override
+        result = send_resend_email(
+            api_key=api_key,
+            sender=sender,
+            recipient=recipient,
+            subject=subject,
+            text_body=body,
+            html_body=html_body,
+            reply_to=reply_to,
+            attachments=attachments,
+            idempotency_key=delivery.idempotency_key,
+            timeout_seconds=os.getenv("RESEND_TIMEOUT_SECONDS", "10"),
+            max_retries=max_retries,
+        )
+        delivery.retries = result.retries
+        delivery.provider_message_id = result.message_id
+        if result.accepted:
+            delivery.status = "aceptado"
+            delivery.accepted_at = utc_now()
+            delivery.sent_at = delivery.accepted_at
+            delivery.error = None
+            current_app.logger.info("resend_email_accepted type=%s", email_type)
+        else:
+            delivery.status = "error"
+            delivery.error = result.error or "Resend no aceptó la solicitud."
+            current_app.logger.warning(
+                "resend_email_failed type=%s attempts=%s http_status=%s",
+                email_type,
+                result.retries + 1,
+                result.http_status or "none",
+            )
+        return delivery
+
+    try:
+        port = int(os.getenv("MAIL_PORT", "587"))
+        if not 1 <= port <= 65535:
+            raise ValueError
+    except (TypeError, ValueError):
+        delivery.status = "error"
+        delivery.error = "MAIL_PORT debe ser un puerto válido."
         return delivery
 
     message = EmailMessage()
@@ -1171,9 +1346,11 @@ def send_configured_email(
         if path.exists():
             message.add_attachment(path.read_bytes(), maintype="application", subtype="pdf", filename=path.name)
 
-    port = int(os.getenv("MAIL_PORT", "587"))
-    use_tls = os.getenv("MAIL_USE_TLS", "1") == "1"
-    configured_retries = int(os.getenv("MAIL_MAX_RETRIES", "2"))
+    use_tls = env_flag("MAIL_USE_TLS", default=True)
+    try:
+        configured_retries = int(os.getenv("MAIL_MAX_RETRIES", "2"))
+    except (TypeError, ValueError):
+        configured_retries = 2
     max_retries = configured_retries if max_retries_override is None else max_retries_override
     max_retries = max(0, min(max_retries, 5))
     for attempt in range(max_retries + 1):
@@ -1187,12 +1364,14 @@ def send_configured_email(
             delivery.status = "enviado"
             delivery.retries = attempt
             delivery.sent_at = utc_now()
+            delivery.accepted_at = delivery.sent_at
             delivery.error = None
             return delivery
         except Exception as exc:  # pragma: no cover - depende de proveedor externo.
             delivery.status = "error"
             delivery.retries = attempt
             delivery.error = safe_mail_error(exc)
+    current_app.logger.warning("mail_delivery_failed type=%s attempts=%s", email_type, max_retries + 1)
     return delivery
 
 
@@ -1815,6 +1994,17 @@ def register_routes(app):
     def request_service():
         services = Service.query.filter_by(is_active=True).order_by(Service.position, Service.id).all()
         if request.method == "POST":
+            from quotations import rate_limit
+            if request.form.get("website"):
+                flash("No se pudo procesar la solicitud.", "danger")
+                return redirect(url_for("request_service"))
+            try:
+                if not rate_limit("service-request", 3, 600):
+                    return redirect(url_for("request_service")), 429, {"Retry-After": "600"}
+            except Exception:
+                db.session.rollback()
+                current_app.logger.exception("service_request_rate_limit_failed")
+                return redirect(url_for("request_service")), 503
             email = normalize_email(form_text("email", 180), required=True)
             required = {
                 "full_name": form_text("full_name", 180),
@@ -1882,14 +2072,42 @@ def register_routes(app):
                     sha256=upload["sha256"],
                 ))
             document = create_service_document(service_request)
-            company_recipient = os.getenv("COMPANY_NOTIFICATION_EMAIL") or get_settings().main_email
-            send_configured_email(
-                company_recipient,
-                f"Nueva solicitud de servicio - {service_request.requested_service}",
-                f"Cliente: {customer.full_name}\nCorreo: {customer.email}\nServicio: {service_request.requested_service}\nDocumento: {document.code}",
-                "service_request_notification",
+            company_recipient = notification_recipient(
+                f"{service_request.requested_service} {service_request.service_type}"
             )
+            received_at = local_email_timestamp(service_request.created_at)
+            service_body = (
+                f"Solicitud de servicio: {document.code}\n"
+                f"Fecha de recepción: {received_at:%d/%m/%Y %H:%M} (República Dominicana)\n"
+                f"Nombre: {customer.full_name}\nEmpresa: {customer.company or 'No indicada'}\n"
+                f"Correo: {customer.email}\nTeléfono: {customer.phone}\n"
+                f"Servicio: {service_request.requested_service}\n"
+                f"Descripción: {service_request.need_description}\n"
+                f"Modalidad: {service_request.modality}\nPrioridad: {service_request.priority}"
+            )
+            # Commit the request before SMTP so a provider failure cannot lose the lead.
             db.session.commit()
+            try:
+                send_configured_email(
+                    company_recipient,
+                    f"Nueva solicitud de servicio - {service_request.requested_service}",
+                    service_body,
+                    "service_request_notification",
+                    html_body=render_template(
+                        "email/service_request.html",
+                        customer=customer,
+                        service_request=service_request,
+                        document=document,
+                        timestamp=received_at,
+                        recipient=company_recipient,
+                    ),
+                    reply_to=customer.email,
+                    message_id=f"<afcyber-service-{service_request.id}@afcybersolutions.com.do>",
+                )
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
+                current_app.logger.exception("service_request_notification_failed request_id=%s", service_request.id)
             flash("Solicitud recibida. Si el correo está configurado, recibirás el enlace de revisión y firma.", "success")
             return redirect(url_for("request_service"))
         return render_template("public/service_request.html", services=services)
@@ -1988,26 +2206,99 @@ def register_routes(app):
     def contact():
         if "quote_nonce" in request.form or "accepted_privacy" in request.form:
             from quotations import process_submission
-            return process_submission(send_configured_email, normalize_email, social_links=get_public_social_links())
+            return process_submission(
+                send_configured_email,
+                normalize_email,
+                social_links=get_public_social_links(),
+                recipient_for=notification_recipient,
+            )
+        from quotations import rate_limit
+        if request.form.get("website"):
+            flash("No se pudo procesar la solicitud.", "danger")
+            return redirect(url_for("index") + "#contacto")
+        try:
+            if not rate_limit("contact-legacy", 5, 600):
+                return redirect(url_for("index") + "#contacto"), 429, {"Retry-After": "600"}
+        except Exception:
+            db.session.rollback()
+            current_app.logger.exception("contact_rate_limit_failed")
+            return redirect(url_for("index") + "#contacto"), 503
         name = form_text("name", 160)
         phone = form_text("phone", 60)
         message = form_text("message", 5000)
         email = normalize_email(form_text("email", 160))
         if email is None:
             return redirect(url_for("index") + "#contacto")
+        if phone and not re.fullmatch(r"[+()\d\s.-]{6,60}", phone):
+            flash("Revisa el teléfono de contacto.", "danger")
+            return redirect(url_for("index") + "#contacto")
+        requested_service = form_text("requested_service", 160) or "Consulta general"
         if not name or not phone or not message:
             flash("Completa nombre, teléfono y mensaje.", "danger")
             return redirect(url_for("index") + "#contacto")
-        db.session.add(ContactMessage(
+        contact_message = ContactMessage(
             name=name,
             company=form_text("company", 160),
             phone=phone,
             email=email,
-            requested_service=form_text("requested_service", 160),
+            requested_service=requested_service,
             message=message,
-        ))
+        )
+        db.session.add(contact_message)
         db.session.commit()
-        flash("Mensaje enviado correctamente. Te contactaremos pronto.", "success")
+        recipient = notification_recipient(requested_service)
+        received_at = local_email_timestamp(contact_message.created_at)
+        admin_delivery = None
+        try:
+            admin_delivery = send_configured_email(
+                recipient,
+                f"Nueva solicitud de contacto - {requested_service}",
+                (
+                    f"Solicitud de contacto: CONTACT-{contact_message.id:06d}\n"
+                    f"Fecha de recepción: {received_at:%d/%m/%Y %H:%M} (República Dominicana)\n"
+                    f"Nombre: {name}\nEmpresa: {contact_message.company or 'No indicada'}\n"
+                    f"Correo: {email or 'No indicado'}\nTeléfono: {phone}\n"
+                    f"Servicio solicitado: {requested_service}\nMensaje: {message}"
+                ),
+                "contact_notification",
+                html_body=render_template(
+                    "email/contact.html",
+                    contact=contact_message,
+                    timestamp=received_at,
+                    identifier=f"CONTACT-{contact_message.id:06d}",
+                    recipient=recipient,
+                    admin=True,
+                ),
+                reply_to=email or None,
+                message_id=f"<afcyber-contact-{contact_message.id}@afcybersolutions.com.do>",
+            )
+            if email:
+                send_configured_email(
+                    email,
+                    "Hemos recibido tu mensaje - AFCyber Solutions",
+                    (
+                        f"Recibimos tu mensaje de contacto CONTACT-{contact_message.id:06d}.\n"
+                        "Un asesor revisará la solicitud y te responderá por un canal oficial."
+                    ),
+                    "contact_confirmation",
+                    html_body=render_template(
+                        "email/contact.html",
+                        contact=contact_message,
+                        timestamp=received_at,
+                        identifier=f"CONTACT-{contact_message.id:06d}",
+                        recipient=email,
+                        admin=False,
+                    ),
+                    message_id=f"<afcyber-contact-confirmation-{contact_message.id}@afcybersolutions.com.do>",
+                )
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            current_app.logger.exception("contact_notification_failed request_id=%s", contact_message.id)
+        if email_accepted(admin_delivery):
+            flash("Mensaje recibido. Te contactaremos pronto.", "success")
+        else:
+            flash("Mensaje guardado. La notificación por correo está pendiente de configuración o reintento.", "success")
         return redirect(url_for("index") + "#contacto")
 
     @app.route("/admin/login", methods=["GET", "POST"])

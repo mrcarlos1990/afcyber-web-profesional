@@ -9,7 +9,7 @@ Plataforma Flask para el sitio corporativo de AFCyber Solutions con panel admini
 - PostgreSQL en produccion mediante `DATABASE_URL`.
 - Flask-Migrate/Alembic para migraciones.
 - ReportLab + QR para PDF profesional verificable.
-- SMTP configurable con reintentos limitados y registro de entrega.
+- Resend HTTPS configurable con reintentos limitados, idempotencia y registro de aceptación; SMTP queda como alternativa explícita.
 
 ## Instalacion local
 
@@ -44,7 +44,15 @@ SESSION_COOKIE_SECURE=0
 BASE_URL=http://127.0.0.1:5000
 PRIVATE_STORAGE_ROOT=storage
 APK_MAX_UPLOAD_MB=120
-REQUIRE_SMTP=0
+EMAIL_PROVIDER=resend
+RESEND_API_KEY=
+RESEND_FROM_EMAIL=notificaciones@afcybersolutions.com.do
+CONTACT_RECIPIENT=info@afcybersolutions.com.do
+SUPPORT_RECIPIENT=soporte@afcybersolutions.com.do
+QUOTATION_RECIPIENT=info@afcybersolutions.com.do
+RESEND_TIMEOUT_SECONDS=10
+RESEND_MAX_RETRIES=2
+REQUIRE_EMAIL_DELIVERY=0
 ```
 
 Produccion:
@@ -63,10 +71,34 @@ PRIVATE_STORAGE_ROOT=/var/data/afcyber-storage
 APK_MAX_UPLOAD_MB=120
 REQUIRE_APK_SIGNATURE=1
 APKSIGNER_PATH=/ruta/a/build-tools/35.0.0/apksigner
-REQUIRE_SMTP=1
+EMAIL_PROVIDER=resend
+RESEND_API_KEY=
+RESEND_FROM_EMAIL=notificaciones@afcybersolutions.com.do
+CONTACT_RECIPIENT=info@afcybersolutions.com.do
+SUPPORT_RECIPIENT=soporte@afcybersolutions.com.do
+QUOTATION_RECIPIENT=info@afcybersolutions.com.do
+RESEND_TIMEOUT_SECONDS=10
+RESEND_MAX_RETRIES=2
+REQUIRE_EMAIL_DELIVERY=1
 ```
 
-Correo:
+Correo transaccional:
+
+```env
+EMAIL_PROVIDER=resend
+RESEND_API_KEY=
+RESEND_FROM_EMAIL=notificaciones@afcybersolutions.com.do
+RESEND_TIMEOUT_SECONDS=10
+RESEND_MAX_RETRIES=2
+REQUIRE_EMAIL_DELIVERY=1
+CONTACT_RECIPIENT=info@afcybersolutions.com.do
+SUPPORT_RECIPIENT=soporte@afcybersolutions.com.do
+QUOTATION_RECIPIENT=info@afcybersolutions.com.do
+```
+
+Resend acepta la solicitud y devuelve un identificador; ese estado no equivale a entrega final en la bandeja del destinatario. La aplicación registra ambos hechos por separado. Para volver a SMTP, configura `EMAIL_PROVIDER=smtp` y completa únicamente las variables SMTP. No se ejecuta un fallback automático, para evitar envíos duplicados.
+
+SMTP alternativo:
 
 ```env
 MAIL_SERVER=
@@ -77,6 +109,8 @@ MAIL_PASSWORD=
 MAIL_DEFAULT_SENDER=
 MAIL_MAX_RETRIES=2
 COMPANY_NOTIFICATION_EMAIL=info@afcybersolutions.com.do
+CONTACT_RECIPIENT=info@afcybersolutions.com.do
+SUPPORT_RECIPIENT=soporte@afcybersolutions.com.do
 SALES_EMAIL=
 SUPPORT_EMAIL=
 ```

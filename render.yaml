@@ -35,6 +35,18 @@ services:
         value: "120"
       - key: REQUIRE_APK_SIGNATURE
         value: "1"
+      - key: EMAIL_PROVIDER
+        value: resend
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM_EMAIL
+        value: notificaciones@afcybersolutions.com.do
+      - key: RESEND_TIMEOUT_SECONDS
+        value: "10"
+      - key: RESEND_MAX_RETRIES
+        value: "2"
+      - key: REQUIRE_EMAIL_DELIVERY
+        value: "1"
       - key: MAIL_SERVER
         sync: false
       - key: MAIL_PORT
@@ -50,6 +62,12 @@ services:
       - key: MAIL_MAX_RETRIES
         value: "2"
       - key: REQUIRE_SMTP
-        value: "1"
+        value: "0"
       - key: COMPANY_NOTIFICATION_EMAIL
+        value: info@afcybersolutions.com.do
+      - key: CONTACT_RECIPIENT
+        value: info@afcybersolutions.com.do
+      - key: SUPPORT_RECIPIENT
+        value: soporte@afcybersolutions.com.do
+      - key: QUOTATION_RECIPIENT
         value: info@afcybersolutions.com.do

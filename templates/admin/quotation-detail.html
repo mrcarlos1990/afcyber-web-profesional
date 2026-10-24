@@ -5,4 +5,4 @@
 </article><article class="admin-card"><h2>Correos</h2>
 {% for job in quote.mail_jobs %}<div><p>{{ job.kind }} · {{ job.status }} · intentos {{ job.attempts }}/5</p>
 {% if job.status!='ENVIADO' %}<form method="post" action="{{ url_for('quotes.retry',job_id=job.id) }}"><input type="hidden" name="_csrf_token" value="{{ csrf_token }}"><label><input type="checkbox" name="confirm_uncertain"> Si la entrega es incierta, he comprobado el proveedor y acepto el riesgo de duplicación.</label><button type="submit">Reintentar correo</button></form>{% endif %}</div>{% endfor %}
-<p>Una entrega SMTP aceptada no acredita recepción en bandeja de entrada. Los trabajos ENVIANDO caducados se revisan tras cinco minutos; no se reenvían automáticamente.</p></article>{% endblock %}
+<p>Una solicitud aceptada por SMTP o Resend no acredita recepción en bandeja de entrada. Los trabajos ENVIANDO caducados se revisan tras cinco minutos; no se reenvían automáticamente.</p></article>{% endblock %}

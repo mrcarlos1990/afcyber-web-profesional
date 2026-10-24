@@ -540,11 +540,19 @@ class EmailDelivery(db.Model):
     recipient = db.Column(db.String(180), nullable=False)
     subject = db.Column(db.String(255), nullable=False)
     email_type = db.Column(db.String(80), nullable=False)
+    provider = db.Column(db.String(30), nullable=False, default="smtp")
+    provider_message_id = db.Column(db.String(255))
+    idempotency_key = db.Column(db.String(255))
     status = db.Column(db.String(40), default="pendiente")
     error = db.Column(db.Text)
     retries = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=utc_now)
     sent_at = db.Column(db.DateTime)
+    accepted_at = db.Column(db.DateTime)
+
+    __table_args__ = (
+        db.Index("uq_email_delivery_idempotency_key", "idempotency_key", unique=True),
+    )
 
 
 class Attachment(db.Model):

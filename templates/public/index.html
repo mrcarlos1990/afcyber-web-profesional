@@ -281,13 +281,17 @@
       </div>
       <div class="col-lg-7 reveal">
         <form class="contact-form" method="post" action="{{ url_for('contact') }}">
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+          <input type="hidden" name="quote_nonce" value="{{ quote_nonce }}">
+          <div class="quote-trap" aria-hidden="true"><label for="contact-website">Deja este campo vacío</label><input id="contact-website" name="website" tabindex="-1" autocomplete="off"></div>
           <div class="row g-3">
-            <div class="col-md-6"><input class="form-control" name="name" placeholder="Nombre" aria-label="Nombre" autocomplete="name" required></div>
-            <div class="col-md-6"><input class="form-control" name="company" placeholder="Empresa" aria-label="Empresa" autocomplete="organization"></div>
-            <div class="col-md-6"><input class="form-control" name="phone" placeholder="Teléfono" aria-label="Teléfono" autocomplete="tel" required></div>
-            <div class="col-md-6"><input class="form-control" type="email" name="email" placeholder="Correo" aria-label="Correo" autocomplete="email"></div>
-            <div class="col-12"><input class="form-control" name="requested_service" placeholder="Servicio solicitado" aria-label="Servicio solicitado"></div>
-            <div class="col-12"><textarea class="form-control" name="message" rows="5" placeholder="Mensaje" aria-label="Mensaje" required></textarea></div>
+            <div class="col-md-6"><input class="form-control" name="name" placeholder="Nombre" aria-label="Nombre" autocomplete="name" maxlength="160" required></div>
+            <div class="col-md-6"><input class="form-control" name="company" placeholder="Empresa" aria-label="Empresa" autocomplete="organization" maxlength="160"></div>
+            <div class="col-md-6"><input class="form-control" name="phone" placeholder="Teléfono" aria-label="Teléfono" autocomplete="tel" maxlength="60" pattern="[+()0-9 .\-]{6,60}" required></div>
+            <div class="col-md-6"><input class="form-control" type="email" name="email" placeholder="Correo" aria-label="Correo" autocomplete="email" maxlength="160"></div>
+            <div class="col-12"><input class="form-control" name="requested_service" placeholder="Servicio solicitado" aria-label="Servicio solicitado" maxlength="160" required></div>
+            <div class="col-12"><textarea class="form-control" name="message" rows="5" placeholder="Mensaje" aria-label="Mensaje" maxlength="5000" required></textarea></div>
+            <div class="col-12"><label class="quote-consent"><input type="checkbox" name="accepted_privacy" required><span>He leído y acepto la <a href="{{ url_for('legal_document', document='privacy-policy') }}">Política de Privacidad</a> para gestionar esta consulta.</span></label></div>
             <div class="col-12"><button class="btn btn-cyber w-100">Enviar solicitud</button></div>
           </div>
         </form>
