@@ -1,0 +1,5 @@
+{% extends 'admin/base.html' %}{% block content %}
+<div class="admin-header"><h1>Solicitudes de cotización</h1><p>Registros persistentes y estado de las notificaciones.</p></div>
+{% for quote in items.items %}<article class="admin-card"><h2><a href="{{ url_for('quotes.admin_detail',quote_id=quote.id) }}">{{ quote.number }}</a></h2><p>{{ quote.name }} · {{ quote.requested_service }}</p><p>{{ quote.created_at.strftime('%d/%m/%Y %H:%M') }} UTC · {{ quote.status }}</p><p>{% for mail in quote.mail_jobs %}{{ mail.kind }}: {{ mail.status }}{% if not loop.last %} · {% endif %}{% endfor %}</p></article>{% else %}<p>No hay cotizaciones.</p>{% endfor %}
+<nav aria-label="Páginas">{% if items.has_prev %}<a href="{{ url_for('quotes.admin_list',page=items.prev_num) }}">Anterior</a>{% endif %} {% if items.has_next %}<a href="{{ url_for('quotes.admin_list',page=items.next_num) }}">Siguiente</a>{% endif %}</nav>
+{% endblock %}

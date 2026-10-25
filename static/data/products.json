@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "products": [
+    {
+      "id": "prestamos-enterprise",
+      "name": "AFCyber Préstamos Enterprise",
+      "description": "Administración de clientes, préstamos, cobros y pagos.",
+      "category": "Préstamos y cobros",
+      "main_function": "Administración de clientes, préstamos, cobros y pagos.",
+      "features": [
+        "Clientes y préstamos; cobros y pagos",
+        "Intereses y mora; caja",
+        "Recibos PDF para compartir",
+        "Reportes y auditoría",
+        "Importación/exportación"
+      ],
+      "modules": [],
+      "benefits": [],
+      "recommended_business": "",
+      "platform": "Android",
+      "requirements": "",
+      "commercial_status": "NO_CONFIRMADO",
+      "license": "",
+      "support_email": "soporte@afcybersolutions.com.do",
+      "url": "/productos/prestamos-enterprise",
+      "image": "",
+      "quote_available": true,
+      "icon": "fa-coins",
+      "keywords": ["prestamos", "prestar dinero", "cobros", "prestamista", "intereses", "mora"],
+      "sources": ["Catálogo público de AFCyber Solutions"]
+    },
+    {
+      "id": "multinegocios",
+      "name": "MultiNegocios",
+      "description": "Solución comercial con POS, créditos, servicios y reportes.",
+      "category": "Ventas y gestión comercial",
+      "main_function": "Solución comercial con POS, créditos, servicios y reportes.",
+      "features": [
+        "POS, créditos y servicios",
+        "Reportes y dashboard",
+        "Configuración y licencias",
+        "Roles y permisos; auditoría",
+        "Copias de seguridad",
+        "Impresión de comprobantes"
+      ],
+      "modules": [],
+      "benefits": [],
+      "recommended_business": "",
+      "platform": "Windows",
+      "requirements": "",
+      "commercial_status": "NO_CONFIRMADO",
+      "license": "",
+      "support_email": "soporte@afcybersolutions.com.do",
+      "url": "/productos/multinegocios",
+      "image": "",
+      "quote_available": true,
+      "icon": "fa-store",
+      "keywords": ["multinegocios", "ventas", "negocio", "tienda", "ferreteria", "pos", "facturacion"],
+      "sources": ["Catálogo público de AFCyber Solutions"]
+    },
+    {
+      "id": "cmms-empresarial",
+      "name": "CMMS Empresarial",
+      "description": "Gestión de activos y mantenimiento con órdenes de trabajo e historial.",
+      "category": "Mantenimiento empresarial",
+      "main_function": "Gestión de activos y mantenimiento con órdenes de trabajo e historial.",
+      "features": [
+        "Gestión de activos y mantenimiento",
+        "Órdenes de trabajo e historial"
+      ],
+      "modules": [],
+      "benefits": [],
+      "recommended_business": "",
+      "platform": "",
+      "requirements": "",
+      "commercial_status": "NO_CONFIRMADO",
+      "license": "",
+      "support_email": "soporte@afcybersolutions.com.do",
+      "url": "/productos/cmms-empresarial",
+      "image": "",
+      "quote_available": true,
+      "icon": "fa-screwdriver-wrench",
+      "keywords": ["cmms", "activos", "ordenes de trabajo", "mantenimiento empresarial"],
+      "sources": ["Catálogo público de AFCyber Solutions"]
+    }
+  ]
+}

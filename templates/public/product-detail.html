@@ -1,0 +1,11 @@
+{% extends 'public/base.html' %}
+{% block content %}{% include 'public/partials/nav.html' %}
+<main id="contenido" tabindex="-1" class="catalog-main"><section class="section"><div class="container corporate-reading">
+  <a href="{{ url_for('index') }}#soluciones">← Productos AFCyber</a><h1>{{ product.name }}</h1>
+  {% if product.image %}<img src="{{ product.image }}" alt="Imagen publicada de {{ product.name }}" loading="lazy" class="corporate-image">{% endif %}
+  <p>{{ product.description }}</p><h2>Características verificadas</h2><ul>{% for feature in product.features %}<li>{{ feature }}</li>{% else %}<li>Consulta los detalles publicados del programa.</li>{% endfor %}</ul>
+  <p>Plataforma: {{ product.platform or 'No publicada' }}.</p><p>Estado comercial: {{ product.commercial_status }}.</p>
+  <p>Licencia: {{ product.license or 'No confirmada' }}. Requisitos: {{ product.requirements or 'No publicados' }}.</p>
+  <p>Soporte: <a href="mailto:{{ product.support_email }}">{{ product.support_email }}</a></p>
+  <div class="hero-actions"><a class="btn btn-cyber" href="{{ url_for('quotes.form', servicio=product.name) }}">Solicitar cotización</a><a class="btn btn-glass" href="{{ url_for('contact_page') }}">Hablar con un asesor</a></div>
+</div></section></main>{% include 'public/partials/footer.html' %}{% include 'public/partials/floating.html' %}{% endblock %}

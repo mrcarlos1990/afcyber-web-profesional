@@ -155,6 +155,9 @@ REQUIRED_PRODUCTION_TABLES = {
     "signature_audit_event",
     "email_delivery",
     "attachment",
+    "quote_request",
+    "quote_mail",
+    "public_rate_bucket",
 }
 
 
@@ -285,6 +288,10 @@ def create_app():
     register_filters(app)
     register_security(app)
     register_routes(app)
+    from assistant import register_assistant
+    from quotations import register_quotes, rate_limit
+    register_quotes(app, send_configured_email, normalize_email)
+    register_assistant(app, rate_limit)
 
     with app.app_context():
         if not is_migration_command():
@@ -328,6 +335,10 @@ def register_security(app):
     def csrf_protect():
         session.setdefault("_csrf_token", secrets.token_urlsafe(32))
         if request.method == "POST":
+            if request.path in {"/asistente/responder", "/cotizacion", "/contact"}:
+                payload_limit = 4096 if request.path == "/asistente/responder" else 20000
+                if request.content_length and request.content_length > payload_limit:
+                    abort(413)
             token = session.get("_csrf_token")
             form_token = request.form.get("_csrf_token")
             if not token or not form_token or not secrets.compare_digest(token, form_token):
@@ -980,7 +991,18 @@ def email_body_html(body):
     return "<div style=\"font-family:Arial,sans-serif;line-height:1.55\">" + escaped.replace("\n", "<br>") + "</div>"
 
 
-def send_configured_email(recipient, subject, body, email_type, attachment_path=None, *, html_body=None, reply_to=None):
+def send_configured_email(
+    recipient,
+    subject,
+    body,
+    email_type,
+    attachment_path=None,
+    *,
+    html_body=None,
+    reply_to=None,
+    message_id=None,
+    max_retries_override=None,
+):
     recipient = safe_header(recipient, 180)
     subject = safe_header(subject)
     provider = selected_email_provider()
@@ -1031,9 +1053,10 @@ def send_configured_email(recipient, subject, body, email_type, attachment_path=
             if path.exists() and path.is_file():
                 attachments.append({"filename": path.name, "content": base64.b64encode(path.read_bytes()).decode("ascii")})
         try:
-            max_retries = max(0, min(int(os.getenv("RESEND_MAX_RETRIES", "2")), 5))
+            configured_retries = os.getenv("RESEND_MAX_RETRIES", "2") if max_retries_override is None else max_retries_override
+            max_retries = max(0, min(int(configured_retries), 5))
         except (TypeError, ValueError):
-            max_retries = 2
+            max_retries = 2 if max_retries_override is None else 0
         result = send_resend_email(
             api_key=api_key,
             sender=sender,
@@ -1070,7 +1093,8 @@ def send_configured_email(recipient, subject, body, email_type, attachment_path=
         port = int(os.getenv("MAIL_PORT", "587"))
         if not 1 <= port <= 65535:
             raise ValueError
-        max_retries = max(0, min(int(os.getenv("MAIL_MAX_RETRIES", "2")), 5))
+        configured_retries = os.getenv("MAIL_MAX_RETRIES", "2") if max_retries_override is None else max_retries_override
+        max_retries = max(0, min(int(configured_retries), 5))
     except (TypeError, ValueError):
         delivery.status = "error"
         delivery.error = "MAIL_PORT o MAIL_MAX_RETRIES no son válidos."
@@ -1079,6 +1103,8 @@ def send_configured_email(recipient, subject, body, email_type, attachment_path=
     message["From"] = sender
     message["To"] = recipient
     message["Subject"] = subject
+    if message_id:
+        message["Message-ID"] = safe_header(message_id, 255)
     if reply_to:
         message["Reply-To"] = reply_to
     message.set_content(body or "")
@@ -1803,76 +1829,8 @@ def register_routes(app):
 
     @app.post("/contact")
     def contact():
-        name = form_text("name", 160)
-        phone = form_text("phone", 60)
-        message = form_text("message", 5000)
-        email = normalize_email(form_text("email", 160))
-        service = form_text("requested_service", 160)
-        nonce = request.form.get("quote_nonce", "")
-        if nonce and nonce in session.get("quote_completed", []):
-            flash("Esta solicitud ya está guardada. No se ha creado un duplicado.", "info")
-            return redirect(url_for("contact_page") + "#contacto")
-        errors = []
-        if not nonce or not hmac.compare_digest(nonce, session.get("quote_nonce", "")):
-            errors.append("La sesión del formulario cambió. Recarga la página e inténtalo de nuevo.")
-        if not name or not service or not message:
-            errors.append("Completa nombre, servicio y descripción de la necesidad.")
-        if email is None or (not email and not phone):
-            errors.append("Indica un correo válido o un teléfono de contacto.")
-        if phone and not re.fullmatch(r"[+()\d\s.-]{6,60}", phone):
-            errors.append("Revisa el teléfono: utiliza al menos seis caracteres entre números y signos de teléfono.")
-        if request.form.get("accepted_privacy") != "on":
-            errors.append("Acepta la Política de Privacidad para enviar tu consulta.")
-        for field, limit in [("name", 160), ("email", 160), ("phone", 60), ("requested_service", 160), ("message", 5000), ("company", 160)]:
-            if len(request.form.get(field, "")) > limit:
-                errors.append("Uno de los campos supera la longitud permitida.")
-                break
-        if errors:
-            return render_template("public/contact.html", page_title="Contacto | AFCyber Solutions",
-                                   quote_errors=errors, quote_values=request.form,
-                                   social_links=get_public_social_links()), 422
-        contact_message = ContactMessage(
-            name=name,
-            company=form_text("company", 160),
-            phone=phone,
-            email=email,
-            requested_service=service,
-            message=message + "\n\n[Consentimiento: Política de Privacidad aceptada para gestionar esta consulta.]",
-        )
-        db.session.add(contact_message)
-        try:
-            db.session.commit()
-        except SQLAlchemyError:
-            db.session.rollback()
-            return render_template("public/contact.html", page_title="Contacto | AFCyber Solutions",
-                                   quote_errors=["No pudimos guardar tu solicitud. Inténtalo de nuevo o contacta por WhatsApp."],
-                                   quote_values=request.form, social_links=get_public_social_links()), 503
-        session["quote_completed"] = (session.get("quote_completed", []) + [nonce])[-8:]
-        session["quote_nonce"] = secrets.token_urlsafe(24)
-        try:
-            recipient = notification_recipient(service)
-            delivery = send_configured_email(
-                recipient,
-                f"Nueva solicitud de contacto - {service}",
-                (
-                    f"Solicitud de contacto: CONTACT-{contact_message.id:06d}\n"
-                    f"Nombre: {name}\nEmpresa: {contact_message.company or 'No indicada'}\n"
-                    f"Correo: {email or 'No indicado'}\nTeléfono: {phone or 'No indicado'}\n"
-                    f"Servicio solicitado: {service}\nMensaje: {message}"
-                ),
-                "contact_notification",
-                reply_to=email or None,
-            )
-            db.session.commit()
-            if delivery.status in {"enviado", "aceptado"}:
-                flash("Solicitud recibida y notificación aceptada por el proveedor de correo.", "success")
-            else:
-                flash("Solicitud guardada para revisión. La notificación por correo está pendiente.", "success")
-        except Exception:
-            db.session.rollback()
-            current_app.logger.exception("contact_notification_failed request_id=%s", contact_message.id)
-            flash("Solicitud guardada para revisión. La notificación por correo está pendiente.", "success")
-        return redirect(url_for("contact_page") + "#contacto")
+        from quotations import process_submission
+        return process_submission(send_configured_email, normalize_email, social_links=get_public_social_links())
 
     @app.route("/admin/login", methods=["GET", "POST"])
     def admin_login():
