@@ -1,4 +1,14 @@
-.assistant-toggle { position:fixed; left:16px; bottom:16px; z-index:60; width:52px; height:52px; border-radius:50%; border:1px solid #00d4ff; color:white; background:#007bff; font-weight:800; box-shadow:0 5px 24px #0007; }
+.assistant-toggle { position:fixed; left:16px; bottom:16px; z-index:60; display:grid; place-items:center; width:52px; height:52px; padding:0; border-radius:50%; border:1px solid #00d4ff; color:white; background:#007bff; box-shadow:0 5px 24px #0007; cursor:pointer; transition:transform .18s ease, box-shadow .18s ease, background-color .18s ease; }
+.assistant-toggle:hover { transform:translateY(-2px) scale(1.04); background:#056fe5; box-shadow:0 8px 28px #00d4ff66,0 5px 24px #0007; }
+.assistant-toggle:focus-visible { outline:3px solid #fff; outline-offset:3px; }
+.assistant-avatar { width:36px; height:36px; overflow:visible; }
+.assistant-avatar-face { fill:#fff; stroke:#00d4ff; stroke-width:2; }
+.assistant-avatar-antenna,.assistant-avatar-smile,.assistant-avatar-cheek { fill:none; stroke:#fff; stroke-linecap:round; stroke-width:2.5; }
+.assistant-avatar-antenna { stroke:#00d4ff; }
+.assistant-avatar-signal { fill:#fff; stroke:#00d4ff; stroke-width:1.5; }
+.assistant-avatar-eye { fill:none; stroke:#007bff; stroke-linecap:round; stroke-width:5; }
+.assistant-avatar-smile { stroke:#007bff; }
+.assistant-avatar-cheek { stroke:#00aeea; stroke-width:2; }
 .assistant-panel { position:fixed; left:16px; bottom:80px; width:410px; max-width:calc(100vw - 32px); max-height:calc(100dvh - 180px); z-index:70; color:#e9f3ff; background:#071a2f; border:1px solid #00d4ff55; border-radius:16px; box-shadow:0 12px 50px #0009; display:flex; flex-direction:column; overflow:hidden; }
 .assistant-panel[hidden] { display:none!important; }
 .assistant-header { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:14px; background:#080c14; }
@@ -22,7 +32,9 @@
 #assistant-status { margin:4px 0; font-size:.8rem; }.assistant-compare { max-width:100%; overflow:auto; }
 .assistant-compare table { border-collapse:collapse; font-size:.82rem; width:100%; min-width:330px; }.assistant-compare th,.assistant-compare td { padding:9px; border:1px solid #ffffff30; vertical-align:top; }
 .quote-trap { position:absolute; left:-10000px; width:1px; height:1px; overflow:hidden; }
-@media(max-width:575px) { .assistant-toggle { left:auto; right:8px; bottom:140px; width:48px; height:48px; }.assistant-panel { left:8px; right:72px; bottom:12px; width:auto; max-width:none; max-height:calc(100dvh - 88px); }.assistant-header { padding:8px; }.assistant-header strong { font-size:.85rem; }.assistant-body { padding:10px; }.assistant-input { padding:10px; } }
+@media(max-width:575px) { .assistant-toggle { left:auto; right:8px; bottom:140px; width:48px; height:48px; }.assistant-avatar { width:33px; height:33px; }.assistant-panel { left:8px; right:72px; bottom:12px; width:auto; max-width:none; max-height:calc(100dvh - 88px); }.assistant-header { padding:8px; }.assistant-header strong { font-size:.85rem; }.assistant-body { padding:10px; }.assistant-input { padding:10px; } }
+
+@media(prefers-reduced-motion:reduce) { .assistant-toggle { transition:none; } }
 
 .quotation-page .flash-stack { position:static; width:auto; padding:0; margin:18px 0; }
 @media(max-width:575px) {
