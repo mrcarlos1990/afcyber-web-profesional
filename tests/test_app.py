@@ -369,7 +369,8 @@ class AppTests(unittest.TestCase):
         for table in db.metadata.sorted_tables:
             self.assertIn("CREATE TABLE", str(CreateTable(table).compile(dialect=dialect)))
             for index in table.indexes:
-                self.assertIn("CREATE INDEX", str(CreateIndex(index).compile(dialect=dialect)))
+                sql = str(CreateIndex(index).compile(dialect=dialect))
+                self.assertIn("CREATE UNIQUE INDEX" if index.unique else "CREATE INDEX", sql)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,6 @@
+{% extends 'public/base.html' %}
+{% block content %}{% include 'public/partials/nav.html' %}
+<main id="contenido" tabindex="-1" class="catalog-main quotation-page"><section class="section"><div class="container corporate-reading">
+  <h1>Solicitar cotización</h1><p>Cuéntanos tu necesidad. Recibirás un número de solicitud; el equipo confirmará el alcance y la propuesta. No se calcula un precio automático sin datos verificados.</p>
+  {% include 'public/partials/flash.html' %}{% set full_quote=true %}{% include 'public/partials/quote-form.html' %}
+</div></section></main>{% include 'public/partials/footer.html' %}{% include 'public/partials/floating.html' %}{% endblock %}

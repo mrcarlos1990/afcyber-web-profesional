@@ -4,7 +4,7 @@ body { margin: 0; font-family: Inter, system-ui, sans-serif; background: #f4f7fb
 .admin-brand span { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 8px; background: linear-gradient(135deg,#1777ff,#00d4ff); }
 .admin-sidebar nav { display: grid; gap: 8px; }
 .admin-sidebar a,
-.sidebar-logout button { color: #cbd5e1; text-decoration: none; padding: 10px 12px; border-radius: 8px; font-weight: 700; display: flex; gap: 10px; align-items: center; }
+.sidebar-logout button { color: #cbd5e1; text-decoration: none; padding: 10px 12px; min-height:44px; border-radius: 8px; font-weight: 700; display: flex; gap: 10px; align-items: center; }
 .admin-sidebar a:hover,
 .sidebar-logout button:hover { background: rgba(255,255,255,.08); color: #fff; }
 .sidebar-logout { margin: 0; }
@@ -32,13 +32,13 @@ body { margin: 0; font-family: Inter, system-ui, sans-serif; background: #f4f7fb
 .stacked-form label { font-weight: 800; color: #334155; }
 .stacked-form textarea { min-height: 110px; }
 .stacked-form .tall { min-height: 220px; }
-.form-control { border-radius: 8px; border-color: #d8e0ea; padding: .72rem .85rem; }
+.form-control { border-radius: 8px; border-color: #d8e0ea; padding: .72rem .85rem; min-height:44px; }
 .check { display: inline-flex; gap: .55rem; align-items: center; font-weight: 800; color: #334155; }
 .checks-grid { display: flex; flex-wrap: wrap; gap: 12px 18px; }
 .preview { width: 100%; height: 110px; object-fit: contain; margin-top: 8px; background: #f8fafc; border-radius: 8px; border: 1px dashed #cbd5e1; }
 .preview.wide { height: 190px; object-fit: cover; }
 .form-actions { margin-top: 18px; }
-.btn { border-radius: 8px; font-weight: 800; }
+.btn { border-radius: 8px; font-weight: 800; min-height:44px; }
 .mini-form { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; align-items: start; }
 .mini-form textarea { grid-column: span 2; min-height: 80px; }
 .edit-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; align-items: start; }
@@ -56,7 +56,7 @@ body { margin: 0; font-family: Inter, system-ui, sans-serif; background: #f4f7fb
 .login-card p { color: #64748b; }
 .login-card .form-control { margin-bottom: 12px; }
 .login-mark { display: grid; place-items: center; width: 54px; height: 54px; border-radius: 8px; color: #fff; background: linear-gradient(135deg, #0b5fff, #00c2a8); font-weight: 900; }
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
   .admin-sidebar { position: static; width: auto; }
   .admin-main { margin-left: 0; padding: 18px; }
   .stats-grid, .quick-grid, .grid-2, .grid-3, .grid-4, .grid-5, .mini-form, .edit-row, .admin-gallery { grid-template-columns: 1fr; }

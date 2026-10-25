@@ -43,11 +43,8 @@
 <h2>Soluciones para tu negocio</h2>
 <p>Tecnología práctica para mejorar tu operación y tu presencia digital.</p></div>
 <div class="row g-3">
-{% for title, description, resource in [
-('Software y desarrollo web', 'Sistemas empresariales, POS y páginas web para organizar tu operación y presentar tu negocio.', 'servicio-software'),
-('Seguridad e infraestructura', 'Ciberseguridad, redes, CCTV y control de acceso para proteger la información y conectar tu negocio.', 'servicio-redes'),
-('Soporte y mantenimiento', 'Diagnóstico y mantenimiento de equipos, software y sistemas de climatización.', 'servicio-soporte')
-] %}
+{% for group in public_service_groups %}
+{% set title=group.name %}{% set description=group.description %}{% set resource=group.image %}
 <div class="col-md-4"><article class="service-card has-corporate-image">
 {{ image(resource, 'Ilustración conceptual de ' ~ title, sizes='(max-width: 767px) calc(100vw - 32px), 350px') }}
 <h3>{{ title }}</h3><p>{{ description }}</p>

@@ -1,0 +1,23 @@
+[
+  {
+    "id": "grupo-software",
+    "name": "Software y desarrollo web",
+    "description": "Sistemas empresariales, POS y páginas web para organizar tu operación y presentar tu negocio.",
+    "image": "servicio-software",
+    "source": "/#servicios"
+  },
+  {
+    "id": "grupo-infraestructura",
+    "name": "Seguridad e infraestructura",
+    "description": "Ciberseguridad, redes, CCTV y control de acceso para proteger la información y conectar tu negocio.",
+    "image": "servicio-redes",
+    "source": "/#servicios"
+  },
+  {
+    "id": "grupo-soporte",
+    "name": "Soporte y mantenimiento",
+    "description": "Diagnóstico y mantenimiento de equipos, software y sistemas de climatización.",
+    "image": "servicio-soporte",
+    "source": "/#servicios"
+  }
+]
