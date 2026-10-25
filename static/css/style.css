@@ -95,6 +95,8 @@ img { max-width: 100%; display: block; }
 .navbar-toggler {
   border-color: rgba(255, 255, 255, .24);
   background: rgba(255, 255, 255, .08);
+  min-width: 44px;
+  min-height: 44px;
 }
 .navbar-toggler-icon { filter: invert(1); }
 

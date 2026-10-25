@@ -15,7 +15,7 @@
 .product-card p { color:#b3c3d7; }
 .product-card .btn { margin-top:auto; }
 .contact-form label { display:block; font-weight:600; margin-bottom:6px; }
-.contact-form .quote-consent { display:flex; align-items:flex-start; gap:10px; font-size:.9rem; font-weight:400; }
+.contact-form .quote-consent { display:flex; align-items:flex-start; gap:10px; min-height:44px; font-size:.9rem; font-weight:400; }
 .quote-consent input { flex:0 0 auto; width:20px; height:20px; margin-top:3px; accent-color:#007bff; }
 .form-help { color:#b3c3d7; font-size:.88rem; margin:4px 0 0; }
 .quote-status:empty { display:none; }

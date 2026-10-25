@@ -13,7 +13,8 @@
 .compact-site .navbar-brand { font-size:1rem; font-weight:750; gap:10px; }
 .compact-site .brand-logo { width:48px; height:48px; object-fit:contain; }
 .compact-site .navbar-brand img { width:44px; height:44px; }
-.compact-site .nav-link { font-size:.85rem; font-weight:600; padding:10px 9px; }
+.compact-site .navbar-toggler { min-width:44px; min-height:44px; }
+.compact-site .nav-link { display:flex; align-items:center; min-height:44px; font-size:.85rem; font-weight:600; padding:10px 9px; }
 .compact-site .navbar-nav .nav-link.active { color:#68dfff; }
 .compact-site .btn { padding:11px 18px; font-weight:650; font-size:.9rem; min-height:44px; box-shadow:none; }
 .compact-site .nav-cta { background:var(--primary); color:#fff; }
