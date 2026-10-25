@@ -1,3 +1,4 @@
+import base64
 import json
 import mimetypes
 import os
@@ -21,12 +22,13 @@ from urllib.parse import urlparse
 from uuid import uuid4
 
 from dotenv import load_dotenv
-from flask import Flask, Response, abort, flash, has_request_context, redirect, render_template, request, send_file, send_from_directory, session, url_for
+from flask import Flask, Response, abort, current_app, flash, has_request_context, redirect, render_template, request, send_file, send_from_directory, session, url_for
 from PIL import Image as PillowImage, ImageOps, UnidentifiedImageError
 from flask_login import current_user, login_required, login_user, logout_user
 from sqlalchemy import inspect as sa_inspect
 from sqlalchemy.exc import SQLAlchemyError
 from werkzeug.utils import secure_filename
+from resend_client import send_email as send_resend_email
 
 try:
     from flask_migrate import Migrate
@@ -130,6 +132,9 @@ LOGIN_MAX_ATTEMPTS = 5
 LOGIN_LOCKOUT_SECONDS = 300
 HEX_COLOR_RE = re.compile(r"^#[0-9a-fA-F]{6}$")
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+DEFAULT_CONTACT_RECIPIENT = "info@afcybersolutions.com.do"
+DEFAULT_SUPPORT_RECIPIENT = "soporte@afcybersolutions.com.do"
+SUPPORT_REQUEST_TERMS = {"soporte", "mantenimiento", "incidente", "reparacion", "reparación", "asistencia"}
 GOOGLE_TAG_RE = re.compile(r"^(G|GT|UA|AW)-[A-Za-z0-9-]{4,}$")
 CONSENT_VERSION = "2026-07"
 OTP_TTL_MINUTES = 15
@@ -193,9 +198,21 @@ def require_production_runtime(database_url):
         raise RuntimeError("PRIVATE_STORAGE_ROOT debe apuntar a almacenamiento persistente externo al repositorio.")
     if path_is_relative_to(PRIVATE_STORAGE, LEGACY_UPLOAD_FOLDER):
         raise RuntimeError("Los documentos privados no pueden guardarse dentro de static/uploads.")
-    if os.getenv("REQUIRE_SMTP", "1") == "1":
+    provider = os.getenv("EMAIL_PROVIDER", "smtp").strip().lower() or "smtp"
+    delivery_required = env_flag(
+        "REQUIRE_EMAIL_DELIVERY",
+        default=os.getenv("REQUIRE_SMTP", "1") == "1",
+    )
+    if provider not in {"smtp", "resend"}:
+        raise RuntimeError("EMAIL_PROVIDER debe ser 'smtp' o 'resend'.")
+    if delivery_required and provider == "resend":
+        if not os.getenv("RESEND_API_KEY", "").strip() or not os.getenv("RESEND_FROM_EMAIL", "").strip():
+            raise RuntimeError("RESEND_API_KEY y RESEND_FROM_EMAIL son obligatorios en produccion.")
+    if delivery_required and provider == "smtp":
         if not os.getenv("MAIL_SERVER", "").strip() or not os.getenv("MAIL_DEFAULT_SENDER", "").strip():
             raise RuntimeError("MAIL_SERVER y MAIL_DEFAULT_SENDER son obligatorios en produccion.")
+        if not env_flag("MAIL_USE_TLS", default=True):
+            raise RuntimeError("MAIL_USE_TLS debe estar activo en produccion.")
 
 
 def validate_database_schema():
@@ -396,6 +413,30 @@ def normalize_email(value, required=False):
     except EmailNotValidError:
         flash("El correo electrónico no tiene un formato válido.", "danger")
         return None
+
+
+def notification_recipient(service="", channel="contact"):
+    """Resolve a fixed corporate inbox; never trust a form-supplied recipient."""
+    normalized_service = re.sub(r"\s+", " ", (service or "").strip().lower())
+    if channel == "support" or any(term in normalized_service for term in SUPPORT_REQUEST_TERMS):
+        candidate = os.getenv("SUPPORT_RECIPIENT", "").strip() or os.getenv("SUPPORT_EMAIL", "").strip()
+        fallback = DEFAULT_SUPPORT_RECIPIENT
+    else:
+        candidate = (
+            os.getenv("CONTACT_RECIPIENT", "").strip()
+            or os.getenv("QUOTATION_RECIPIENT", "").strip()
+            or os.getenv("COMPANY_NOTIFICATION_EMAIL", "").strip()
+        )
+        fallback = DEFAULT_CONTACT_RECIPIENT
+    return candidate if EMAIL_RE.fullmatch(candidate) else fallback
+
+
+def safe_header(value, max_length=255):
+    return re.sub(r"[\r\n]+", " ", str(value or "")).strip()[:max_length]
+
+
+def env_flag(name, default=False):
+    return os.getenv(name, "1" if default else "0").strip().lower() in {"1", "true", "yes", "on"}
 
 
 def password_is_strong(password):
@@ -920,37 +961,133 @@ def log_signature_event(event_type, document=None, signature_request=None, detai
 
 def safe_mail_error(exc):
     message = f"{exc.__class__.__name__}: {exc}"
-    for secret in [os.getenv("MAIL_PASSWORD", ""), os.getenv("MAIL_USERNAME", "")]:
+    for secret in [os.getenv("MAIL_PASSWORD", ""), os.getenv("MAIL_USERNAME", ""), os.getenv("RESEND_API_KEY", "")]:
         if secret:
             message = message.replace(secret, "[redacted]")
     return message[:1000]
 
 
-def send_configured_email(recipient, subject, body, email_type, attachment_path=None):
-    delivery = EmailDelivery(uuid=make_uuid(), recipient=recipient, subject=subject, email_type=email_type, status="pendiente")
+def selected_email_provider():
+    return os.getenv("EMAIL_PROVIDER", "smtp").strip().lower() or "smtp"
+
+
+def email_delivery_required():
+    return env_flag("REQUIRE_EMAIL_DELIVERY", default=os.getenv("REQUIRE_SMTP", "1") == "1")
+
+
+def email_body_html(body):
+    escaped = html.escape(body or "")
+    return "<div style=\"font-family:Arial,sans-serif;line-height:1.55\">" + escaped.replace("\n", "<br>") + "</div>"
+
+
+def send_configured_email(recipient, subject, body, email_type, attachment_path=None, *, html_body=None, reply_to=None):
+    recipient = safe_header(recipient, 180)
+    subject = safe_header(subject)
+    provider = selected_email_provider()
+    delivery_uuid = make_uuid()
+    delivery = EmailDelivery(
+        uuid=delivery_uuid,
+        recipient=recipient,
+        subject=subject,
+        email_type=email_type,
+        provider=provider,
+        idempotency_key=f"afcyber-{delivery_uuid}",
+        status="pendiente",
+    )
     db.session.add(delivery)
     server = os.getenv("MAIL_SERVER", "").strip()
-    sender = os.getenv("MAIL_DEFAULT_SENDER", "").strip()
+    smtp_sender = safe_header(os.getenv("MAIL_DEFAULT_SENDER", ""), 180)
+    resend_sender = safe_header(os.getenv("RESEND_FROM_EMAIL", ""), 180)
+    sender = resend_sender if provider == "resend" else smtp_sender
     username = os.getenv("MAIL_USERNAME", "").strip()
     password = os.getenv("MAIL_PASSWORD", "").strip()
-    if not server or not sender:
-        delivery.status = "omitido"
-        delivery.error = "Correo no configurado por variables de entorno."
+    api_key = os.getenv("RESEND_API_KEY", "").strip()
+    if provider not in {"smtp", "resend"}:
+        delivery.status = "error"
+        delivery.error = "Proveedor de correo no permitido."
+        return delivery
+    if provider == "smtp" and (not server or not sender):
+        delivery.status = "error" if email_delivery_required() else "omitido"
+        delivery.error = "Correo SMTP no configurado por variables de entorno."
+        return delivery
+    if provider == "resend" and (not api_key or not sender):
+        delivery.status = "error" if email_delivery_required() else "omitido"
+        delivery.error = "Correo Resend no configurado por variables de entorno."
+        return delivery
+    sender_address = parseaddr(sender)[1]
+    if not EMAIL_RE.fullmatch(recipient) or not EMAIL_RE.fullmatch(sender_address):
+        delivery.status = "error"
+        delivery.error = "Destinatario o remitente de correo inválido."
+        return delivery
+    reply_to = safe_header(reply_to, 180) if reply_to else None
+    if reply_to and not EMAIL_RE.fullmatch(reply_to):
+        reply_to = None
+    html_body = html_body or email_body_html(body)
+
+    if provider == "resend":
+        attachments = []
+        if attachment_path:
+            path = private_path(attachment_path)
+            if path.exists() and path.is_file():
+                attachments.append({"filename": path.name, "content": base64.b64encode(path.read_bytes()).decode("ascii")})
+        try:
+            max_retries = max(0, min(int(os.getenv("RESEND_MAX_RETRIES", "2")), 5))
+        except (TypeError, ValueError):
+            max_retries = 2
+        result = send_resend_email(
+            api_key=api_key,
+            sender=sender,
+            recipient=recipient,
+            subject=subject,
+            text_body=body,
+            html_body=html_body,
+            reply_to=reply_to,
+            attachments=attachments,
+            idempotency_key=delivery.idempotency_key,
+            timeout_seconds=os.getenv("RESEND_TIMEOUT_SECONDS", "10"),
+            max_retries=max_retries,
+        )
+        delivery.retries = result.retries
+        delivery.provider_message_id = result.message_id
+        if result.accepted:
+            delivery.status = "aceptado"
+            delivery.accepted_at = utc_now()
+            delivery.sent_at = delivery.accepted_at
+            delivery.error = None
+            current_app.logger.info("resend_email_accepted type=%s", email_type)
+        else:
+            delivery.status = "error"
+            delivery.error = result.error or "Resend no aceptó la solicitud."
+            current_app.logger.warning(
+                "resend_email_failed type=%s attempts=%s http_status=%s",
+                email_type,
+                result.retries + 1,
+                result.http_status or "none",
+            )
         return delivery
 
+    try:
+        port = int(os.getenv("MAIL_PORT", "587"))
+        if not 1 <= port <= 65535:
+            raise ValueError
+        max_retries = max(0, min(int(os.getenv("MAIL_MAX_RETRIES", "2")), 5))
+    except (TypeError, ValueError):
+        delivery.status = "error"
+        delivery.error = "MAIL_PORT o MAIL_MAX_RETRIES no son válidos."
+        return delivery
     message = EmailMessage()
     message["From"] = sender
     message["To"] = recipient
     message["Subject"] = subject
-    message.set_content(body)
+    if reply_to:
+        message["Reply-To"] = reply_to
+    message.set_content(body or "")
+    message.add_alternative(html_body, subtype="html")
     if attachment_path:
         path = private_path(attachment_path)
-        if path.exists():
+        if path.exists() and path.is_file():
             message.add_attachment(path.read_bytes(), maintype="application", subtype="pdf", filename=path.name)
-
-    port = int(os.getenv("MAIL_PORT", "587"))
     use_tls = os.getenv("MAIL_USE_TLS", "1") == "1"
-    max_retries = max(0, min(int(os.getenv("MAIL_MAX_RETRIES", "2")), 5))
     for attempt in range(max_retries + 1):
         try:
             with smtplib.SMTP(server, port, timeout=15) as smtp:
@@ -1562,7 +1699,7 @@ def register_routes(app):
                     sha256=upload["sha256"],
                 ))
             document = create_service_document(service_request)
-            company_recipient = os.getenv("COMPANY_NOTIFICATION_EMAIL") or get_settings().main_email
+            company_recipient = notification_recipient(required["requested_service"], channel="support")
             send_configured_email(
                 company_recipient,
                 f"Nueva solicitud de servicio - {service_request.requested_service}",
@@ -1694,14 +1831,15 @@ def register_routes(app):
             return render_template("public/contact.html", page_title="Contacto | AFCyber Solutions",
                                    quote_errors=errors, quote_values=request.form,
                                    social_links=get_public_social_links()), 422
-        db.session.add(ContactMessage(
+        contact_message = ContactMessage(
             name=name,
             company=form_text("company", 160),
             phone=phone,
             email=email,
             requested_service=service,
             message=message + "\n\n[Consentimiento: Política de Privacidad aceptada para gestionar esta consulta.]",
-        ))
+        )
+        db.session.add(contact_message)
         try:
             db.session.commit()
         except SQLAlchemyError:
@@ -1711,7 +1849,29 @@ def register_routes(app):
                                    quote_values=request.form, social_links=get_public_social_links()), 503
         session["quote_completed"] = (session.get("quote_completed", []) + [nonce])[-8:]
         session["quote_nonce"] = secrets.token_urlsafe(24)
-        flash("Solicitud guardada para revisión. Esta confirmación no acredita la entrega de un correo.", "success")
+        try:
+            recipient = notification_recipient(service)
+            delivery = send_configured_email(
+                recipient,
+                f"Nueva solicitud de contacto - {service}",
+                (
+                    f"Solicitud de contacto: CONTACT-{contact_message.id:06d}\n"
+                    f"Nombre: {name}\nEmpresa: {contact_message.company or 'No indicada'}\n"
+                    f"Correo: {email or 'No indicado'}\nTeléfono: {phone or 'No indicado'}\n"
+                    f"Servicio solicitado: {service}\nMensaje: {message}"
+                ),
+                "contact_notification",
+                reply_to=email or None,
+            )
+            db.session.commit()
+            if delivery.status in {"enviado", "aceptado"}:
+                flash("Solicitud recibida y notificación aceptada por el proveedor de correo.", "success")
+            else:
+                flash("Solicitud guardada para revisión. La notificación por correo está pendiente.", "success")
+        except Exception:
+            db.session.rollback()
+            current_app.logger.exception("contact_notification_failed request_id=%s", contact_message.id)
+            flash("Solicitud guardada para revisión. La notificación por correo está pendiente.", "success")
         return redirect(url_for("contact_page") + "#contacto")
 
     @app.route("/admin/login", methods=["GET", "POST"])

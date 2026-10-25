@@ -13,6 +13,7 @@ class PublicMediaTests(unittest.TestCase):
     def setUp(self):
         # test_app's module cleanup removes its storage before this module runs.
         # Give these durability tests their own storage and restore all globals.
+        (module.BASE_DIR / '.verification').mkdir(parents=True, exist_ok=True)
         temporary = tempfile.TemporaryDirectory(prefix='public-media-test-', dir=module.BASE_DIR / '.verification')
         self.addCleanup(temporary.cleanup)
         root = Path(temporary.name)
