@@ -33,9 +33,9 @@
 .product-features { color:#b3c3d7; padding-left:20px; margin:0 0 20px; line-height:1.6; }
 .product-features li + li { margin-top:6px; }
 @media(max-width:575px) {
-  /* Dedicated side lane keeps fixed actions outside the scrolling content. */
-  .compact-site { padding-right:64px; }
-  .compact-site::after { content:""; position:fixed; top:70px; right:0; bottom:0; width:64px; background:#080c14; border-left:1px solid #ffffff12; z-index:30; pointer-events:none; }
+  /* Fixed actions use their own safe positions; the page keeps the full viewport width. */
+  .compact-site { padding-right:0; }
+  .compact-site::after { display:none; }
   .compact-site .wa-float { right:8px; bottom:max(16px,env(safe-area-inset-bottom)); }
   .compact-site .top-button { right:10px; bottom:76px; }
 }
@@ -49,4 +49,4 @@
 .compact-site .navbar-brand { gap:10px; }
 .compact-site .navbar-brand span { font-size:1rem; }
 @media(max-width:991px) { .hero-visual { max-width:680px; } }
-@media(max-width:575px) { .compact-site .navbar-brand img { width:58px; height:46px; } .compact-site .navbar-brand span { font-size:.82rem; } .compact-site .corporate-hero .hero-row { row-gap:24px!important; } }
+@media(max-width:575px) { .compact-site .navbar-brand img { width:58px; height:46px; } .compact-site .navbar-brand span { font-size:.82rem; } .compact-site .corporate-hero .hero-row { padding:96px 0 32px; row-gap:24px!important; } }
